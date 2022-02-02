@@ -7,6 +7,5 @@ class env:
         self.observation_space = np.zeros((10,10))
         self.action_space = np.zeros((10,10))
 
-env1 = env()
+env1  = env()
 agent = Agent(env1,PARAMS_DDPG)
-
