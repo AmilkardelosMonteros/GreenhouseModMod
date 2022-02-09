@@ -1,10 +1,10 @@
 from pickle import TRUE
-from director_climate.c1_rhs import C1_rhs
-from director_climate.v1_rhs import V1_rhs
-from director_climate.t1_rhs import T1_rhs
-from director_climate.t2_rhs import T2_rhs
+from greenhouse.climate.c1_rhs import C1_rhs
+from greenhouse.climate.v1_rhs import V1_rhs
+from greenhouse.climate.t1_rhs import T1_rhs
+from greenhouse.climate.t2_rhs import T2_rhs
 from parameters.climate_constants import CONSTANTS as constanst_climate
-from director_climate.dir_climate import Climate_model
+from greenhouse.climate.director import Climate_model
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
