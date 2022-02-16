@@ -4,9 +4,11 @@ from director_climate.c1_rhs import C1_rhs
 from director_climate.v1_rhs import V1_rhs
 from director_climate.t1_rhs import T1_rhs
 from director_climate.t2_rhs import T2_rhs
+from director_climate.qgas_rhs import Qgas_rhs
 from parameters.climate_constants import CONSTANTS as constanst_climate
 from director_climate.dir_climate import Climate_model
-from try_weather_module import MeteoModule
+from director_climate.module_costs import ModuleCosts
+#from try_weather_module import MeteoModule
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,12 +19,18 @@ V1_rhs_ins = V1_rhs(constanst_climate)
 T1_rhs_ins = T1_rhs(constanst_climate)
 T2_rhs_ins = T2_rhs(constanst_climate)
 
+Qgas_rhs_ins = Qgas_rhs(constanst_climate)
+
 dic_rhs = {'C1':C1_rhs_ins, 'V1': V1_rhs_ins, 'T1': T1_rhs_ins, 'T2':T2_rhs_ins}
 
 Climate_model1 = Climate_model(dic_rhs)
 
-Climate_model1.AddModule('Meteo',MeteoModule)
-Climate_model1.sch += ['Meteo']
+
+
+Climate_model1.MergeVarsFromRHSs([Qgas_rhs_ins], call=__name__)
+Climate_model1.AddModule('Costs', ModuleCosts(Qgas=Qgas_rhs))
+#Climate_model1.AddModule('Meteo', MeteoModule)
+Climate_model1.sch += ['Costs']
 dias = 7
 mensaje = "Simulando " + str(dias)+' dias'
 loader = Loader(mensaje).start()
@@ -34,7 +42,7 @@ T2 = Climate_model1.OutVar('T2')
 V1 = Climate_model1.OutVar('V1')
 I2 = Climate_model1.OutVar('I2')
 I5 = Climate_model1.OutVar('I5')
-I8 = Climate_model1.OutVar('I8')
+I8 = Climate_model1.OutVar('Qgas')
 
 
 S_climate = pd.DataFrame(columns= ['T1','T2','V1','I2','I5','I8'])
