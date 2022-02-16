@@ -348,7 +348,7 @@ NREC = {'nrec':nrec}
 DT = {'dt': mt }
 
 CONSTANTS = {**OTHER_CONSTANTS, **ALPHA, **BETA, ** GAMMA, **DELTA, **EPSIL, **ETA, **LAMB, **RHO, **TAU, 
-                **NU, **PHI, **PSI, **OMEGA, **INPUTS, **STATE_VARS, **CONTROLS, **FUNCTIONS, **NREC, **DT} # Merge dictionaries Python 3.5<=*
+                **NU, **PHI, **PSI, **OMEGA, **INPUTS, **STATE_VARS, **COSTS, **CONTROLS, **FUNCTIONS, **NREC, **DT} # Merge dictionaries Python 3.5<=*
 
 
 
