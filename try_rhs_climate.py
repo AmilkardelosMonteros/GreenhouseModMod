@@ -22,7 +22,7 @@ from util import Loader
 dicc_all = {'CONSTANTS':constanst_climate, 'INPUTS':INPUTS, 'CONTROLS':CONTROLS, 'OTHER_CONSTANTS':OTHER_CONSTANTS, 'STATE_VARS':STATE_VARS}
 PATH = create_path('simulation_results')
 Constants(dic_constants=dicc_all,PATH = PATH)
-SHOW = False
+SHOW = True
 C1_rhs_ins = C1_rhs(constanst_climate)
 V1_rhs_ins = V1_rhs(constanst_climate)
 T1_rhs_ins = T1_rhs(constanst_climate)
@@ -38,11 +38,12 @@ Climate_model1 = Climate_model(dic_rhs)
 #Climate_model1.AddModule('Costs', ModuleCosts(Qgas=Qgas_rhs))
 Climate_model1.AddModule('Meteo', MeteoModule)
 Climate_model1.sch += ['Meteo']
-dias = 0.5
+
+dias = 3
 mensaje = "Simulando " + str(dias)+' dias'
-loader = Loader(mensaje).start()
-Climate_model1.Run(Dt=1, n=7*60*24, sch=Climate_model1.sch)
-loader.stop()
+#loader = Loader(mensaje).start()
+Climate_model1.Run(Dt=1, n=61, sch=Climate_model1.sch)
+#loader.stop()
 
 def create_images(model,list_var):
     loader = Loader('Graficando variables').start()
@@ -54,7 +55,7 @@ def create_images(model,list_var):
             var_name = constanst_climate[name].varid
         except:
             print('La variable ', name,'tiene algo raro')
-        plt.plot(x)
+        plt.plot(x, ms='4',markevery=60, marker='.')
         plt.ylabel(units)
         plt.xlabel('Time')
         plt.title(title)
@@ -67,6 +68,7 @@ def create_images(model,list_var):
     loader.stop()
 list_var = ['T1','T2','V1','I2','I5','I8']
 create_images(Climate_model1,list_var)   
+
 
 
 
