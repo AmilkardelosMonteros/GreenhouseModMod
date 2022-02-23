@@ -311,14 +311,14 @@ CONTROLS = {
     'U1': Struct(typ='Cnts', varid='U1', prn=r'$U_1$', desc="Thermal screen control", units=1, val=0, ok=ok),
     'U2': Struct(typ='Cnts', varid='U2', prn=r'$U_2$', desc="Fan and pad system control", units=1, val=0, ok=ok),
     'U3': Struct(typ='Cnts', varid='U3', prn=r'$U_3$', desc="Control of mechanical cooling system", units=1, val=0, ok=ok),
-    'U4': Struct(typ='Cnts', varid='U4', prn=r'$U_4$', desc="Air heater control", units=1, val=0, ok=ok),
+    'U4': Struct(typ='Cnts', varid='U4', prn=r'$U_4$', desc="Air heater control", units=1, val=1, ok=ok),
     'U5': Struct(typ='Cnts', varid='U5', prn=r'$U_5$', desc="External shading control", units=1, val=0, ok=ok),
     'U6': Struct(typ='Cnts', varid='U6', prn=r'$U_6$', desc="Side vents Control", units=1, val=0, ok=ok),
     'U7': Struct(typ='Cnts', varid='U7', prn=r'$U_7$', desc="Forced ventilation control", units=1, val=0, ok=ok),
     'U8': Struct(typ='Cnts', varid='U8', prn=r'$U_8$', desc="Roof vents control", units=1, val=0,ok=ok),
     'U9': Struct(typ='Cnts', varid='U9', prn=r'$U_9$', desc="Fog system control", units=1, val=0, ok=ok),
     'U10': Struct(typ='Cnts', varid='U10', prn=r'$U_{10}$', desc="Control of external CO2 source", units=1, val=0, ok=ok),
-    'U11': Struct(typ='Cnts', varid='U11', prn=r'$U_{11}$', desc="", units=1, val=0, ok='falta descripción')
+    'U11': Struct(typ='Cnts', varid='U11', prn=r'$U_{11}$', desc="", units=1, val=1, ok='falta descripción')
 }
 
 FUNCTIONS = {

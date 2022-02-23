@@ -1,3 +1,4 @@
+from ast import Constant
 from ModMod import StateRHS
 from sympy import symbols
 from .functions import H_Boil_Pipe
@@ -8,9 +9,11 @@ mt= symbols('mt')
 
 state_names = ['Qgas']
 
+constant_names = ['qgas', 'etagas']
+
 function_names = ['h6', 'r6', 'h4', 'a1', 'g1'] 
 
-all_parameters =  function_names + state_names
+all_parameters =  function_names + state_names + constant_names
 
 
 class Qgas_rhs(StateRHS):

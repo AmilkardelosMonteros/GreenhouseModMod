@@ -13,7 +13,6 @@ class ModuleCosts(Module):
         # Always, use the super class __init__, theare are several otjer initializations
         # Module specific constructors, add RHS's
         for key, value in kwargs.items():
-            breakpoint()
             self.AddStateRHS(key, value)
         # print("State Variables for this module:", self.S_RHS_ids)
 
