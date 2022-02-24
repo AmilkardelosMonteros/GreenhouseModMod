@@ -12,7 +12,9 @@ from .module_climate import Module1
 
 
 class Climate_model(Director):
-    def __init__(self,dic_RHS):
+    def __init__(self):#, dic_RHS):
+        super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
+        '''
         C1_rhs_ins = dic_RHS['C1']
         V1_rhs_ins = dic_RHS['V1']
         T1_rhs_ins = dic_RHS['T1']
@@ -25,6 +27,7 @@ class Climate_model(Director):
         self.AddModule('Module1', Module1(C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, 
                         T2=T2_rhs_ins))
         self.sch = ['Module1']
+        '''
 
     def reset(self):
         self.V_Set('T1', 20) #!!!!!! Tiene que venir de los datos
