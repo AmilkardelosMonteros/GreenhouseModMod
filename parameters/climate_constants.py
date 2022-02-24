@@ -297,11 +297,13 @@ STATE_VARS = {
 
 COSTS = {
     'Qh2o': Struct(typ='State', varid='Qh2o', prn=r'$Q_{H2O}$',
-                    desc="Water cost ", units=mxn * kg, val=0, rec=nrec, ok=ok),
+                    desc="Water cost ", units=mxn * kg, val=0, rec=nrec, ok='revisar unidades'),
     'Qgas': Struct(typ='State', varid='Qgas', prn=r'$Q_{Gas}$',
-                    desc="Fuel cost (natural gas)", units=mxn * m**-2, val=0, rec=nrec, ok=ok), 
+                    desc="Fuel cost (natural gas)", units=mxn * m**-2, val=0, rec=nrec, ok='revisar unidades'), 
     'Qco2': Struct(typ='State', varid='Qco2', prn=r'$Q_{CO2}$',
-                    desc="CO2 cost ", units=mxn * kg, val=0, rec=nrec, ok='revisar unidades')
+                    desc="CO2 cost ", units=mxn * kg, val=0, rec=nrec, ok='revisar unidades'), 
+    'Qelec': Struct(typ='State', varid='Qelec', prn=r'$Q_{Elec}$',\
+                    desc="Costo por Electricidad", units= mxn * m**-2 * s**-1 , val=0, rec=nrec)
 }
 
 
@@ -348,7 +350,7 @@ NREC = {'nrec':nrec}
 DT = {'dt': mt }
 
 CONSTANTS = {**OTHER_CONSTANTS, **ALPHA, **BETA, ** GAMMA, **DELTA, **EPSIL, **ETA, **LAMB, **RHO, **TAU, 
-                **NU, **PHI, **PSI, **OMEGA, **INPUTS, **STATE_VARS, **CONTROLS, **FUNCTIONS, **NREC, **DT} # Merge dictionaries Python 3.5<=*
+                **NU, **PHI, **PSI, **OMEGA, **INPUTS, **STATE_VARS, **COSTS, **CONTROLS, **FUNCTIONS, **NREC, **DT} # Merge dictionaries Python 3.5<=*
 
 
 
