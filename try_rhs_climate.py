@@ -40,20 +40,20 @@ symb_time_units = C1_rhs_ins.CheckSymbTimeUnits(C1_rhs_ins)
         # Genetare the director
 RHS_list = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins]
 Climate_model1.MergeVarsFromRHSs(RHS_list, call=__name__)
-Climate_model1.AddModule('Module1', Module1(C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, 
+Climate_model1.AddModule('Module1', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, 
                         T2=T2_rhs_ins))
 Climate_model1.sch = ['Module1']
 
 
 rhs_ins = [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins]#, Qelec_rhs_ins]
 Climate_model1.MergeVarsFromRHSs(rhs_ins, call=__name__)
-Climate_model1.AddModule('Costs', ModuleCosts(Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
+Climate_model1.AddModule('Costs', ModuleCosts(Dt=60, Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
 Climate_model1.AddModule('Meteo', MeteoModule)
 Climate_model1.sch += ['Meteo', 'Costs']
-dias = 7
+dias = 21
 mensaje = "Simulando " + str(dias)+' dias'
 loader = Loader(mensaje).start()
-Climate_model1.Run(Dt=1, n=7*60*24, sch=Climate_model1.sch)
+Climate_model1.Run(Dt=60 * 60, n=dias * 24, sch=Climate_model1.sch)
 loader.stop()
 
 T1 = Climate_model1.OutVar('T1')
