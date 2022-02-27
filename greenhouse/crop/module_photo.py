@@ -14,7 +14,7 @@ from ci_rhs import Ci_rhs
 ##### Módulo de fotosíntesis ########
 #####################################
 class PhotoModule(Module):
-    def __init__( self, theta, Dt=0.1): 
+    def __init__( self, Ci_rhs_ins, Dt=0.1): 
         """Models one part of the process, uses the shared variables
            from Director.
            Dt=0.1, default Time steping of module
@@ -25,7 +25,7 @@ class PhotoModule(Module):
         ##############################
         ### Creación de instancias ###
         ##############################
-        Ci_rhs_ins = Ci_rhs(theta)
+        #Ci_rhs_ins = Ci_rhs(theta)
         
         ### Module specific constructors, add RHS's
         self.AddStateRHS( 'Ci', Ci_rhs_ins)
