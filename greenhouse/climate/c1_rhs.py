@@ -17,7 +17,7 @@ all_parameters = state_names + control_names + input_names + function_names + co
 
 class C1_rhs(StateRHS):
     """Define a RHS, this is the rhs for C1, the CO2 concentrartion in the greenhouse air"""
-    def __init__(self,parameters):
+    def __init__(self, parameters):
         """Define a RHS, ***this an assigment RHS***, V1 = h2(...), NO ODE."""
         # uses the super class __init__
         super().__init__()
