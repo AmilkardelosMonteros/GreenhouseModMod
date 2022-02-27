@@ -31,14 +31,14 @@ dir_climate = Climate_model()
 
 """ 3.0 Meteo module"""
 loader = Loader("Creating weather module").start()
-meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1,shift_time=30)  # t_conv=1/(60*24) es para pasar el tiempo de minutos (como queda después de la lectura de la base) a días 
+meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1, shift_time=30)  # t_conv=1/(60*24) es para pasar el tiempo de minutos (como queda después de la lectura de la base) a días 
 loader.stop()
 dir_climate.AddModule('ModuleMeteo', meteo)
 
 dir_climate.sch = ['ModuleMeteo']
 
 """ 3.1 """
-dir_climate.AddModule('RandomControl', Random(list(constant_control.keys()), Dt=5/(24 * 60)))
+dir_climate.AddModule('RandomControl', Random(list(constant_control.keys()), Dt=60 * 5))
 dir_climate.sch += ['RandomControl']
 
 """ 3.1 Climate module"""
@@ -48,7 +48,7 @@ T1_rhs_ins = T1_rhs(constant_climate)
 T2_rhs_ins = T2_rhs(constant_climate)
 RHS_list = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins]
 dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-dir_climate.AddModule('ModuleClimate', Module1(Dt=1/(24 * 60), C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, 
+dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, 
                         T2=T2_rhs_ins))
 dir_climate.sch += ['ModuleClimate']
 
@@ -59,7 +59,7 @@ Qgas_rhs_ins = Qgas_rhs(constant_climate)
 #Qelec_rhs_ins = Qelec_rhs(constanst_climate)
 cost_list = [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins]#, Qelec_rhs_ins]
 dir_climate.MergeVarsFromRHSs(cost_list, call=__name__)
-dir_climate.AddModule('ModuleCosts', ModuleCosts(Dt=1/(24 * 60), Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
+dir_climate.AddModule('ModuleCosts', ModuleCosts(Dt=60, Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
 
 dir_climate.sch += ['ModuleCosts']
 
@@ -70,15 +70,18 @@ symb_time_units = C1_rhs_ins.CheckSymbTimeUnits(C1_rhs_ins)
 
 """Greenhouse director"""
 director = Director(t0=0.0, time_unit="", Vars={}, Modules={})
-director.MergeVars(dir_climate, all_vars=True)
-director.AddDirectorAsModule('Climate', dir_climate)
-director.sch = ['Climate'] 
+director.MergeVarsFromRHSs(RHS_list, call=__name__)
+director.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, 
+                        T2=T2_rhs_ins))
+#director.MergeVars(dir_climate, all_vars=True)
+#director.AddDirectorAsModule('Climate', dir_climate)
+director.sch = [''] 
 
 
 dias = 7
 mensaje = "Simulando " + str(dias)+' dias'
 loader = Loader(mensaje).start()
-director.Run(Dt=1, n=dias, sch=director.sch) #save=['T1', 'T2', 'V1', 'I2', 'I5', 'I8'])
+director.Run(Dt=60, n=600, sch=director.sch) #save=['T1', 'T2', 'V1', 'I2', 'I5', 'I8'])
 loader.stop()
 
 
@@ -113,6 +116,8 @@ def figure_state(df_climate):
     else:
         plt.savefig('simulation_results/images/sim_climate.png')
         plt.close()
+
+breakpoint()
 figure_state(S_climate)
 
 
