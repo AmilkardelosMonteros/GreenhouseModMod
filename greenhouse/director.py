@@ -27,13 +27,12 @@ class Greenhouse(Director):
         """
 
     def Scheduler(self, t1, sch):
-        #return super().Scheduler(t1, sch)
-        pass
+        return super().Scheduler(t1, sch)
 
 
     def Run(self, Dt, n, sch, save=None):
-        #return super().Run(Dt, n, sch, save)
-        pass
+        return super().Run(Dt, n, sch, save)
+
 
 
     def reset(self):
