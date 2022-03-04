@@ -15,7 +15,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from util import Loader
-from utils.convert import day2seconds, hour2seconds, minute2seconds
+from utils.convert import day2seconds, hour2seconds, minute2seconds, day2minute,day2hour
 
 
 SHOW = True
@@ -77,7 +77,7 @@ director.AddDirectorAsModule('Climate', dir_climate)
 
 #loader = Loader(mensaje).start()
 
-director.Run(Dt=minute2seconds(1),n=60*24, sch=['Climate'])
+director.Run(Dt=hour2seconds(1),n=day2hour(5), sch=['Climate'],active=True)
 #loader.stop()
 
 T1 = director.OutVar('T1')

@@ -15,7 +15,7 @@ class Module1(Module):
         # print("State Variables for this module:", self.S_RHS_ids)
 
     def Advance(self, t1):
-        print('Advance!!')
+        #print('Advance!!')
         f_1 = f1(U2=self.V('U2'), phi7=self.V(
             'phi7'), alpha6=self.V('alpha6'))
         q_2 = q2(T1=self.V('T1')) #### Previously T1 = self.Vk('T1')
