@@ -77,7 +77,7 @@ director.AddDirectorAsModule('Climate', dir_climate)
 
 #loader = Loader(mensaje).start()
 
-director.Run(Dt=hour2seconds(1),n=24, sch=['Climate'])
+director.Run(Dt=minute2seconds(1),n=60*24, sch=['Climate'])
 #loader.stop()
 
 T1 = director.OutVar('T1')
