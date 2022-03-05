@@ -16,7 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from util import Loader
 from utils.convert import day2seconds, hour2seconds, minute2seconds, day2minute,day2hour
-
+from utils.graphics import create_images
 
 SHOW = True
 
@@ -77,44 +77,10 @@ director.AddDirectorAsModule('Climate', dir_climate)
 
 #loader = Loader(mensaje).start()
 
-director.Run(Dt=hour2seconds(1),n=day2hour(5), sch=['Climate'],active=True)
+#director.Run(Dt=hour2seconds(1),n=day2hour(1), sch=['Climate'],active=True)
+director.Run(Dt = 1,n=10, sch=['Climate'],active=True)
 #loader.stop()
 
-T1 = director.OutVar('T1')
-T2 = director.OutVar('T2')
-V1 = director.OutVar('V1')
-I2 = director.OutVar('I2')
-I5 = director.OutVar('I5')
-I8 = director.OutVar('I8')
+VARS = ['T1','T2','V1','I2','I5','I8']
 
-
-S_climate = pd.DataFrame(columns= ['T1','T2','V1','I2','I5','I8'])
-S_climate.T1 = T1
-S_climate.T2 = T1
-S_climate.V1 = V1
-S_climate.I2 = I2
-S_climate.I5 = I5
-S_climate.I8 = I8
-
-def figure_state(df_climate):
-    #df_climate = pd.DataFrame(S_climate, columns=('$T_1$', '$T_2$', '$V_1$', '$C_1$'))
-
-    ax = df_climate.plot(subplots=True, layout=(3, 2), figsize=(10, 7),title = 'Variables de estado', ms='4',markevery=60, marker='.') 
-    ax[0,0].set_ylabel('$ ^{\circ} C$')
-    ax[0,1].set_ylabel('$ ^{\circ} C$')
-    ax[1,0].set_ylabel('Pa')
-    ax[1,1].set_ylabel('$mg * m^{-3}$')
-    plt.gcf().autofmt_xdate()
-    if SHOW:
-        plt.show()
-        plt.close()
-    else:
-        plt.savefig('simulation_results/images/sim_climate.png')
-        plt.close()
-
-figure_state(S_climate)
-
-
-
-
-
+create_images(director)
