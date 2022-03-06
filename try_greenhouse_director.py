@@ -17,7 +17,8 @@ import matplotlib.pyplot as plt
 from util import Loader
 from utils.convert import day2seconds, hour2seconds, minute2seconds, day2minute,day2hour
 from utils.graphics import create_images
-
+from utils.create_folders import create_path
+from utils.images_to_pdf import create_pdf_images
 SHOW = True
 
 
@@ -77,10 +78,13 @@ director.AddDirectorAsModule('Climate', dir_climate)
 
 #loader = Loader(mensaje).start()
 
-#director.Run(Dt=hour2seconds(1),n=day2hour(1), sch=['Climate'],active=True)
-director.Run(Dt = 1,n=10, sch=['Climate'],active=True)
+director.Run(Dt=hour2seconds(1),n=day2hour(7), sch=['Climate'],active=True)
+#director.Run(Dt = 1,n=10, sch=['Climate'],active=True)
 #loader.stop()
 
-VARS = ['T1','T2','V1','I2','I5','I8']
-
-create_images(director)
+STATE_VARS = ['T1','T2','C1','V1']
+CONTROLS  = ['U'+str(i) for i in range(1,12)] 
+VARS = STATE_VARS + CONTROLS
+PATH = create_path('simulation_results')
+create_images(director,PATH = PATH)
+create_pdf_images(PATH)

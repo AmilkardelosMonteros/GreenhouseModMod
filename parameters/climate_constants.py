@@ -272,7 +272,7 @@ INPUTS ={
                     desc="Soil temperature", units=C, val=18, ok = 'Valor de España'),  
     'I8' : Struct(typ='State', varid='I8', prn=r'$I_8$',
                     desc="Outdoor wind speed", units=m * s**-1, val=3.2, ok = 'Sin comentario'),         
-    'I9' : Struct(typ='State', varid='I9', prn=r'$\I_{9}$',
+    'I9' : Struct(typ='State', varid='I9', prn=r'$I_{9}$',
                     desc="Global radiation above the canopy", units=W * m**-2, val=100, ok = ' Sin comentario'),
     'I10' : Struct(typ='Cnts', varid='I10', prn=r'$I_{10}$',
                     desc="Outdoor CO2 concentration", units=mg * m**-3, val = 668,ok = '668 mg/m**3 (370 ppm);'),
