@@ -15,7 +15,7 @@ from scipy.stats import norm, gamma
 ############ Módulo de crecimiento para una planta ##############
 #################################################################
 class Plant(Module):
-    def __init__( self, beta, Q_rhs_ins, Dt_f=0.1, Dt_g=1):  # Dt_f=0.1, Dt_g=0.25
+    def __init__( self, beta, Q_rhs_ins, Dt_f=60, Dt_g=60*60*24):  # Dt_f=0.1, Dt_g=0.25
         """Models one plant growth, with a variable number of fruits."""
         ## Dt_f is the photosynthesis Dt, this is use for RK advance
         ## Dt_g is the growth Dt, this is use for the update and anvance of the fruits

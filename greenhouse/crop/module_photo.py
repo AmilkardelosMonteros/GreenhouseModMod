@@ -8,13 +8,13 @@ Created on Mon Feb 14 11:46:50 2022
 
 from ModMod import Module
 from .functions import V_cmax, R_d, tau, K_C, K_O, Gamma_st, I_2, J, A_R, A_f, A_acum, A # importar funciones fotosíntesis
-from ci_rhs import Ci_rhs
+from .ci_rhs import Ci_rhs
 
 #####################################
 ##### Módulo de fotosíntesis ########
 #####################################
 class PhotoModule(Module):
-    def __init__( self, Ci_rhs_ins, Dt=0.1): 
+    def __init__( self, Ci_rhs_ins, Dt=1): 
         """Models one part of the process, uses the shared variables
            from Director.
            Dt=0.1, default Time steping of module
