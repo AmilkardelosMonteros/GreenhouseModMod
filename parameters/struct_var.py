@@ -18,7 +18,7 @@ class Struct():
 
     def addvar_rhs(self, rhs, local=False):
         if local:
-            rhs.AddLocalVar(typ=self.typ, varid=self.varid, prn=self.prn, desc=self.desc, units=self.units , val=self.val, rec=self.rec)
+            rhs.AddVarLocal(typ=self.typ, varid=self.varid, prn=self.prn, desc=self.desc, units=self.units , val=self.val, rec=self.rec)
         else:
             rhs.AddVar(typ=self.typ, varid=self.varid, prn=self.prn, desc=self.desc, units=self.units , val=self.val, rec=self.rec)
 

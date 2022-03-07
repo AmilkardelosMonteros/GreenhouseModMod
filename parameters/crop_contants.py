@@ -1,5 +1,16 @@
 from sympy import symbols
+import numpy as np
 from .struct_var import Struct
+
+theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
+theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
+
+## Photosynthesis model
+s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm, MJ, n_f  = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm MJ n_f')
+mu_mol_CO2 = 1e-6 * mol_CO2
+mu_mol_phot = 1e-6 * mol_phot
+mu_mol_O2 = 1e-6 * mol_O2
+mg = 1e-3*g
 
 
 LOCAL_CI_CONST = {     
@@ -155,7 +166,7 @@ GLOBAL_CI_CONST = {
         
         'theta': Struct( typ='Cnts', varid='theta', \
            desc="Empirical factor", \
-           units=1 , val=theta[0]),
+           units=1 , val=theta_c[0]),
 }
 
 
@@ -210,12 +221,14 @@ LOCAL_Q_CONST = {
        desc="Constant in Y_pot", units= g, val=60.7),
     
     'a':Struct( typ='Cnts', varid='a', prn=r'$a$',\
-       desc="Constant in Y_pot_veg", units= 1, val=theta[1]),
+       desc="Constant in Y_pot_veg", units= 1, val=theta_p[1]),
     
     'b':Struct( typ='Cnts', varid='b', prn=r'$b$',\
-       desc="Constant in Y_pot_veg", units= 1, val=theta[2])
+       desc="Constant in Y_pot_veg", units= 1, val=theta_p[2])
 }
 
 
+
+CONSTANTS = {**LOCAL_CI_CONST, **LOCAL_Q_CONST, **GLOBAL_Q_CONST, **STATEPARTIAL_Q, **GLOBAL_CI_CONST, **INPUTS}
 
 
