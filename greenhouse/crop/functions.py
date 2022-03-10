@@ -19,7 +19,7 @@ mu_mol_phot = 1e-6 * mol_phot
 mu_mol_O2 = 1e-6 * mol_O2
 mg = 1e-3*g
 ## Growth model
-n_f, n_p, MJ = symbols('n_f n_p MJ') # number of fruits, number of plants
+n_f, n_p, MJ, W, mg  = symbols('n_f n_p MJ W, mg') # number of fruits, number of plants
 
 
 ###########################

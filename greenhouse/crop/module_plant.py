@@ -19,7 +19,7 @@ class Plant(Module):
         """Models one plant growth, with a variable number of fruits."""
         ## Dt_f is the photosynthesis Dt, this is use for RK advance
         ## Dt_g is the growth Dt, this is use for the update and anvance of the fruits
-        super().__init__(Dt_f) #Time steping of module, days
+        super().__init__(Dt_g) #Time steping of module, days
         ### Always, use the super class __init__, there are several other initializations
         
         self.Dt_g = Dt_g
@@ -45,6 +45,7 @@ class Plant(Module):
         ### This creates a set of times knots, that terminates in t1 with
         ### a Deltat <= self.Dt
         tt = append( arange( self.t(), t1, step=self.Dt_g), [t1])
+        Dt= (tt[1] -tt[0]) / self.Dt_g
         #print(tt)
         steps = len(tt)
         for i in range( 1, steps):
@@ -69,9 +70,9 @@ class Plant(Module):
             self.n_fruits_h += self.V('n_k') # accumulated number fruits harvested
             
             ### With the Floration Rate, create new fruits
-            PA_mean_i = self.beta * self.V('PAR')
+            PA_mean_i = self.beta * self.V('I2')
             self.new_fruit += TF( k1_TF=self.V('k1_TF'), k2_TF=self.V('k2_TF'), k3_TF=self.V('k3_TF'),\
-                    PA_mean=PA_mean_i, T_mean=self.V('T'), Dt=tt[i]-tt[i-1])
+                    PA_mean=PA_mean_i, T_mean=self.V('T1'), Dt=Dt)
             new_fruit_n = self.new_fruit 
             if new_fruit_n >= 1:
                 #nw = new_fruit_n
@@ -86,10 +87,10 @@ class Plant(Module):
             
             ### Update thermic age of all fruits
             for fruit in self.fruits:
-                fruit[0] += ( max( 0 , self.V('T') - 10 ) )* (tt[i]-tt[i-1]) ## Thermic age never decreases
+                fruit[0] += ( max( 0 , self.V('T2') - 10 ) )* Dt## Thermic age never decreases
             
             ### Update growth potencial for vegetative part
-            self.veget[1] = self.V('a') + self.V('b')*self.V('T') 
+            self.veget[1] = self.V('a') + self.V('b')*self.V('T2') 
             ### Update Growth potential and Michaelis-Menten constants of all fruits
             tmp = 0.0
             tmp1 = self.veget[1] / self.V('A') # start with the growth potencial of vegetative part
@@ -100,7 +101,7 @@ class Plant(Module):
                     fruit[3] = 0.05*tmp*(self.V('C_t') - x) / self.V('C_t')
                 ### Growth potential
                 fruit[2] = clip( Y_pot( k2_TF=self.V('k2_TF'), C_t=self.V('C_t'),\
-                     B=self.V('B'), D=self.V('D'), M=self.V('M'), X=x, T_mean=self.V('T')),\
+                     B=self.V('B'), D=self.V('D'), M=self.V('M'), X=x, T_mean=self.V('T2')),\
                      a_min=0, a_max=exp(300))
                 tmp += fruit[2]
                 tmp1 += fruit[2] / ( fruit[3] + self.V('A') )
@@ -108,10 +109,9 @@ class Plant(Module):
             
             ### Update weight of vegetative part
             f_wg_veg =  self.veget[1] / ( self.V('A') * tmp1  ) # The sink strentgh of vegetative part
-            self.veget[0] += t_wg( dw_ef=self.V('dw_ef_veg'), A=self.V('A'), f_wg=f_wg_veg) * (tt[i]-tt[i-1])
+            self.veget[0] += t_wg( dw_ef=self.V('dw_ef_veg'), A=self.V('A'), f_wg=f_wg_veg) * Dt
             #### Update weight of all fruits
             tmp2 = 0.0
-            Dt = (tt[i]-tt[i-1])
             for fruit in self.fruits:
                 f_wg =  fruit[2] / ( ( fruit[3] + self.V('A') ) * tmp1 ) # The sink strentgh of the fruit
                 dwh = t_wg( dw_ef=self.V('dw_ef'), A=self.V('A'), f_wg=f_wg) * Dt # dry weight
