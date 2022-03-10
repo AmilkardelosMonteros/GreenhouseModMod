@@ -5,10 +5,10 @@ def create_images(model,list_var=None,PATH=None):
     if PATH == None: SHOW = True
     if list_var == None: list_var = list(model.Vars.keys())
     for name in list_var:
-        print('Graficando',name)
         if model.Vars[name].typ == 'State':
             try:
                 x = model.OutVar(name)
+                print('Graficando',name)
                 title = model.Vars[name].prn
                 units = model.Vars[name].units
                 plt.plot(x, ms='4',markevery=60, marker='.')
