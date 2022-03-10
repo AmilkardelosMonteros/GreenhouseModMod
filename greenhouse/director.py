@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 #from .climate.director import Climate_model
 #from module_control import ModuleControl
 #from director_production import I_2, Production_model
-from ModMod import Director
+from auxModMod.Dir import Director
 from sympy import symbols
 
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
@@ -35,7 +35,7 @@ class Greenhouse(Director):
             if self.Modules[mod].Advance(t1) != 1:
                 print("Director: Error in Advancing Module '%s' from time %f to time %f" % ( mod, self.t, t1))
         self.t = t1
-        
+        '''
         ### Update Total weight and total number of fruits
         t_w_hist = 0.0
         t_n_f = 0
@@ -53,7 +53,7 @@ class Greenhouse(Director):
         self.V_Set( 'h', t_w_k)
         self.V_Set( 'n', t_n_k)
         self.V_Set( 'm', t_m_k)
-
+        '''
 
     def Run(self, Dt, n, sch, save=None):
         return super().Run(Dt, n, sch, save)
