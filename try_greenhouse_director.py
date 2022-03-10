@@ -12,6 +12,7 @@ from greenhouse.crop.ci_rhs import Ci_rhs
 from greenhouse.crop.q_rhs import Q_rhs
 from greenhouse.crop.module_photo import PhotoModule
 from greenhouse.crop.module_plant import Plant
+from greenhouse.director import Greenhouse
 from factory_of_rhs import*
 from auxModMod.Dir import Director
 from auxModMod.new_read_module import ReadModule
@@ -29,9 +30,6 @@ theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
 theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
 
 
-SHOW = True
-
-
 """ Climate director"""
 
 dir_climate = Climate_model()
@@ -43,8 +41,8 @@ T1_rhs_ins = T1_rhs(constant_climate)
 T2_rhs_ins = T2_rhs(constant_climate)
 RHS_list = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins]
 dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-dir_climate.AddModule('ModuleClimate', Module1(Dt=1, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins))
-dir_climate.sch += ['ModuleClimate']
+dir_climate.AddModule('ModuleClimate', Module1(Dt=minute2seconds(1), C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins))
+dir_climate.sch = ['ModuleClimate']
 
 """ Meteo module"""
 
@@ -67,10 +65,10 @@ Qco2_rhs_ins = Qco2_rhs(constant_climate)
 Qgas_rhs_ins = Qgas_rhs(constant_climate)
 #Qelec_rhs_ins = Qelec_rhs(constanst_climate)
 cost_list = [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins]#, Qelec_rhs_ins]
-#dir_climate.MergeVarsFromRHSs(cost_list, call=__name__)
-#dir_climate.AddModule('ModuleCosts', ModuleCosts(Dt=1, Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
+dir_climate.MergeVarsFromRHSs(cost_list, call=__name__)
+dir_climate.AddModule('ModuleCosts', ModuleCosts(Dt=minute2seconds(1), Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
 
-#dir_climate.sch += ['ModuleCosts']
+dir_climate.sch += ['ModuleCosts']
 
 #dir_climate.MergeVarsFromRHSs(cost_list, call=__name__)
 symb_time_units = C1_rhs_ins.CheckSymbTimeUnits(C1_rhs_ins)
@@ -83,18 +81,18 @@ def PlantDirector( beta, return_Q_rhs_ins=False):
     ### Start model with empty variables
     Dir = Director( t0=0.0, time_unit="", Vars={}, Modules={} )
     ## Create instances of RHS
-    Ci_rhs_ins = Ci_rhs(constant_crop)
-    Q_rhs_ins = Q_rhs(constant_crop)
+    Ci_rhs_ins = Ci_rhs()#constant_crop)
+    Q_rhs_ins = Q_rhs()#constant_crop)
     ## Add time information to the Director
     Dir.AddTimeUnit( Ci_rhs_ins.GetTimeUnits())
     Dir.AddTimeUnit( Q_rhs_ins.GetTimeUnits())
     ## Merger the variables of the modules in the Director
     Dir.MergeVarsFromRHSs( [Ci_rhs_ins, Q_rhs_ins], call=__name__)
     ### Add Modules to the Director:
-    Dir.AddModule( "Plant", Plant(Q_rhs_ins, Dt_f=minute2seconds(1), Dt_g=day2seconds(1)))
-    Dir.AddModule( "Photosynt", PhotoModule(Ci_rhs_ins), Dt=1)
+    Dir.AddModule( "Plant", Plant(beta, Q_rhs_ins, Dt_f=minute2seconds(1), Dt_g=day2seconds(1)))
+    Dir.AddModule( "Photosynt", PhotoModule(Ci_rhs_ins, Dt=minute2seconds(1)))
     ## Scheduler for the modules
-    Dir.sch = [ "Plant", "Photosynt" ] 
+    Dir.sch = ["Photosynt", "Plant"] 
 
     if return_Q_rhs_ins:
         return Dir, Q_rhs_ins
@@ -103,12 +101,14 @@ def PlantDirector( beta, return_Q_rhs_ins=False):
 
 
 """Greenhouse director"""
-director = Director(t0=0.0, time_unit="", Vars={}, Modules={})
-#director.MergeVarsFromRHSs(RHS_list, call=__name__)
+director = Greenhouse()
+director.MergeVarsFromRHSs(RHS_list, call=__name__)
 #director.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, 
 #                        T2=T2_rhs_ins))
 director.MergeVars(dir_climate, all_vars=True)
 director.AddDirectorAsModule('Climate', dir_climate)
+
+director.sch = ['Climate']
 
 director.PlantList = []
 for p, beta in enumerate(beta_list):
@@ -128,10 +128,8 @@ for p, beta in enumerate(beta_list):
     director.PlantList +=["Plant%d" % p]
 
 director.sch += director.PlantList.copy()
-
 #loader = Loader(mensaje).start()
-breakpoint()
-director.Run(Dt=hour2seconds(1),n=day2hour(7), sch=['Climate'],active=True)
+director.Run(Dt=day2seconds(1),n=90, sch=director.sch) #,active=True)
 #director.Run(Dt = 1,n=10, sch=['Climate'],active=True)
 #loader.stop()
 
@@ -139,5 +137,5 @@ STATE_VARS = ['T1','T2','C1','V1']
 CONTROLS  = ['U'+str(i) for i in range(1,12)] 
 VARS = STATE_VARS + CONTROLS
 PATH = create_path('simulation_results')
-create_images(director,PATH = PATH)
+create_images(director, PATH = PATH)
 create_pdf_images(PATH)
