@@ -284,7 +284,7 @@ INPUTS ={
 ################## State variables ##################
 STATE_VARS = {
     'C1' : Struct(typ='State', varid='C1', prn=r'$C_1$',
-                    desc="CO2 concentrartion in the greenhouse air", units=mg * m**-3, val=432, rec=nrec,ok='falta valor inicial'),
+                    desc="CO2 concentrartion in the greenhouse air", units=mg * m**-3, val=429.3, rec=nrec,ok='falta valor inicial'),
     'V1' : Struct(typ='State', varid='V1', prn=r'$V_1$',
                     desc="Greenhouse air vapor pressure", units=Pa, val=1200, rec=nrec, ok='https://www.dimluxlighting.com/knowledge/blog/vapor-pressure-deficit-the-ultimate-guide-to-vpd/'), 
     'T1' : Struct(typ='State', varid='T1', prn=r'$T_1$',
