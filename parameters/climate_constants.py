@@ -276,7 +276,7 @@ INPUTS ={
                     desc="Global radiation above the canopy", units=W * m**-2, val=100, ok = ' Sin comentario'),
     'I10' : Struct(typ='Cnts', varid='I10', prn=r'$I_{10}$',
                     desc="Outdoor CO2 concentration", units=mg * m**-3, val = 668,ok = '668 mg/m**3 (370 ppm);'),
-    'I11' : Struct(typ='Cnts', varid='I11', prn=r'$I_{11}$',
+    'I11' : Struct(typ='State', varid='I11', prn=r'$I_{11}$',
                     desc= "external air vapor pressure ", units= Pa, val = 668,ok = 'Hay que calcularla,valor inicial incorrecto'),
 }
 
