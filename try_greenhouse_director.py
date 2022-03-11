@@ -24,6 +24,8 @@ from utils.convert import day2seconds, hour2seconds, minute2seconds, day2minute,
 from utils.graphics import create_images
 from utils.create_folders import create_path
 from utils.images_to_pdf import create_pdf_images
+from reports.report_constants import Constants
+from parameters.climate_constants import INPUTS, CONTROLS, OTHER_CONSTANTS, STATE_VARS
 
 beta_list = [0.99, 0.95] # Only 2 plants are simulated, assuming this is approximately one m**2
 theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
@@ -150,10 +152,8 @@ director.sch += director.PlantList.copy()
 director.Run(Dt=60,n=12, sch=director.sch) #,active=True)
 #director.Run(Dt = 1,n=10, sch=['Climate'],active=True)
 #loader.stop()
-
-STATE_VARS = ['T1','T2','C1','V1']
-CONTROLS  = ['U'+str(i) for i in range(1,12)] 
-VARS = STATE_VARS + CONTROLS
 PATH = create_path('simulation_results')
+dicc_all = {'CONSTANTS':constant_climate, 'INPUTS':INPUTS, 'CONTROLS':CONTROLS, 'OTHER_CONSTANTS':OTHER_CONSTANTS, 'STATE_VARS':STATE_VARS}
+Constants(dic_constants=dicc_all,PATH = PATH)
 create_images(director, PATH = PATH)
 create_pdf_images(PATH)
