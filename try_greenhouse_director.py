@@ -149,7 +149,7 @@ for p, beta in enumerate(beta_list):
 
 director.sch += director.PlantList.copy()
 #loader = Loader(mensaje).start()
-director.Run(Dt=60,n=12, sch=director.sch) #,active=True)
+director.Run(Dt=60,n=day2minute(7), sch=director.sch) #,active=True)
 #director.Run(Dt = 1,n=10, sch=['Climate'],active=True)
 #loader.stop()
 PATH = create_path('simulation_results')
