@@ -2,3 +2,5 @@ simulation_results
 greenhouse/climate/__pycache__/
 __pycache__/
 *.zip
+auxModMod/__pycache__/
+greenhouse/climate/__pycache__/*
