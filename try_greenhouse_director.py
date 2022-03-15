@@ -24,6 +24,8 @@ from utils.convert import day2seconds, hour2seconds, minute2seconds, day2minute,
 from utils.graphics import create_images
 from utils.create_folders import create_path
 from utils.images_to_pdf import create_pdf_images
+from reports.report_constants import Constants
+from parameters.climate_constants import INPUTS, CONTROLS, OTHER_CONSTANTS, STATE_VARS
 
 beta_list = [0.99, 0.95] # Only 2 plants are simulated, assuming this is approximately one m**2
 theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
@@ -43,20 +45,20 @@ T2_rhs_ins = T2_rhs(constant_climate)
 RHS_list = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins]
 dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
 dir_climate.AddModule('ModuleClimate', Module1(Dt=minute2seconds(1), C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins))
-dir_climate.sch = ['ModuleClimate']
+
 
 """ Meteo module"""
 
 """ 3.1 """
-dir_climate.AddModule('RandomControl', Random(constant_control, Dt = minute2seconds(5)))
-dir_climate.sch += ['RandomControl']
+dir_climate.AddModule('Control', Random(constant_control, Dt = minute2seconds(5)))
+
 
 
 loader = Loader("Creating weather module").start()
 meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1, shift_time=30)  # t_conv=1/(60*24) es para pasar el tiempo de minutos (como queda después de la lectura de la base) a días 
 loader.stop()
 dir_climate.AddModule('ModuleMeteo', meteo)
-dir_climate.sch += ['ModuleMeteo']
+
 
 
 
@@ -69,13 +71,31 @@ cost_list = [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins]#, Qelec_rhs_ins]
 dir_climate.MergeVarsFromRHSs(cost_list, call=__name__)
 dir_climate.AddModule('ModuleCosts', ModuleCosts(Dt=minute2seconds(1), Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
 
-dir_climate.sch += ['ModuleCosts']
 
+dir_climate.sch = ['ModuleMeteo','ModuleClimate','Control','ModuleCosts']
 #dir_climate.MergeVarsFromRHSs(cost_list, call=__name__)
 symb_time_units = C1_rhs_ins.CheckSymbTimeUnits(C1_rhs_ins)
 # Genetare the director
+from sympy import symbols
+from ModMod import StateRHS
+s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
+mu_mol_CO2 = 1e-6 * mol_CO2
+mu_mol_phot = 1e-6 * mol_phot
+mu_mol_O2 = 1e-6 * mol_O2
+mg = 1e-3*g
+## Growth model
 
-""""""
+n_f, n_p, MJ = symbols('n_f n_p MJ') # number of fruits, number of plants
+## Climate model
+# C1
+mt, mg, m, C, s, W, mg_CO2, Joule, g, mol_CH2O = symbols('mt mg m C s W mg_CO2 Joule g mol_CH2O')
+# V1
+mt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm, kmol, kg_air, kg_vapour = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm kmol kg_air kg_vapour')
+# T1
+mt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm')
+# T2
+mt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm, m_cover, kg_air = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm m_cover kg_air')
+
 
 def PlantDirector( beta, return_Q_rhs_ins=False):
     """Build a Director to hold a Plant, with beta PAR parameter."""
@@ -133,11 +153,13 @@ director.sch += director.PlantList.copy()
 director.Run(Dt=day2seconds(1),n=1, sch=director.sch) #,active=True)
 #director.Run(Dt = 1,n=10, sch=['Climate'],active=True)
 #loader.stop()
-
-STATE_VARS = ['T1','T2','C1','V1']
-CONTROLS  = ['U'+str(i) for i in range(1,12)] 
-VARS = STATE_VARS + CONTROLS
 PATH = create_path('simulation_results')
 create_images(director, 'Climate', PATH = PATH)
 create_pdf_images(PATH)
 print(PATH)
+''' Amilkar's version
+dicc_all = {'CONSTANTS':constant_climate, 'INPUTS':INPUTS, 'CONTROLS':CONTROLS, 'OTHER_CONSTANTS':OTHER_CONSTANTS, 'STATE_VARS':STATE_VARS}
+Constants(dic_constants=dicc_all,PATH = PATH)
+create_images(director, PATH = PATH)
+create_pdf_images(PATH)
+'''

@@ -1,4 +1,8 @@
 simulation_results
+<<<<<<< HEAD
 greenhouse/climate/__pycache__/
 __pycache__/
 *.zip
+=======
+weather_data/pandas_to_excel.xlsx
+>>>>>>> b030b57301523da195e2fe0a3315f49c47179182

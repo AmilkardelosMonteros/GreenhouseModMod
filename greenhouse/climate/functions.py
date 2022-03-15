@@ -242,7 +242,6 @@ def f7(T2, U8, I5, I8, nu5, alpha6, omega1, nu6, n1, n3):
     T_bar = (T2 + I5)/2
     return (U8*nu5*n1)/(2*alpha6) * sqrt(max((omega1*nu6*(T2-I5))/(2*(T_bar+273.15)) + n3*I8, 0))
 
-
 def g3(I1, beta3, gamma1, phi1, tau1, b1):
     return tau1*b1*(1 - 0.49*pi*gamma1*phi1)*exp(-beta3*I1)
 
@@ -283,6 +282,7 @@ def r9(I2, alpha8, alpha9, eta2, eta3):
 
 
 def r11(T2, I4, lamb, epsil3, epsil4, g3):
+    #print(T2, I4, lamb, epsil3, epsil4, g3)
     return epsil4*epsil3*g3*lamb*((T2 + 273.15)**4 - (I4 + 273.15)**4)
 
 
@@ -352,5 +352,5 @@ def H_Boil_Pipe(r6,h4):
     return max(r6 + h4,0)
 
 
-def presion_de_vapor_exterior(I5,RH):
-    return [q2(i5)*(rh/100.0) for i5,rh in zip(I5,RH)]
+def presion_de_vapor_exterior(i5,rh):
+    return q2(i5)*(rh/100.0) 
