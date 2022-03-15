@@ -10,6 +10,7 @@ class Module1(Module):
         super().__init__(Dt)  # Time steping of module
         # Always, use the super class __init__, theare are several otjer initializations
         # Module specific constructors, add RHS's
+        self.i = 0
         for key, value in kwargs.items():
             self.AddStateRHS(key, value)
         # print("State Variables for this module:", self.S_RHS_ids)
@@ -86,4 +87,8 @@ class Module1(Module):
         #self.V_Set('C1', C1r)
         # Avance del RHS
         self.AdvanceRungeKutta(t1)
+        self.AdvanceAssigment(t1)
+        self.i += 1
+        if self.i % 1000 == 0:
+            print(self.i)
         return 1
