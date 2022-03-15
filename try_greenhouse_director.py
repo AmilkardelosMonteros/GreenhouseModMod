@@ -35,7 +35,7 @@ theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
 """ Climate director"""
 
 dir_climate = Climate_model()
-dir_climate.Dt = hour2seconds(6)
+dir_climate.Dt = minute2seconds(5)
 
 """ Climate module"""
 C1_rhs_ins = C1_rhs(constant_climate)
