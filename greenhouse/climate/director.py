@@ -15,6 +15,7 @@ class Climate_model(Director):
     def __init__(self):#, dic_RHS):
         super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
         self.sch = list()
+        self.Dt = 1
         '''
         C1_rhs_ins = dic_RHS['C1']
         V1_rhs_ins = dic_RHS['V1']
@@ -36,14 +37,15 @@ class Climate_model(Director):
         self.V_Set('V1', 1200) 
         self.V_Set('C1', 600) 
 
+    def Run(self, Dt, n, sch, save=None, active=True):
+        print('sí entro') 
+        return super().Run(Dt, n, sch, save, active)
 
-    def Run( self, Dt, n, sch, save=None):
-        pass
-        print('Estas pasando por Run de dir climate')
-        """Advance in Dt time steps, n steps with the scheduling sch.
-           Save the variables with varid's in save.  Defualt: all State variables.
-        """
-        # RHS qH2o
-        
-        #return super().Run(Dt, n, sch, save) 
-        #return 1
+
+    def Advance(self, t1): # un día en segundos
+        n = int(t1 / self.Dt)
+        try:
+            self.Run(Dt=self.Dt, n=n, sch=self.sch, save=None)
+        except:
+            return 0
+        return 1
