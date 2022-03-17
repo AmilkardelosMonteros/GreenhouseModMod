@@ -26,6 +26,8 @@ class C1_rhs(StateRHS):
             parameters[name].addvar_rhs(self)
                         
     def RHS(self, Dt):
+        #print('Breakpoint C1')
+        #breakpoint()
         """RHS( Dt, k) = \kappa_1^{-1} F_1( t+Dt, X+k) where X is the current value of
            all state variables.  k is a simple dictionary { 'v1':k1, 'v2':k2 ... etc}
            ************* JUST CALL STATE VARIABLES WITH self.Vk ******************
@@ -35,9 +37,10 @@ class C1_rhs(StateRHS):
         # Once defined h1 in your terminal run TranslateArgNames(h1)
         # and follow the instrucions
         #### Sub-functions ####
-        h_6 = self.V('h6')
-        f_1 = self.V('f1')
-        o_2 = self.V('o2')
+        h_6 = h6(U4=self.V('U4'), lamb4=self.V('lamb4'), alpha6=self.V('alpha6')) #H blow air 
+        f_1 = f1(U2=self.V('U2'), phi7=self.V(
+            'phi7'), alpha6=self.V('alpha6'))
+        o_2 = o2(U10=self.V('U10'), psi2=self.V('psi2'), alpha6=self.V('alpha6')) #MC_ext_air
         f_3 = f3(U7=self.V('U7'), phi8=self.V('phi8'), alpha6=self.V('alpha6'))
         f_6 = f6(I8=self.V('I8'), nu4=self.V('nu4'))
         n_1 = n1(U5=self.V('U5'), nu1=self.V('nu1'), eta10=self.V('eta10'))
@@ -58,6 +61,7 @@ class C1_rhs(StateRHS):
         o_4 = Amg(C=self.Vk('C1'),PAR = self.V('I2'))
         o_5 = o5(C1=self.Vk('C1'), I10=self.V(
             'I10'), f2=f_2, f3=f_3, f4=f_4)
+        #breakpoint()
         return (kappa_4**-1)*(o_1 + o_2 + o_3 - o_4 - o_5 )
 
 

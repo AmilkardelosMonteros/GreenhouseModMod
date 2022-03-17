@@ -44,7 +44,7 @@ class Climate_model(Director):
     def Advance(self, t1): # un día en segundos
         n = int(t1 / self.Dt)
         try:
-            self.Run(Dt=self.Dt, n=n, sch=self.sch, save=None)
+            self.Run(Dt=self.Dt, n=n, sch=self.sch, save=None,active=False)
         except:
             return 0
         return 1

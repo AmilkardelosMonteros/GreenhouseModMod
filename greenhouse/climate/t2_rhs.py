@@ -13,7 +13,7 @@ from .functions import h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11
 state_names = ['T1', 'V1', 'T2']
 control_names = ['U1', 'U2', 'U3', 'U4', 'U5', 'U6','U7', 'U8', 'U9', 'U11']
 input_names = ['I1', 'I2', 'I3', 'I4', 'I5', 'I6', 'I7', 'I8']
-function_names = ['f1', 'h4', 'h6']
+function_names = ['f1','h4', 'h6']
 constant_names = ['tau3', 'phi7', 'alpha6', 'eta6', 'eta7', 'eta8', 'phi8', 'nu4', 'nu5', 
                     'omega1', 'nu6', 'beta3', 'gamma1', 'phi1', 'tau1','tau2', 'lamb5', 'lamb7', 
                     'lamb8', 'alpha5', 'nu1', 'eta10', 'nu3', 'nu2', 'eta11', 'alpha8', 
@@ -45,10 +45,12 @@ class T2_rhs(StateRHS):
         # Once defined h1 in your terminal run TranslateArgNames(h1)
         # and follow the instrucions
         #### Sub-functions ####
-        f_1 = self.V('f1')
-        h_4 = self.V('h4')
-        h_6 = self.V('h6')
-
+        #print('T2')
+        #breakpoint()
+        f_1 = f1(U2=self.V('U2'), phi7=self.V(
+            'phi7'), alpha6=self.V('alpha6'))
+        h_4 = h4(T2=self.Vk('T2'), I3=self.V('I3'),gamma1=self.V('gamma1'), phi1=self.V('phi1'))
+        h_6 = h6(U4=self.V('U4'), lamb4=self.V('lamb4'), alpha6=self.V('alpha6')) #H blow air 
         b_1 = b1(U1=self.V('U1'), tau3=self.V('tau3'))
         n_1 = n1(U5=self.V('U5'), nu1=self.V('nu1'), eta10=self.V('eta10'))
         n_2 = n2(U6=self.V('U6'), nu3=self.V('nu3'))
@@ -101,4 +103,5 @@ class T2_rhs(StateRHS):
         r_10 = r10(r11=r_11, r12=r_12, r13=r_13)
         h_11 = h11(T2=self.Vk('T2'), I7=self.V('I7'), nu7=self.V(
             'nu7'), nu8=self.V('nu8'), phi2=self.V('phi2'))
+        #breakpoint()
         return (kappa_2**-1)*(h_1 + h_2 + h_3 + h_4 + h_5 + h_6 + r_8 - h_7 - h_10 - l_2 - r_10 - h_11)

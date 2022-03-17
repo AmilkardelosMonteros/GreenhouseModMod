@@ -324,8 +324,26 @@ CONTROLS = {
 }
 
 FUNCTIONS = {
+    'h1': Struct(typ='State', varid='h1', prn=r'$h_1$', desc="Intercambio de calor desde el dosel", units=1, val=0, ok=ok),
+    'h2': Struct(typ='State', varid='h2', prn=r'$h_2$', desc="intercambio de calor desde el dosel hacia la almohadilla de enfriamiento", units=1, val=0, ok=ok),
+    'h3': Struct(typ='State', varid='h3', prn=r'$h_3$', desc="intercambio de calor desde el dosel hacia el sistema de enfriamiento mecanico", units=1, val=0, ok=ok),
+    'h4': Struct(typ='State', varid='h4', prn=r'$h_4$', desc="intercambio de calor desde el dosel hacia la tuberia de calentamiento", units=1, val=0, ok=ok),
+    'h5': Struct(typ='State', varid='h5', prn=r'$h_5$', desc="intercambio de calor desde el dosel hacia el buffer de energia pasiva", units=1, val=0, ok=ok),
+    'h6': Struct(typ='State', varid='h6', prn=r'$h_6$', desc="intercambio de calor desde el dosel hacia el calentador de aire directo", units=1, val=0, ok=ok),
+    'r8': Struct(typ='State', varid='r8', prn=r'$r_8$', desc="radiacion global que es absorbida por los elementos", units=1, val=0, ok=ok),
+    'h7': Struct(typ='State', varid='h7', prn=r'$h_7$', desc="intercambio de calor desde el aire al interior hacia el aire externo", units=1, val=0, ok=ok),
+    'h11': Struct(typ='State', varid='h11', prn=r'$h_11$', desc="intercambio de calor desde el aire y el suelo", units=1, val=0, ok=ok),
+    'h10': Struct(typ='State', varid='h10', prn=r'$h_10$', desc="intercambio del sistema de ventilador-almohadilla", units=1, val=0, ok=ok),
+    'l2': Struct(typ='State', varid='l2', prn=r'$l_2$', desc="por el sistema de neblina", units=1, val=0, ok=ok),
+    'r10': Struct(typ='State', varid='r10', prn=r'$r_10$', desc="FIR que el aire al interior del invernadero le transmite al cielo", units=1, val=0, ok=ok),
+    
+
+
+
+
+
     'a1': Struct(typ='State', varid='a1', prn=r'$a_1$', desc="Auxiliar function for qGas", units=1, val=0, ok=ok), 
-    'f1': Struct(typ='State', varid='f1', prn=r'$f_1$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
+    'f1': Struct(typ='State', varid='f1', prn=r'$f_1$', desc="flujo de ventilacion debido al sistema de ventilador-almohadilla", units=1, val=0, ok=ok),
     'g1': Struct(typ='State', varid='g1', prn=r'$g_1$', desc="Auxiliar function for qGas", units=1, val=0, ok=ok), 
     'h4': Struct(typ='State', varid='h4', prn=r'$h_4$', desc="Auxiliar function for qGas", units=1, val=0, ok=ok),
     'h6': Struct(typ='State', varid='h6', prn=r'$h_6$', desc="Auxiliar function for qGas", units=1, val=0, ok=ok),
