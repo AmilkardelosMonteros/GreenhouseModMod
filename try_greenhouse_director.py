@@ -15,7 +15,7 @@ from greenhouse.crop.module_plant import Plant
 from greenhouse.director import Greenhouse
 from factory_of_rhs import*
 from auxModMod.Dir import Director
-from auxModMod.new_read_module import ReadModule
+from ModMod import ReadModule # auxModMod.new_read_module
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -35,7 +35,7 @@ theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
 """ Climate director"""
 
 dir_climate = Climate_model()
-dir_climate.Dt = hour2seconds(6)
+dir_climate.Dt = minute2seconds(5)
 
 """ Climate module"""
 C1_rhs_ins = C1_rhs(constant_climate)
@@ -55,7 +55,8 @@ dir_climate.AddModule('Control', Random(constant_control, Dt = minute2seconds(5)
 
 
 loader = Loader("Creating weather module").start()
-meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1, shift_time=30)  # t_conv=1/(60*24) es para pasar el tiempo de minutos (como queda después de la lectura de la base) a días 
+#'weather_data/pandas_to_excel.xlsx'
+meteo = ReadModule('Módulos_Juntos/Read_Inputs_inf.xls', t_conv_shift=0.0, t_conv=1)#, shift_time=30)  # t_conv=1/(60*24) es para pasar el tiempo de minutos (como queda después de la lectura de la base) a días 
 loader.stop()
 dir_climate.AddModule('ModuleMeteo', meteo)
 

@@ -6,3 +6,6 @@ weather_data/pandas_to_excel.xlsx
 .DS_Store
 Fruit_Production_V8/
 M\303\263dulos_Juntos/
+auxModMod/__pycache__/
+greenhouse/climate/__pycache__/*
+**/__pycache__/

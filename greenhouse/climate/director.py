@@ -38,7 +38,6 @@ class Climate_model(Director):
         self.V_Set('C1', 600) 
 
     def Run(self, Dt, n, sch, save=None, active=True):
-        print('sí entro') 
         return super().Run(Dt, n, sch, save, active)
 
 

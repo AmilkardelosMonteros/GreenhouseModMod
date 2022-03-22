@@ -68,12 +68,16 @@ class Module1(Module):
         r_6 = r6(T1=self.V('T1'), I3=self.V('I3'), alpha3=self.V('alpha3'), epsil1=self.V('epsil1'), epsil2=self.V('epsil2'), lamb=self.V('sigma'), g1=g_1)
         h_4 = h4(T2=self.V('T2'), I3=self.V('I3'),gamma1=self.V('gamma1'), phi1=self.V('phi1'))
 
+        self.V_Set('h4',h_4)
         self.V_Set('a1', a_1)
         self.V_Set('g1', g_1)
 
         # variables for RHSs qGas
         self.V_Set('h6', h_6)
         self.V_Set('r6', r_6)
+
+        #I9 = I2 pero hay flujos que solo dependen de I9 (q7)
+        self.V_Set('I9',self.V('I2'))
         
         #T1r = self.V('T1') 
         #T2r = self.V('T2') 
@@ -88,7 +92,4 @@ class Module1(Module):
         # Avance del RHS
         self.AdvanceRungeKutta(t1)
         self.AdvanceAssigment(t1)
-        self.i += 1
-        if self.i % 1000 == 0:
-            print(self.i)
         return 1
