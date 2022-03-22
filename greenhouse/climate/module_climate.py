@@ -16,7 +16,10 @@ class Module1(Module):
         # print("State Variables for this module:", self.S_RHS_ids)
 
     def Advance(self, t1):
-        #print('Advance!!')
+        print('Advance {}!!'.format(t1))
+        #I9 = I2 pero hay flujos que solo dependen de I9 (q7)
+        self.V_Set('I9', self.V('I2'))
+
         f_1 = f1(U2=self.V('U2'), phi7=self.V(
             'phi7'), alpha6=self.V('alpha6'))
         q_2 = q2(T1=self.V('T1')) #### Previously T1 = self.Vk('T1')
@@ -65,7 +68,8 @@ class Module1(Module):
         h_6 = h6(U4=self.V('U4'), lamb4=self.V('lamb4'), alpha6=self.V('alpha6')) #H blow air 
         a_1 = a1(I1=self.V('I1'), beta3=self.V('beta3')) #auxiliar para g1
         g_1 = g1(a1=a_1)                                   #auxiliar para r6
-        r_6 = r6(T1=self.V('T1'), I3=self.V('I3'), alpha3=self.V('alpha3'), epsil1=self.V('epsil1'), epsil2=self.V('epsil2'), lamb=self.V('sigma'), g1=g_1)
+        #r_6 = r6(T1=self.V('T1'), I3=self.V('I3'), alpha3=self.V('alpha3'), epsil1=self.V('epsil1'), epsil2=self.V('epsil2'), lamb=self.V('sigma'), g1=g_1)
+        #print('Advance! {}'.format(r_6))
         h_4 = h4(T2=self.V('T2'), I3=self.V('I3'),gamma1=self.V('gamma1'), phi1=self.V('phi1'))
 
         self.V_Set('h4',h_4)
@@ -74,10 +78,7 @@ class Module1(Module):
 
         # variables for RHSs qGas
         self.V_Set('h6', h_6)
-        self.V_Set('r6', r_6)
-
-        #I9 = I2 pero hay flujos que solo dependen de I9 (q7)
-        self.V_Set('I9',self.V('I2'))
+        #self.V_Set('r6', r_6)
         
         #T1r = self.V('T1') 
         #T2r = self.V('T2') 

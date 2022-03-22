@@ -37,9 +37,6 @@ class Climate_model(Director):
         self.V_Set('V1', 1200) 
         self.V_Set('C1', 600) 
 
-    def Run(self, Dt, n, sch, save=None, active=True):
-        return super().Run(Dt, n, sch, save, active)
-
 
     def Advance(self, t1): # un día en segundos
         n = int(t1 / self.Dt)
