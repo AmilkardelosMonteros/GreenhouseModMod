@@ -35,7 +35,7 @@ theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
 """ Climate director"""
 
 dir_climate = Climate_model()
-dir_climate.Dt = hour2seconds(1)#minute2seconds(5)
+dir_climate.Dt = day2minute(1)
 
 """ Climate module"""
 C1_rhs_ins = C1_rhs(constant_climate)
@@ -50,7 +50,7 @@ dir_climate.AddModule('ModuleClimate', Module1(Dt=minute2seconds(1), C1=C1_rhs_i
 """ Meteo module"""
 
 """ 3.1 """
-dir_climate.AddModule('Control', Random(constant_control, Dt = minute2seconds(5)))
+dir_climate.AddModule('Control', Random(constant_control))
 
 
 
@@ -153,7 +153,7 @@ director.sch += director.PlantList.copy()
 
 import time
 t0 = time.time()
-director.Run(Dt=day2seconds(1),n=90, sch=director.sch)
+director.Run(Dt=day2seconds(1),n=30, sch=director.sch)
 t1 = time.time()
 print(t1-t0)
 #director.Run(Dt = 1,n=10, sch=['Climate'],active=True)

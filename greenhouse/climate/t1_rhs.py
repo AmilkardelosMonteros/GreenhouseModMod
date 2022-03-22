@@ -44,31 +44,30 @@ class T1_rhs(StateRHS):
         # and follow the instrucions
         #### Sub-functions ####
         a_1 = a1(I1=self.V('I1'), beta3=self.V('beta3'))
-        g_1 = g1(a1=a_1)                                   #auxiliar para r6
-        r_6 = r6(T1=self.Vk('T1'), I3=self.V('I3'), alpha3=self.V('alpha3'), epsil1=self.V('epsil1'), epsil2=self.V('epsil2'), lamb=self.V('sigma'), g1=g_1)
+        b_1 = b1(U1=self.V('U1'), tau3=self.V('tau3'))
+        r_4 = r4(I2=self.V('I2'), eta1=self.V('eta1'),eta2=self.V('eta2'), tau1=self.V('tau1'))
+        r_2 = r2(I1=self.V('I1'), beta1=self.V('beta1'), rho1=self.V('rho1'), r4=r_4)
+        r_3 = r3(I1=self.V('I1'), beta1=self.V('beta1'), beta2=self.V('beta2'), rho1=self.V('rho1'), rho2=self.V('rho2'), r4=r_4)
+        g_1 = g1(a1=a_1)  
+        g_2 = g2(tau2=self.V('tau2'), b1=b_1)                                 #auxiliar para r6
+        q_2 = q2(T1=self.Vk('T1'))
         q_7 = q7(I9=self.V('I9'), delta1=self.V('delta1'), gamma5=self.V('gamma5'))
         q_8 = q8(delta4=self.V('delta4'), delta5=self.V('delta5'), q7=q_7)
         q_9 = q9(delta6=self.V('delta6'), delta7=self.V('delta7'), q7=q_7)
         q_4 = q4(C1=self.Vk('C1'), eta4=self.V('eta4'), q8=q_8)
-        q_2 = q2(T1=self.Vk('T1'))
         q_5 = q5(V1=self.Vk('V1'), q2=q_2, q9=q_9)
         q_10 = q10(I9=self.V('I9'), delta2=self.V('delta2'), delta3=self.V('delta3'))
         q_3 = q3(I9=self.V('I9'), gamma4=self.V('gamma4'), q4=q_4, q5=q_5, q10=q_10)
         q_1 = q1(I1=self.V('I1'), rho3=self.V('rho3'), alpha5=self.V('alpha5'), gamma=self.V('gamma'), gamma2=self.V('gamma2'), gamma3=self.V('gamma3'), q3=q_3)
         p_1 = p1(V1=self.Vk('V1'), q1=q_1, q2=q_2)
-        b_1 = b1(U1=self.V('U1'), tau3=self.V('tau3'))
-        r_4 = r4(I2=self.V('I2'), eta1=self.V('eta1'),eta2=self.V('eta2'), tau1=self.V('tau1'))
-        r_2 = r2(I1=self.V('I1'), beta1=self.V('beta1'), rho1=self.V('rho1'), r4=r_4)
-        r_3 = r3(I1=self.V('I1'), beta1=self.V('beta1'), beta2=self.V('beta2'), rho1=self.V('rho1'), rho2=self.V('rho2'), r4=r_4)
-        g_2 = g2(tau2=self.V('tau2'), b1=b_1)
         #### Principal functions ####
         kappa_1 = kappa1(I1=self.V('I1'), alpha1=self.V('alpha1'))
         r_1 = r1(r2=r_2, r3=r_3)
         r_5 = r5(I2=self.V('I2'), alpha2=self.V('alpha2'),eta1=self.V('eta1'), eta3=self.V('eta3'))
+        r_6 = r6(T1=self.Vk('T1'), I3=self.V('I3'), alpha3=self.V('alpha3'), epsil1=self.V('epsil1'), epsil2=self.V('epsil2'), lamb=self.V('sigma'), g1=g_1)
         h_1 = h1(T1=self.Vk('T1'), T2=self.Vk('T2'),I1=self.V('I1'), alpha4=self.V('alpha4'))
         l_1 = l1(gamma2=self.V('gamma2'), p1=p_1)
         r_7 = r7(T1=self.Vk('T1'), I4=self.V('I4'), epsil2=self.V('epsil2'), epsil3=self.V('epsil3'), lamb=self.V('sigma'), a1=a_1, g2=g_2)
-        #breakpoint()
         return (kappa_1**-1)*(r_1 + r_5 + r_6 - h_1 - l_1 - r_7)
 
 
