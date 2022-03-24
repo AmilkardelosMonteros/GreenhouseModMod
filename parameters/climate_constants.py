@@ -342,25 +342,25 @@ FUNCTIONS = {
 
 
 
-    'a1': Struct(typ='State', varid='a1', prn=r'$a_1$', desc="Auxiliar function for qGas", units=1, val=0, ok=ok), 
+    'a1': Struct(typ='State', varid='a1', prn=r'$a_1$', desc="Superficie del dosel", units=1, val=0, ok=ok), 
     'f1': Struct(typ='State', varid='f1', prn=r'$f_1$', desc="flujo de ventilacion debido al sistema de ventilador-almohadilla", units=1, val=0, ok=ok),
-    'g1': Struct(typ='State', varid='g1', prn=r'$g_1$', desc="Auxiliar function for qGas", units=1, val=0, ok=ok), 
-    'h4': Struct(typ='State', varid='h4', prn=r'$h_4$', desc="Auxiliar function for qGas", units=1, val=0, ok=ok),
-    'h6': Struct(typ='State', varid='h6', prn=r'$h_6$', desc="Auxiliar function for qGas", units=1, val=0, ok=ok),
-    'o2': Struct(typ='State', varid='o2', prn=r'$o_2$', desc="Auxiliar function for qCo2", units=1, val=0, ok=ok),
-    'p1': Struct(typ='State', varid='p1', prn=r'$p_1$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'p2': Struct(typ='State', varid='p2', prn=r'$p_2$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'p3': Struct(typ='State', varid='p3', prn=r'$p_3$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'q1': Struct(typ='State', varid='q1', prn=r'$q_1$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'q2': Struct(typ='State', varid='q2', prn=r'$q_2$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'q3': Struct(typ='State', varid='q3', prn=r'$q_3$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'q4': Struct(typ='State', varid='q4', prn=r'$q_4$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'q5': Struct(typ='State', varid='q5', prn=r'$q_5$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'q7': Struct(typ='State', varid='q7', prn=r'$q_7$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok), 
-    'q8': Struct(typ='State', varid='q8', prn=r'$q_8$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'q9': Struct(typ='State', varid='q9', prn=r'$q_9$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'q10':Struct(typ='State', varid='q10', prn=r'$q_{10}$', desc="Auxiliar function for qH2o", units=1, val=0, ok=ok),
-    'r6': Struct(typ='State', varid='r6', prn=r'$r_6$', desc="Auxiliar function for qGas", units=1, val=0, ok=ok)
+    'g1': Struct(typ='State', varid='g1', prn=r'$g_1$', desc="Factor de vista desde la tuberia decalentamiento hacia el dosel", units=1, val=0, ok=ok), 
+    'h4': Struct(typ='State', varid='h4', prn=r'$h_4$', desc="Inter. de calor tubería de calentamiento - aire del invernadero", units=1, val=0, ok=ok),
+    'h6': Struct(typ='State', varid='h6', prn=r'$h_6$', desc="Inter. de calor aire del invernadero - el calentador de aire directo", units=1, val=0, ok=ok),
+    'o2': Struct(typ='State', varid='o2', prn=r'$o_2$', desc="Inter. de CO2 aire del invernadero - la fuente externa de CO2", units=1, val=0, ok=ok),
+    'p1': Struct(typ='State', varid='p1', prn=r'$p_1$', desc="Inter. de vapor dosel - aire del invernadero", units=1, val=0, ok=ok),
+    'p2': Struct(typ='State', varid='p2', prn=r'$p_2$', desc="Inter. de vapor aire del invernadero - almohadilla de enfriamiento", units=1, val=0, ok=ok),
+    'p3': Struct(typ='State', varid='p3', prn=r'$p_3$', desc="Inter. de vapor aire del invernadero - sistema de niebla", units=1, val=0, ok=ok),
+    'q1': Struct(typ='State', varid='q1', prn=r'$q_1$', desc="Coeficiente de intercambio de vapor dosel - aire del invernadero", units=1, val=0, ok=ok),
+    'q2': Struct(typ='State', varid='q2', prn=r'$q_2$', desc="Presion de vapor saturada a temperatura del dosel", units=1, val=0, ok=ok),
+    'q3': Struct(typ='State', varid='q3', prn=r'$q_3$', desc="Resistencia estomatica del dosel", units=1, val=0, ok=ok),
+    'q4': Struct(typ='State', varid='q4', prn=r'$q_4$', desc="Factor de resistencia estomaticapor latos niveles de CO2", units=1, val=0, ok=ok),
+    'q5': Struct(typ='State', varid='q5', prn=r'$q_5$', desc="Factor de resistencia estomatica por una gran diferencia en la presión de vapor", units=1, val=0, ok=ok),
+    'q7': Struct(typ='State', varid='q7', prn=r'$q_7$', desc="Auxiliar function for q8", units=1, val=0, ok=ok), 
+    'q8': Struct(typ='State', varid='q8', prn=r'$q_8$', desc="Auxiliar function for q4", units=1, val=0, ok=ok),
+    'q9': Struct(typ='State', varid='q9', prn=r'$q_9$', desc="Auxiliar function for q5", units=1, val=0, ok=ok),
+    'q10':Struct(typ='State', varid='q10', prn=r'$q_{10}$', desc="Auxiliar function for q3", units=1, val=0, ok=ok),
+    'r6': Struct(typ='State', varid='r6', prn=r'$r_6$', desc="Radiacion FIR que la tuberia de calentamiento le transmite al dosel", units=1, val=0, ok=ok)
 }
 
 NREC = {'nrec':nrec}
