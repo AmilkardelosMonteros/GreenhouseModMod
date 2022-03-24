@@ -36,11 +36,14 @@ def add_colums(data,f,x,y,name):
 
 
 
-def create_dataset():
+def create_dataset(limit = None):
     data         = pd.read_csv('dataset.csv')
     data.columns = list(Vars.keys()) if HEADER == False else data.columns
     data         = add_colums(data,presion_de_vapor_exterior,'Temperature','Relative_Humidity','Outside_Vapor_Pressure')
     data         = data[active_vars + new_vars + time_var]
+    #check        = data.isnull().values.any()
+    if limit != None:
+        data = data.iloc[0:limit]
     return data
 
 def create_inputs_table():
@@ -48,17 +51,17 @@ def create_inputs_table():
     data    = pd.DataFrame(columns = columns)
     New_vars = {'Outside_Vapor_Pressure': Struct_weather(orig_name='Outside_Vapor_Pressure',units='Pa',new_name = 'I11',obs = 'q2(i5)*(rh/100.0)')} 
     for i,var in enumerate(active_vars):
-        list_tem    = [Vars[var].new_name,Vars[var].new_name + Vars[var].obs,Vars[var].units,'Meteo',var,Vars[var].units,Vars[var].conv_shift,Vars[var].conv,'Time_Stamp',pd.NA,2667452400,1/(60*60)]
+        list_tem    = [Vars[var].new_name,Vars[var].new_name + Vars[var].obs,Vars[var].units,'Meteo',var,Vars[var].units,Vars[var].conv_shift,Vars[var].conv,'Time_Stamp',pd.NA,2667452400,1]
         data.loc[i] = list_tem
     for j,var in enumerate(new_vars):
-        list_tem    = [New_vars[var].new_name,New_vars[var].new_name + New_vars[var].obs,New_vars[var].units,'Meteo',var,New_vars[var].units,New_vars[var].conv_shift,New_vars[var].conv,'Time_Stamp',pd.NA,2667452400,1/(60**2)]
+        list_tem    = [New_vars[var].new_name,New_vars[var].new_name + New_vars[var].obs,New_vars[var].units,'Meteo',var,New_vars[var].units,New_vars[var].conv_shift,New_vars[var].conv,'Time_Stamp',pd.NA,2667452400,1]
         data.loc[i+j+1] = list_tem
     return data
 
 
 def create_xls():
     with pd.ExcelWriter('pandas_to_excel.xlsx') as writer:
-        create_dataset().to_excel(writer, sheet_name='Meteo')
+        create_dataset(3000).to_excel(writer, sheet_name='Meteo')
         create_inputs_table().to_excel(writer, sheet_name='InputVars')
 
 if __name__ == '__main__':
