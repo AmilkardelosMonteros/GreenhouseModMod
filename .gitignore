@@ -5,3 +5,4 @@ __pycache__/
 auxModMod/__pycache__/
 greenhouse/climate/__pycache__/*
 **/__pycache__/
+greenhouse/__pycache__/
