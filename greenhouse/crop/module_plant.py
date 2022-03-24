@@ -36,7 +36,7 @@ class Plant(Module):
         self.new_fruit = 0  ## Cummulative number of fruits
         self.m = 4 ## Number of characteristics for each fruit: thermic age, weight, growth potential and Michaelis-Menten constant
         ### Module specific constructors, add RHS's
-
+        self.i = 0 
         self.AddStateRHS( 'Q', Q_rhs_ins)
 
     def Advance( self, t1):
@@ -44,8 +44,12 @@ class Plant(Module):
         
         ### This creates a set of times knots, that terminates in t1 with
         ### a Deltat <= self.Dt
+        self.i += 1
+        if self.i%(60*24)==0:
+            #breakpoint()
+            pass
         tt = append( arange( self.t(), t1, step=self.Dt_g), [t1])
-        Dt= (tt[1] -tt[0]) / self.Dt_g
+        Dt= (tt[1] -tt[0]) / (24*60*60) #En dias 
         #print(tt)
         steps = len(tt)
         for i in range( 1, steps):
@@ -126,7 +130,9 @@ class Plant(Module):
             
             #### Total weight of the fruits
             self.V_Set( 'Q', tmp2)
-            
+            if self.i%(60*24) == 0:
+                #breakpoint()
+                pass
             #### Advance of the RHS
             self.AdvanceAssigment(t1) # Set Q
             
