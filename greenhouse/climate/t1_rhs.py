@@ -43,6 +43,7 @@ class T1_rhs(StateRHS):
         # Once defined h1 in your terminal run TranslateArgNames(h1)
         # and follow the instrucions
         #### Sub-functions ####
+        self.mod.V_Set('I9', self.V('I2'))
         a_1 = a1(I1=self.V('I1'), beta3=self.V('beta3'))
         b_1 = b1(U1=self.V('U1'), tau3=self.V('tau3'))
         r_4 = r4(I2=self.V('I2'), eta1=self.V('eta1'),eta2=self.V('eta2'), tau1=self.V('tau1'))
@@ -68,6 +69,9 @@ class T1_rhs(StateRHS):
         h_1 = h1(T1=self.Vk('T1'), T2=self.Vk('T2'),I1=self.V('I1'), alpha4=self.V('alpha4'))
         l_1 = l1(gamma2=self.V('gamma2'), p1=p_1)
         r_7 = r7(T1=self.Vk('T1'), I4=self.V('I4'), epsil2=self.V('epsil2'), epsil3=self.V('epsil3'), lamb=self.V('sigma'), a1=a_1, g2=g_2)
+        self.mod.V_Set('a1', a_1)
+        self.mod.V_Set('g1', g_1)
+        self.mod.V_Set('r6', r_6)
         return (kappa_1**-1)*(r_1 + r_5 + r_6 - h_1 - l_1 - r_7)
 
 

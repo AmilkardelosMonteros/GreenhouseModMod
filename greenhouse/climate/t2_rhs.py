@@ -80,4 +80,7 @@ class T2_rhs(StateRHS):
         l_2 = l2(U9=self.V('U9'), alpha6=self.V('alpha6'),gamma2=self.V('gamma2'), phi9=self.V('phi9'))
         r_10 = r10(r11=r_11, r12=r_12, r13=r_13)
         h_11 = h11(T2=self.Vk('T2'), I7=self.V('I7'), nu7=self.V('nu7'), nu8=self.V('nu8'), phi2=self.V('phi2'))
+        ###Save 
+        self.mod.V_Set('h4', h_4)
+        self.mod.V_Set('h6', h_6)
         return (kappa_2**-1)*(h_1 + h_2 + h_3 + h_4 + h_5 + h_6 + r_8 - h_7 - h_10 - l_2 - r_10 - h_11)

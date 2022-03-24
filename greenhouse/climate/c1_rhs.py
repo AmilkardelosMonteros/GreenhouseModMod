@@ -56,6 +56,8 @@ class C1_rhs(StateRHS):
         o_4 = Amg(C=self.Vk('C1'),PAR = self.V('I2'))
         o_5 = o5(C1=self.Vk('C1'), I10=self.V(
             'I10'), f2=f_2, f3=f_3, f4=f_4)
+        self.mod.V_Set('f1', f_1)
+        self.mod.V_Set('o2', o_2)
         return (kappa_4**-1)*(o_1 + o_2 + o_3 - o_4 - o_5 )
 
 
