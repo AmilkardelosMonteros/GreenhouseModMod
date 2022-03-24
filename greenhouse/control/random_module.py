@@ -16,6 +16,14 @@ class Random(Module):
 
     def Advance(self, t1):
         for c in self.controls:
-            val =  np.random.uniform(1, 0)
+            val =  np.random.uniform(0, 0.25)
+            if c == 'U4':
+                val = 0
+            if c == 'U10':
+                val = 1.0
+            if c in ['U6','U7','U8']:
+                val = 0.5
+            if c == 'U5':
+                val = 1.0
             self.V_Set(c, val)
         return 1
