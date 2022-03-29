@@ -19,17 +19,20 @@ if torch.cuda.is_available():
 
 
 class DDPGagent:
-    def __init__(self, env, parameters):
+    def __init__(self, parameters):
         # Params
-        hidden_sizes         = parameters['hidden_sizes']
-        actor_learning_rate  = parameters['actor_learning_rate']
-        critic_learning_rate = parameters['critic_learning_rate']
-        gamma                = parameters['gamma']
-        tau                  = parameters['tau']
-        max_memory_size      = parameters['max_memory_size']
-
-        self.num_states = env.observation_space.shape[0]
-        self.num_actions = env.action_space.shape[0]
+        hidden_sizes          = parameters['hidden_sizes']
+        actor_learning_rate   = parameters['actor_learning_rate']
+        critic_learning_rate  = parameters['critic_learning_rate']
+        gamma                 = parameters['gamma']
+        tau                   = parameters['tau']
+        max_memory_size       = parameters['max_memory_size']
+        vars                  = parameters['vars']
+        controls              = parameters['controls']
+        self.controls         = controls 
+        self.vars             = vars
+        self.num_states       = len(vars)
+        self.num_actions      = sum(controls.values())
         self.gamma = gamma
         self.tau = tau
 
