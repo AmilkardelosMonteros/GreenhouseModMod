@@ -26,7 +26,9 @@ from utils.create_folders import create_path
 from utils.images_to_pdf import create_pdf_images
 from reports.report_constants import Constants
 from parameters.climate_constants import INPUTS, CONTROLS, OTHER_CONSTANTS, STATE_VARS
-
+#Para el entrenamiento
+from try_ddpg import agent
+from try_noise import noise
 beta_list = [0.99, 0.95] # Only 2 plants are simulated, assuming this is approximately one m**2
 theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
 theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
@@ -42,21 +44,26 @@ C1_rhs_ins = C1_rhs(constant_climate)
 V1_rhs_ins = V1_rhs(constant_climate)
 T1_rhs_ins = T1_rhs(constant_climate)
 T2_rhs_ins = T2_rhs(constant_climate)
-RHS_list = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins]
-dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins))
 
-meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) 
-dir_climate.AddModule('ModuleMeteo', meteo)
-dir_climate.AddModule('Control', Random(constant_control))
-
+#Cost
 Qh2o_rhs_ins = Qh2o_rhs(constant_climate)
 Qco2_rhs_ins = Qco2_rhs(constant_climate)
 Qgas_rhs_ins = Qgas_rhs(constant_climate)
+
+RHS_list  = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins]
+RHS_list += [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins]#, Qelec_rhs_ins]
+dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
+dir_climate.AddModule('ModuleClimate', Module1(agent,noise,Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
+
+meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) 
+dir_climate.AddModule('ModuleMeteo', meteo)
+#dir_climate.AddModule('Control', Random(constant_control))
+
+
 #Qelec_rhs_ins = Qelec_rhs(constanst_climate)
-cost_list = [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins]#, Qelec_rhs_ins]
-dir_climate.MergeVarsFromRHSs(cost_list, call=__name__)
-dir_climate.AddModule('ModuleCosts', ModuleCosts(Dt=60, Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
+
+#dir_climate.MergeVarsFromRHSs(cost_list, call=__name__)
+#dir_climate.AddModule('ModuleCosts', ModuleCosts(Dt=3600, Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
 dir_climate.sch = list(dir_climate.Modules.keys()) 
 director = Greenhouse()
 director.MergeVarsFromRHSs(RHS_list, call=__name__)
@@ -94,8 +101,8 @@ def PlantDirector( beta, return_Q_rhs_ins=False):
     ## Merger the variables of the modules in the Director
     Dir.MergeVarsFromRHSs( [Ci_rhs_ins, Q_rhs_ins], call=__name__)
     ### Add Modules to the Director:
-    Dir.AddModule( "Plant", Plant(beta, Q_rhs_ins, Dt_f=60, Dt_g=60))
-    Dir.AddModule( "Photosynt", PhotoModule(Ci_rhs_ins, Dt=60))
+    Dir.AddModule( "Plant", Plant(beta, Q_rhs_ins, Dt_f=3600, Dt_g=3600))
+    Dir.AddModule( "Photosynt", PhotoModule(Ci_rhs_ins, Dt=3600))
     ## Scheduler for the modules
     Dir.sch = ["Photosynt"] #!!! sin creciemiento
 
@@ -124,7 +131,8 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-director.Run(60,3*24*60,director.sch)
+director.Run(day2seconds(1),4,director.sch)
+
 #Dt de Director = 1440 (numero de minutos en un dia)
 #Dt de Director clima = 60, 1440/60 = 24 numero de registros de clima * n
 variables = list(director.Vars.keys())
