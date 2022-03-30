@@ -64,10 +64,15 @@ class Module1(Module):
         else:
             return False
 
+    def update(self):
+        if len(self.agent.memory) >= self.agent.batch_size:
+            self.agent.update(self.agent.batch_size)
+            #print('Actulizando redes ...')
+
     
     def Advance(self, t1):
         state = self.get_state()
-        controls,action = self.get_controls(new_state)
+        controls,action = self.get_controls(state) #Forward
         self.update_controls(controls)
         #self.V_Set('Qco2',0)
         self.AdvanceRungeKutta(t1)
@@ -77,4 +82,5 @@ class Module1(Module):
         done = self.is_done()
         reward = self.get_reward()
         self.agent.memory.push(state, action, reward, new_state, done)
+        #self.update() #Backpropagation
         return 1
