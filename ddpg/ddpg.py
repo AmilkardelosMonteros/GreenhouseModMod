@@ -29,6 +29,7 @@ class DDPGagent:
         max_memory_size       = parameters['max_memory_size']
         vars                  = parameters['vars']
         controls              = parameters['controls']
+        self.batch_size       = parameters['batch_size']
         self.controls         = controls 
         self.vars             = vars
         self.num_states       = len(vars)
