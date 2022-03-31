@@ -49,7 +49,7 @@ def I_2 (I, f, ab):
     return  I * ab*(1 - f)  / 2
 
 def J (I_2, J_max, theta, k_d):
-    return ( (I_2*k_d) + (J_max*k_d) + ( ( (I_2 + J_max)*k_d )**2 -4*theta*I_2*k_d*J_max*k_d )**(0.5) ) / (2*theta)
+    return ( (I_2*k_d) + (J_max*k_d) - ( ( (I_2 + J_max)*k_d )**2 -4*theta*I_2*k_d*J_max*k_d )**(0.5) ) / (2*theta)
 
 ## Factores limitantes en la producción de asimilados ##    
 def A_R (O_a, tau, C_i, V_cmax, Gamma_st, K_C, K_O, phi): 
