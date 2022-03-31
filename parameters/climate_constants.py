@@ -340,10 +340,10 @@ FUNCTIONS = {
     'h6': Struct(typ='State', varid='h6', prn=r'$h_6$', desc="Intercambio de calor desde el dosel hacia el calentador de aire directo (T2+)", units=1, val=0, ok=ok),
     'r8': Struct(typ='State', varid='r8', prn=r'$r_8$', desc="Radiacion global que es absorbida por los elementos (T2+)", units=1, val=0, ok=ok),
     'h7': Struct(typ='State', varid='h7', prn=r'$h_7$', desc="Intercambio de calor desde el aire al interior hacia el aire externo(T2-)", units=1, val=0, ok=ok),
-    'h10': Struct(typ='State', varid='h10', prn=r'$h_10$', desc="Intercambio del sistema de ventilador-almohadilla (T2-)", units=1, val=0, ok=ok),
+    'h10': Struct(typ='State', varid='h10', prn=r'$h_{10}$', desc="Intercambio del sistema de ventilador-almohadilla (T2-)", units=1, val=0, ok=ok),
     'l2': Struct(typ='State', varid='l2', prn=r'$l_2$', desc="Disminucion del calor latente por el sistema de neblina (T2-)", units=1, val=0, ok=ok),
-    'r10': Struct(typ='State', varid='r10', prn=r'$r_10$', desc="FIR que el aire al interior del invernadero le transmite al cielo (T2-)", units=1, val=0, ok=ok),
-    'h11': Struct(typ='State', varid='h11', prn=r'$h_11$', desc="Intercambio de calor desde el aire y el suelo (T2-)", units=1, val=0, ok=ok),
+    'r10': Struct(typ='State', varid='r10', prn=r'$r_{10}$', desc="FIR que el aire al interior del invernadero le transmite al cielo (T2-)", units=1, val=0, ok=ok),
+    'h11': Struct(typ='State', varid='h11', prn=r'$h_{11}$', desc="Intercambio de calor desde el aire y el suelo (T2-)", units=1, val=0, ok=ok),
     
     ######## Funciones Auxiliares para V1 (Presion de Vapor) ########
     'p1': Struct(typ='State', varid='p1', prn=r'$p_1$', desc="Inter. de vapor dosel - aire del invernadero (V1+)", units=1, val=0, ok=ok),
