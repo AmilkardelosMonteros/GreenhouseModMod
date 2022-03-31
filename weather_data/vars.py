@@ -13,7 +13,7 @@ Vars = {'Time_Stamp' : Struct_weather(orig_name='Time Stamp',new_name='Time_unit
         'Medium_Cloud_Cover': Struct_weather(orig_name='Medium Cloud Cover',units='%',obs='mid cld lay'),
         'Low_Cloud_Cover': Struct_weather(orig_name='Low Cloud Cover',units='%',obs='low cld lay'),
         'Shortwave_Radiation': Struct_weather(orig_name='Shortwave Radiation',units='W m-2',new_name='I2',obs='sfc'),
-        'Wind_Speed10m': Struct_weather(orig_name='Wind Speed10m',units='km h-1',new_name='I8',obs= '10 m above gnd',conv= 1/3.6),
+        'Wind_Speed10m': Struct_weather(orig_name='Wind Speed10m',units='km h-1',new_name='I8',obs= '10 m above gnd'),
         'Wind_Direction10m': Struct_weather(orig_name='Wind Direction10m',units='km h-1',obs = '10 m above gnd'),
         'Wind_Speed80m': Struct_weather(orig_name='Wind Speed80m',units='km h-1',obs= '80 m above gnd'),
         'Wind_Direction80m': Struct_weather(orig_name='Wind Direction80m',units='km h-1',obs = '80 m above gnd'),

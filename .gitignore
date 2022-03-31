@@ -9,3 +9,6 @@ M\303\263dulos_Juntos/
 auxModMod/__pycache__/
 greenhouse/climate/__pycache__/*
 **/__pycache__/
+__pycache__
+.DS_Store
+simulation_results
