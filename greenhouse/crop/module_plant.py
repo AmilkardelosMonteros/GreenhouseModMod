@@ -46,7 +46,7 @@ class Plant(Module):
         ### a Deltat <= self.Dt
         if t1 % 86400 == 0:
             #tt = append( arange( self.t(), t1, step=self.Dt_g), [t1])  ### <---- no se deberia de usar
-            breakpoint()
+            #breakpoint()
             Dt= 1 # (tt[1] -tt[0]) / (24*60*60) #En dias   ####<-------- corregir
             #print(tt)
             #steps = len(1)
