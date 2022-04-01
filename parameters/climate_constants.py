@@ -9,7 +9,7 @@ mt, mg, m, C, s, W, mg_CO2, J, Pa, kg_water, kg, K, ppm, kmol, kg_air, kg_vapour
 ok = 'OK'
 # from .constants import ALPHA, BETA, GAMMA, DELTA, EPSIL, ETA, LAMB, RHO, TAU, NU, PHI, PSI, OMEGA
 #theta = np.array([3000, 20, 7.2*(10**4)]) # psi2 = 7.2*(10**4)
-nrec = 1
+nrec = 60*24
 MODEL_NOISE = False
 mt = symbols('mt') #Minutos
 
@@ -259,7 +259,7 @@ INPUTS ={
     'I1' : Struct(typ='Cnts', varid='I1', prn=r'$I_1$',
                     desc="Leaf area index", units=m**2 * m**-2, val=2, ok = 'Valor tesis Vanthoor'),
     'I2' : Struct(typ='State', varid='I2', prn=r'$I_2$',
-                    desc="External global radiation", units=W * m**-2, val=100.0, ok = 'Sin comentario'), 
+                    desc="External global radiation", units=W * m**-2, rec=nrec, val=100.0, ok = 'Sin comentario'), 
     'I3' : Struct(typ='State', varid='I3', prn=r'$I_3$',
                     desc="Heating pipe temperature", units=C, val=20, ok = 'Sin comentario'),      
     'I4' : Struct(typ='State', varid='I4', prn=r'$I_4$',

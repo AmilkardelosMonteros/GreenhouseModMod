@@ -21,6 +21,8 @@ all_parameters = states + constants
 #################################################################
 ############ RHS del CO2 intracelular ###########################
 #################################################################    
+# number of register to save 
+nrec = 60*24
 
 class Ci_rhs(StateRHS):
     """
@@ -40,19 +42,19 @@ class Ci_rhs(StateRHS):
         ## Inputs
         self.AddVar( typ='State', varid='C1', prn=r'$C_1$',\
                     desc="CO2 concentrartion in the greenhouse air", \
-                    units= mg * m**-3 , val=429.3) ######################## -> NO REPETIR
+                    units= mg * m**-3 , rec=nrec, val=429.3) ######################## -> NO REPETIR
         
         self.AddVar( typ='State', varid='RH', prn=r'$RH$',\
            desc="Relative humidity percentage in the greenhouse air", \
-           units=1, val=50)
+           units=1,rec=nrec, val=50)
         
         self.AddVar( typ='State', varid='T1', prn=r'$T_1$',\
-                    desc="Canopy temperature", units= C , val=20) # It's take as the leaves temperature
+                    desc="Canopy temperature", units= C , rec=nrec, val=20) # It's take as the leaves temperature
         
         #self.AddVar( typ='State', varid='PAR', prn=r'$PAR$',\
         #    desc="PAR radiation", units=mu_mol_phot * (m**-2) * d**-1 , val=300.00)
         self.AddVar( typ='State', varid='I2', prn=r'$I_2$',\
-                    desc="External global radiation", units= W * m**-2 , val=100) # It's takes as the PAR 
+                    desc="External global radiation", units= W * m**-2 , rec=nrec, val=100) # It's takes as the PAR 
          
         ## Canstants
         ### Stomatal Resistance Calculation
@@ -180,6 +182,19 @@ class Ci_rhs(StateRHS):
            desc="Empirical factor", \
            units=1 , val=theta_p[0])
     
+        ## Auxiliar variables
+        self.AddVar( typ='Cnts', varid='Dt_dir', prn=r'$Dt_dir',\
+                    desc="This constant save in ModMod the Dt of principal director", \
+                    units= s , val= 60*60*24) # 60 * 60 * 24 The val is the number of seconds per day  
+        
+        self.AddVar( typ='Cnts', varid='Dt_pho', prn=r'$Dt_pho',\
+                    desc="This constant save in ModMod the Dt of photosynthesis module", \
+                    units= s , val= 60 )  #60 antes# The val is the number of seconds per minute  
+
+        self.AddVar( typ='State', varid='ind_pho', prn=r'$ind_pho',\
+                    desc="It is a global auxiliary variable that allows to control the index that is used to make the calculations of photosynthesis", \
+                    units= 1 , val= - int( self.V('Dt_dir') / self.V('Dt_pho') ) ) # The val is minus the number of steps that must do photosynthesis module per each principal director step
+        
     
     def RHS( self, Dt):
         """RHS( Dt ) = \kappa_1^{-1} F_1( t+Dt, X+k) where X is the current value of
@@ -189,18 +204,25 @@ class Ci_rhs(StateRHS):
            
            Use from ModMod TranslateArgNames() for guide you how call the functions 
         """
+
+        ind_pho = self.V('ind_pho') 
+        T1 = self.mod.V_GetRec('T1', ind_get=ind_pho)
+        I2 = self.mod.V_GetRec('I2', ind_get=ind_pho)
+        C1 = self.mod.V_GetRec('C1', ind_get=ind_pho) 
+        RH1 = self.mod.V_GetRec('RH', ind_get=ind_pho) 
+        
         ## Cálculos de la resitencia estomática
-        f_R1 = f_R( I=self.V('I2'), C_ev1=self.V('C_ev1'), C_ev2=self.V('C_ev2') )
-        Sr1 = Sr( I=self.V('I2'), S=self.V('S'), Rs=self.V('Rs') )
+        f_R1 = f_R( I=I2, C_ev1=self.V('C_ev1'), C_ev2=self.V('C_ev2') )
+        Sr1 = Sr( I=I2, S=self.V('S'), Rs=self.V('Rs') )
         C_ev31 = C_ev3( C_ev3n=self.V('C_ev3n'), C_ev3d=self.V('C_ev3d'), Sr=Sr1 )
-        f_C1 = f_C( C_ev3=C_ev31, C1=self.V('C1'), k_fc=self.V('k_fc') ) 
+        f_C1 = f_C( C_ev3=C_ev31, C1=C1, k_fc=self.V('k_fc') ) 
         C_ev41 = C_ev4( C_ev4n=self.V('C_ev4n'), C_ev4d=self.V('C_ev4d'), Sr=Sr1 )
-        V_sa1 = V_sa( T =self.V('T1') )
-        VPD1 = VPD( V_sa=V_sa1, RH=self.V('RH') )
+        V_sa1 = V_sa( T = T1 )
+        VPD1 = VPD( V_sa=V_sa1, RH = RH1 )
         f_V1 = f_V( C_ev4=C_ev41, VPD = VPD1)
         R_s1 = r_s( r_m=self.V('r_m'), f_R=f_R1, f_C=f_C1, f_V=f_V1, k_d=self.V('k_d') ) 
         ## Cálculos absorción de CO2
         g_s = gTC( k=self.V('ks'), Rb=self.V('Rb'), Rs=R_s1, k_d=self.V('k_d') )
-        Ca1 = Ca( gtc=g_s, C=self.V('C1'), Ci=self.Vk('Ci') )
+        Ca1 = Ca( gtc=g_s, C = C1, Ci=self.Vk('Ci') )
         Dt_Ci = ( Ca1 - (1e-3)*self.V('A') )/0.554 # Los asimilados se pasan a mg/m**2 y el incremento del Ci queda en ppm
         return Dt_Ci
