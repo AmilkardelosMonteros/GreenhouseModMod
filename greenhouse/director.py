@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 #from .climate.director import Climate_model
 #from module_control import ModuleControl
 #from director_production import I_2, Production_model
-from auxModMod.Dir import Director
+from ModMod import Director
 from sympy import symbols
 
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
@@ -53,10 +53,6 @@ class Greenhouse(Director):
         self.V_Set( 'h', t_w_k)
         self.V_Set( 'n', t_n_k)
         self.V_Set( 'm', t_m_k)
-        
-
-    def Run(self, Dt, n, sch, save=None):
-        return super().Run(Dt, n, sch, save)
 
 
     def reset(self):
