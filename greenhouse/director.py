@@ -11,7 +11,7 @@ from sympy import symbols
 
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 
-
+s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
 
 class Greenhouse(Director):
     def __init__(self):
@@ -19,11 +19,10 @@ class Greenhouse(Director):
         self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g, val=0.0)
         self.AddVar( typ='State', varid='NF', prn=r'$N_k$', desc="Accumulated  number of fruits harvested", units= n_f, val=0.0)
         self.AddVar( typ='State', varid='h', prn=r'$h_k$', desc="Weight of all harvested fruits.", units= g, val=0.0)
-        self.AddVar( typ='State', varid='n', prn=r'$n_k$',\
-                   desc="Total  number of fruits harvested", units= n_f, val=0.0)
-        self.AddVar( typ='State', varid='m', prn=r'$m_k$',\
-               desc="Simulation of the total  number of fruits harvested", units= n_f, val=0.0)
-
+        self.AddVar( typ='State', varid='n', prn=r'$n_k$', desc="Total  number of fruits harvested", units= n_f, val=0.0)
+        self.AddVar( typ='State', varid='m', prn=r'$m_k$', desc="Simulation of the total  number of fruits harvested", units= n_f, val=0.0)
+        self.AddVar( typ='State', varid='sum_A', prn=r'$ \sum A$',desc="Total assimilation rate", units= g * (m**-2), val=0)
+        
     def Scheduler(self, t1, sch):
         """Advance the modules to time t1. sch is a list of modules id's to run
            its Advance method to time t1.
@@ -42,17 +41,20 @@ class Greenhouse(Director):
         t_w_k = 0.0
         t_n_k = 0
         t_m_k = 0
+        sum_A = 0 
         for plant in self.PlantList:
             t_w_hist += self.Modules[plant].Modules['Plant'].V('Q_h')
             t_n_f += self.Modules[plant].Modules['Plant'].n_fruits_h 
             t_w_k += self.Modules[plant].Modules['Plant'].V('h_k')
             t_n_k += self.Modules[plant].Modules['Plant'].V('n_k')
             t_m_k += self.Modules[plant].Modules['Plant'].V('m_k')
+            sum_A += self.Modules[plant].Modules['Plant'].V('A')
         self.V_Set( 'H', t_w_hist)
         self.V_Set( 'NF', t_n_f)
         self.V_Set( 'h', t_w_k)
         self.V_Set( 'n', t_n_k)
         self.V_Set( 'm', t_m_k)
+        self.V_Set( 'sum_A', sum_A)
 
 
     def reset(self):

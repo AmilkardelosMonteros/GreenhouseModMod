@@ -9,7 +9,7 @@ mt, mg, m, C, s, W, mg_CO2, J, Pa, kg_water, kg, K, ppm, kmol, kg_air, kg_vapour
 ok = 'OK'
 # from .constants import ALPHA, BETA, GAMMA, DELTA, EPSIL, ETA, LAMB, RHO, TAU, NU, PHI, PSI, OMEGA
 #theta = np.array([3000, 20, 7.2*(10**4)]) # psi2 = 7.2*(10**4)
-nrec = 60*24
+nrec = 10*24*60
 MODEL_NOISE = False
 mt = symbols('mt') #Minutos
 
@@ -28,7 +28,9 @@ OTHER_CONSTANTS = {
                     desc="Stefan-Boltzmann constant", units=W * m**-2 * K**-4, val=5.670e-8, ok=ok), # Constante de Stefan-Boltzmann (W m−2)
     'etadrain':  Struct(typ='Cnts', varid='etadrain', prn=r'$\eta_{drain}$',
                     desc="Missing", units=1, val=30, ok='falta descripción y unidades'),
-    'model_noise': Struct(val = MODEL_NOISE,ok = 'Controla si se agrega o no aleatoriedad al modelo')
+    'model_noise': Struct(val = MODEL_NOISE,ok = 'Controla si se agrega o no aleatoriedad al modelo'),
+    'sum_A': Struct(typ='State', varid='sum_A', prn=r'$ \sum A$',
+                    desc="Total assimilation rate", units=g * (m**-2), val=0, ok='Para usarlo hay que cambiar unidades')
 }
 
 
@@ -284,7 +286,7 @@ INPUTS ={
 ################## State variables ##################
 STATE_VARS = {
     'C1' : Struct(typ='State', varid='C1', prn=r'$C_1$',
-                    desc="CO2 concentrartion in the greenhouse air", units=mg * m**-3, val=429.3, rec=nrec,ok='falta valor inicial'),
+                    desc="CO2 concentrartion in the greenhouse air", units=mg * m**-3, val=429.3, rec=nrec, ok='falta valor inicial'),
     'V1' : Struct(typ='State', varid='V1', prn=r'$V_1$',
                     desc="Greenhouse air vapor pressure", units=Pa, val=1200, rec=nrec, ok='https://www.dimluxlighting.com/knowledge/blog/vapor-pressure-deficit-the-ultimate-guide-to-vpd/'), 
     'T1' : Struct(typ='State', varid='T1', prn=r'$T_1$',
@@ -325,7 +327,7 @@ CONTROLS = {
 
 FUNCTIONS = {
     ########Funciones Auxiliares para T1 (Temperatura del dosel) ########
-    'r1': Struct(typ='State', varid='r1', prn=r'$r_1$', desc="Radiacion PAR absorbida por el dosel (T1+)", units=1, val=0, ok=ok),
+    'r1': Struct(typ='State', varid='r1', prn=r'$r_1$', desc="Radiacion PAR absorbida por el dosel (T1+)", units=1, val=0, rec = nrec ,ok=ok),
     'r5': Struct(typ='State', varid='r5', prn=r'$r_5$', desc="Radiacion NIR absorbida por el dosel (T1+)", units=1, val=0, ok=ok),
     'r6': Struct(typ='State', varid='r6', prn=r'$r_6$', desc="Radiacion FIR que la tuberia de calentamiento le transmite al dosel (T1+)", units=1, val=0, ok=ok),
     'h1': Struct(typ='State', varid='h1', prn=r'$h_1$', desc="Intercambio de calor desde el dosel (T1-, T2+)", units=1, val=0, ok=ok),
