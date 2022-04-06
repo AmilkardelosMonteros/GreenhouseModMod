@@ -6,7 +6,7 @@ Created on Wed Feb  9 12:55:08 2022
 @author: jdmolinam
 """
 
-from numpy import exp, floor, clip, arange, append, sqrt
+from numpy import exp, floor, clip, arange, append, sqrt, max
 from sympy import symbols
 
 ###########################
@@ -28,10 +28,10 @@ n_f, n_p, MJ, W, mg  = symbols('n_f n_p MJ W, mg') # number of fruits, number of
 
 ##### Fotosíntesis #######
 ## Funciones auxiliares ##
-def V_cmax (T_f, V_cmax25, Q10_Vcmax, k_T, k_d):
+def V_cmax (T_f, V_cmax25, Q10_Vcmax, k_T):
     pow1 = (T_f - 25*k_T)/(10*k_T) 
     pow2 =  0.128 * (T_f - 40*k_T) / (1*k_T) 
-    return (V_cmax25*k_d) * Q10_Vcmax**( pow1 ) / ( 1 + exp(pow2) )  
+    return (V_cmax25) * Q10_Vcmax**( pow1 ) / ( 1 + exp(pow2) )  
 
 def Gamma_st (T_f): # Esta función la estoy calculando como lo hace Aarón
     return 150 * exp( 26.355 - ( 65.33 / ( 0.008314 * (T_f + 273.15) ) ) ) # La temperatura se está pasando de °C a Kelvins
@@ -48,23 +48,23 @@ def K_O (T_f, K_O25, Q10_KO, k_T):
 def I_2 (I, f, ab):
     return  I * ab*(1 - f)  / 2
 
-def J (I_2, J_max, theta, k_d):
-    return ( (I_2*k_d) + (J_max*k_d) - ( ( (I_2 + J_max)*k_d )**2 -4*theta*I_2*k_d*J_max*k_d )**(0.5) ) / (2*theta)
+def J (I_2, J_max, theta):
+    return ( (I_2) + (J_max) - ( ( (I_2 + J_max) )**2 -4*theta*I_2*J_max )**(0.5) ) / (2*theta)
 
 ## Factores limitantes en la producción de asimilados ##    
-def A_R (O_a, tau, C_i, V_cmax, Gamma_st, K_C, K_O, phi): 
+def A_R (O_a, tau, C_i, V_cmax, Gamma_st, K_C, K_O): 
     """
     Asimilación por Rubisco
     """
     C_i1 = C_i*(28.96/44) # El CO2 está pasando de ppm a (mu_mol_CO2/mol_air)
-    return ( 1 - ( O_a / (phi*tau*C_i1) ) ) * V_cmax * (C_i1 - Gamma_st) / ( K_C *(1 + (O_a/K_O) ) + C_i1 )
+    return max(( 1 - ( O_a / (2.0*tau*C_i1) ) ),0) * V_cmax * max((C_i1 - Gamma_st),0) / ( K_C *(1 + (O_a/K_O) ) + C_i1 )
 
 def A_f (C_i, Gamma_st, J, k_JV): 
     """
     Asimilación por radiación PAR
     """
     C_i1 = C_i*(28.96/44) # El CO2 está pasando de ppm a (mu_mol_CO2/mol_air)
-    return ( (C_i1 - Gamma_st)*J / ( 4*C_i1 + 8*Gamma_st) )*k_JV
+    return ( (max(C_i1 - Gamma_st,0))*J / ( 4*C_i1 + 8*Gamma_st) )*k_JV
 
 def A_acum(V_cmax):
     """
@@ -84,14 +84,14 @@ def A (A_R, A_f, A_acum, R_d, fc):
 
 #### Resistencia Estomática ####
     
-def r_s (r_m, f_R, f_C, f_V, k_d):
+def r_s (r_m, f_R, f_C, f_V):
     """
     En esta función se cálcula la resistencia estomática
     la cual depende r_m, el mínimo valor de resistenccia estomática,
     de f_R, f_c y f_V que son los factores de resistencia debidas a
     la radiación, el CO2 y la presión de vapor respectivamente. 
     """
-    return (r_m/k_d) * f_R * f_C * f_V  # f_R, f_C y f_V son adimensionales
+    return (r_m) * f_R * f_C * f_V  # f_R, f_C y f_V son adimensionales
 
 def f_R (I, C_ev1, C_ev2):
     """
@@ -131,13 +131,13 @@ def V_sa (T):
 
 #### Cálculo del CO2 intracelular ####
 ### Flujo de absorción del CO2 ###
-def gTC (k, Rb, Rs, k_d):
+def gTC (k, Rb, Rs):
     """
     Esta función calcula la conductancia total de CO2
     para una determinada capa del dosel
     """
     gs = (1 / Rs) # Conductancia estomática
-    gb = (1 / Rb)*k_d # Conductancia estomática de la capa límite del dosel
+    gb = (1 / Rb) # Conductancia estomática de la capa límite del dosel
     gtc = ( (1+k)*(1.6/gs) + (1.37/gb) )**-1 + k*( ( (1+k)*(1.6/gs) + k*(1.37/gb) )**-1 )
     return gtc
 
@@ -151,24 +151,20 @@ def Ca (gtc, C, Ci):
 
 
 #### Modelo de crecimiento ####
-"""
-*******  Note, the original TF is quite unsensitive to PA_mean ******
-def TF( k1_TF, k2_TF, k3_TF, PA_mean, T_mean, Dt):
-    ### ORIGINAL Floration rate. DOES NOT DEPEND MUCH ON PA_MEAN!!
-    return (-0.75*k2_TF + 0.09*T_mean)*(1-exp(-(1*k1_TF+PA_mean)/(2*k1_TF)))*k3_TF * Dt
-"""
+# Floration rate
 
-def TF_tmp( k1_TF, k2_TF, k3_TF, PA_mean, T_mean, Dt):
-    """Floration rate. TEMPORARY ... k1_TF = 150 the original below look wrong"""
-    return (-0.75*k2_TF + 0.09*T_mean)*(1-exp(-PA_mean/k1_TF))*k3_TF * Dt
+def TF(  PA_mean, T_mean, time, Dt):
+    # The input PA_Mean is in Watts/m^2 but 
+    # the formula needs the PAR radiation in MJ/day 
+    kc = 11.57 # Transform Watts to MJ/day 1 MJ/d = 11.57 Watts
+    # therefore we use PA_mean/fc
 
-def TF( k1_TF, k2_TF, k3_TF, PA_mean, T_mean, Dt):
-    ### ORIGINAL Floration rate. DOES NOT DEPEND MUCH ON PA_MEAN!!
-    return (-0.75*k2_TF + 0.09*T_mean)*(1-exp(-(1*k1_TF+PA_mean)/(2*k1_TF)))*k3_TF * Dt
-
-
-def f( k1_TF, k2_TF, PA_mean, T_mean, Dt):
-    return -(1*k1_TF+PA_mean)/(2*k1_TF)
+    # We need at least D days before flowering for first time  
+    D = 22 # days 
+    if time <= D*24*60*60:
+        return 0
+    else:     
+        return (-0.75+ 0.09*T_mean)*(1-exp(-(1+PA_mean/kc)/2)) * Dt
 
 def Y_pot(k2_TF, C_t, B, D, M, X, T_mean):
     """Growth potential of each fruit."""

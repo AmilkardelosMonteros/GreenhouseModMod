@@ -10,6 +10,7 @@ from ModMod import Module
 from numpy import exp, floor, clip, arange, append, sqrt
 from .functions import TF, Y_pot, t_wg # importar funciones crecimiento de la planta
 from scipy.stats import norm, gamma
+import copy
 
 #################################################################
 ############ Módulo de crecimiento para una planta ##############
@@ -61,34 +62,17 @@ class Plant(Module):
             T_mean = self.V_Mean('T2', ni=-md ) # Se saca el promedio sobre los registros del último día
             PAR_mean = self.V_Mean('I2', ni=-md ) # Se saca el promedio sobre los registros del último día
             ## Asimilados acumulados (integrados) en el último día
-            A_int = self.V_Int('A', ni=-md, Dn = 60 ) # Se integra sobre los registros del último día 
+            A_int = self.V_Int('A', ni=-md,t=arange(0,1440,60)) # Se integra sobre los registros del último día 
             #print(tt)
             #steps = len(1)
             #for i in range( 1, steps):      ####<---------------- corregir este for no va 
-                ### Check if a fruit is ready to be harvest
-            harvest = []
-            nfk = 0
-            '''Esta es una nueva variable hk'''
-            hk = 0 
-            for h, fruit in enumerate(self.fruits): # h is the indice and fruit is the object
-                if (fruit[0] > 275 or fruit[1]>360): # It is harvested when a fruit reaches a thermic age of 275 °C d or if the fruit's weigth is greater than 360 g
-                    harvest += [h]
-                    self.n_fruits -= 1 # number fruits in crop
-                    nfk += 1 # number fruits harvested in this moment
-                    ''' Esta linea cambió'''
-                    hk += fruit[1] # weight of harvested fruits in this moment
-            [self.fruits.pop(i) for i in harvest]# Harvested fruits are removed from the list
-            # Set value for number and weitgh harvested fruits
-            self.V_Set( 'n_k', nfk)
-            self.V_Set( 'h_k', hk)
-            w = self.V( 'Q_h') + self.V('h_k') # accumulated weight fruits harvested
-            self.V_Set( 'Q_h', w)
-            self.n_fruits_h += self.V('n_k') # accumulated number fruits harvested
-
+           
             ### With the Floration Rate, create new fruits
+            # 
+            # Politica de Poda: de cada Npoda flores, mantengo unicamente una
+            Npoda = 2
             PA_mean_i = self.beta * PAR_mean
-            self.new_fruit += TF( k1_TF=self.V('k1_TF'), k2_TF=self.V('k2_TF'),\
-                 k3_TF=self.V('k3_TF'), PA_mean=PA_mean_i, T_mean=T_mean, Dt = Dtdias)
+            self.new_fruit += TF(PA_mean=PA_mean_i, T_mean=T_mean, time = self.t(), Dt = Dtdias)/Npoda
 
             new_fruit_n = self.new_fruit 
             if new_fruit_n >= 1:
@@ -135,6 +119,31 @@ class Plant(Module):
                 pdw = 0.023 # percentage of dry weight
                 fruit[1] += dwh / pdw # Fresh weight  
                 tmp2 += fruit[1] #Total weight
+
+
+            ### Check if a fruit is ready to be harvest
+            fruits = copy.deepcopy(self.fruits) # copy of all fruits
+            wk = 0 
+            nfk = 0
+            
+
+            
+            for fruit in  self.fruits: # h is the indice and fruit is the object
+                if (fruit[0] > 275 or fruit[1]>360): # It is harvested when a fruit reaches a thermic age of 275 °C d or if the fruit's weigth is greater than 360 g
+                    self.n_fruits -= 1 # number fruits in crop
+                    wk += fruit[1] # weight of harvested fruits in this moment
+                    nfk += 1       # number fruits harvested in this moment
+                    fruits.remove(fruit) # Harvested fruits are removed from the list
+            self.fruits = fruits
+               
+
+
+            # Set value for number and weitgh harvested fruits
+            self.V_Set( 'n_k', nfk)
+            self.V_Set( 'h_k', wk)
+            w = self.V( 'Q_h') + self.V('h_k') # accumulated weight fruits harvested
+            self.V_Set( 'Q_h', w)
+            self.n_fruits_h += self.V('n_k') # accumulated number fruits harvested
 
             #### Update assimilation rate after distribution
             # m = ( f_wg_veg / self.V('dw_ef_veg') ) + ( (1 - f_wg_veg ) / self.V('dw_ef') )

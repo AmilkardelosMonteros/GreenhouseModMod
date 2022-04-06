@@ -12,7 +12,7 @@ from .functions import f_R, Sr, C_ev3, f_C, C_ev4, V_sa, VPD, f_V, r_s, gTC, Ca,
 
 states = ['Ci', 'A', 'C1', 'RH', 'T1', 'I2'] 
 constants = ['k_Ag', 'r_m', 'C_ev1', 'C_ev2', 'k_fc', 'C_ev3d', 'C_ev3n', 'S', 'Rs', 
-        'C_ev4d', 'C_ev4n', 'ks', 'Rb', 'k_d', 'k_T', 'k_JV', 'fc', 'phi', 'O_a', 'V_cmax25', 
+        'C_ev4d', 'C_ev4n', 'ks', 'Rb', 'k_T', 'k_JV', 'fc', 'phi', 'O_a', 'V_cmax25', 
         'Q10_Vcmax', 'K_C25', 'Q10_KC', 'K_O25', 'Q10_KO', 'tau_25', 'Q10_tau', 'J_max', 'ab', 
         'f', 'theta']
 
@@ -112,8 +112,7 @@ class Ci_rhs(StateRHS):
            units= s * m**-1, val=711)
         
         ## Assimilates
-        self.AddVar( typ='Cnts', varid='k_d', \
-           desc="factor to transform s**-1 into d**-1", units=1, val=1)
+
         
         self.AddVar( typ='Cnts', varid='k_T', \
            desc="Auxiliary constant to add temperature units", units= C, val=1.0)
@@ -220,9 +219,9 @@ class Ci_rhs(StateRHS):
         V_sa1 = V_sa( T = T1 )
         VPD1 = VPD( V_sa=V_sa1, RH = RH1 )
         f_V1 = f_V( C_ev4=C_ev41, VPD = VPD1)
-        R_s1 = r_s( r_m=self.V('r_m'), f_R=f_R1, f_C=f_C1, f_V=f_V1, k_d=self.V('k_d') ) 
+        R_s1 = r_s( r_m=self.V('r_m'), f_R=f_R1, f_C=f_C1, f_V=f_V1) 
         ## Cálculos absorción de CO2
-        g_s = gTC( k=self.V('ks'), Rb=self.V('Rb'), Rs=R_s1, k_d=self.V('k_d') )
+        g_s = gTC( k=self.V('ks'), Rb=self.V('Rb'), Rs=R_s1 )
         Ca1 = Ca( gtc=g_s, C = C1, Ci=self.Vk('Ci') )
         Dt_Ci = ( Ca1 - (1e-3)*self.V('A') )/0.554 # Los asimilados se pasan a mg/m**2 y el incremento del Ci queda en ppm
         return Dt_Ci

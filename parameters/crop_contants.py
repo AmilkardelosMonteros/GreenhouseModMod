@@ -54,11 +54,11 @@ GLOBAL_CI_CONST = {
         
         'C_ev1': Struct( typ='Cnts', varid='C_ev1', \
            desc="Constant in the formula of f_R", \
-           units= mu_mol_phot * (m**-2) * d**-1, val=4.3),
+           units= mu_mol_phot * (m**-2) * s**-1, val=4.3),
         
         'C_ev2': Struct( typ='Cnts', varid='C_ev2', \
            desc="Constant in the formula of f_R", \
-           units= mu_mol_phot * (m**-2) * d**-1 , val=0.54),
+           units= mu_mol_phot * (m**-2) * s**-1 , val=0.54),
         
         'k_fc': Struct( typ='Cnts', varid='k_fc', \
            desc="Constant for units completation", \
@@ -74,15 +74,15 @@ GLOBAL_CI_CONST = {
         
         'S': Struct( typ='Cnts', varid='S', \
            desc="Constant in the formula of Sr", \
-           units= m**2 * d * mu_mol_phot**-1, val=-1),
+           units= m**2 * s * mu_mol_phot**-1, val=-1),
         
         'Rs': Struct( typ='Cnts', varid='Rs', \
            desc="Radiation setpoint to switch day and night", \
-           units= mu_mol_phot * (m**-2) * d**-1, val=5),
+           units= mu_mol_phot * (m**-2) * s**-1, val=5),
         
         'C_ev4d': Struct( typ='Cnts', varid='C_ev4d', \
            desc="Constant in the formula of f_C", \
-           units= pa**-1, val=4.3e-6),
+           units= pa**-1, val=4.3e-6), # Unidades?
         
         'C_ev4n': Struct( typ='Cnts', varid='C_ev4n', \
            desc="Constant in the formula of f_C", \
@@ -98,8 +98,8 @@ GLOBAL_CI_CONST = {
            units= s * m**-1, val=711),
         
         ## Assimilates
-        'k_d': Struct( typ='Cnts', varid='k_d', \
-           desc="factor to transform s**-1 into d**-1", units=1, val=1),
+        #'k_d': Struct( typ='Cnts', varid='k_d', \
+        #   desc="factor to transform s**-1 into d**-1", units=1, val=1/86440),
         
         'k_T': Struct( typ='Cnts', varid='k_T', \
            desc="Auxiliary constant to add temperature units", units= C, val=1.0),
@@ -111,10 +111,12 @@ GLOBAL_CI_CONST = {
         'fc': Struct( typ='Cnts', varid='fc', \
            desc="Factor to transform mu-mols_CO2/sec to grms_CH20/day", \
            units= g * d * mu_mol_CO2**-1 , val=3.418181e-1), # 7.891414141414142e-6
+           # Verificar donde se usa en el codigo 
         
         'phi': Struct( typ='Cnts', varid='phi', \
            desc="Ratio of oxigenation to carboxylation rates", \
            units= mu_mol_O2 * mu_mol_CO2**-1, val=2),
+           # esta phi se puede quitar
         
         'O_a': Struct( typ='Cnts', varid='O_a', \
            desc="O2 concentration in the enviroment", \
@@ -122,7 +124,7 @@ GLOBAL_CI_CONST = {
         
         'V_cmax25': Struct( typ='Cnts', varid='V_cmax25', \
            desc="Maximum Rubisco Rate, per unit area", \
-           units= mu_mol_CO2 * (m**-2) * d**-1, val=200),
+           units= mu_mol_CO2 * (m**-2) * s**-1, val=170), # 200
         
         'Q10_Vcmax': Struct( typ='Cnts', varid='Q10_Vcmax', \
            desc="Temperatura response of Vcmax", \
@@ -154,7 +156,7 @@ GLOBAL_CI_CONST = {
         
         'J_max': Struct( typ='Cnts', varid='J_max', \
            desc="Maximum electron transport rate", \
-           units= mu_mol_phot * (m**-2) * d**-1, val=400),
+           units= mu_mol_phot * (m**-2) * s**-1, val=400),
         
         'ab': Struct( typ='Cnts', varid='ab', \
            desc="Leafs absorbance", \
@@ -166,7 +168,7 @@ GLOBAL_CI_CONST = {
         
         'theta': Struct( typ='Cnts', varid='theta', \
            desc="Empirical factor", \
-           units=1 , val=theta_c[0]),
+           units=1 , val=0.7),
 }
 
 
@@ -204,6 +206,7 @@ LOCAL_Q_CONST = {
     ################## Local Q_rhs constants ##################
     'k3_TF':Struct( typ='Cnts', varid='k3_TF', prn=r'$k3_{TF}$',\
        desc="Aux in function TF", units= n_f * C**-1, val=1.0),
+
     'dw_ef':Struct( typ='Cnts', varid='dw_ef', prn=r'$dw_{efficacy}$',\
        desc="Constant in t_wg for fruits", units= 1, val=1.3),
     
