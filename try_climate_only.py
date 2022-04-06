@@ -131,7 +131,8 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-director.Run(60, 90*24*60, director.sch)
+n = 1*24*60
+director.Run(60, n, director.sch,active=True)
 
 #Dt de Director = 1440 (numero de minutos en un dia)
 #Dt de Director clima = 60, 1440/60 = 24 numero de registros de clima * n
