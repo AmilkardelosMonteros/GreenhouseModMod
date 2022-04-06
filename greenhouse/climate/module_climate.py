@@ -87,4 +87,5 @@ class Module1(Module):
         reward = self.get_reward()
         self.agent.memory.push(state, action, reward, new_state, done)
         #self.update() #Backpropagation
+        #breakpoint()
         return 1
