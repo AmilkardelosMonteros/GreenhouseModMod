@@ -102,7 +102,7 @@ def PlantDirector( beta, return_Q_rhs_ins=False):
     Dir.MergeVarsFromRHSs( [Ci_rhs_ins, Q_rhs_ins], call=__name__)
     ### Add Modules to the Director:
     Dir.AddModule( "Plant", Plant(beta, Q_rhs_ins, Dt_f=minute2seconds(30), Dt_g=minute2seconds(30)))
-    Dir.AddModule( "Photosynt", PhotoModule(Ci_rhs_ins, Dt=minute2seconds(30)))
+    Dir.AddModule( "Photosynt", PhotoModule(Ci_rhs_ins, Dt=60))
     ## Scheduler for the modules
     Dir.sch = ["Photosynt","Plant"] # 
 
@@ -131,8 +131,9 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-n = 1*24*60
-director.Run(60, n, director.sch,active=True)
+director.Dt = 15*60
+director.n = 4*24 * 7
+director.Run(director.Dt, director.n, director.sch,active=True)
 
 #Dt de Director = 1440 (numero de minutos en un dia)
 #Dt de Director clima = 60, 1440/60 = 24 numero de registros de clima * n
