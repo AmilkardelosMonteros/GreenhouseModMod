@@ -4,7 +4,7 @@ import numpy as np
 from .functions import * 
 
 class Module1(Module):
-    def __init__(self, agent,noise, Dt=1, **kwargs):
+    def __init__(self, agent,noise, Dt=60, **kwargs):
         """Models one part of the process, uses the shared variables
            from Director.
            Dt=0.1, default Time steping of module
@@ -76,6 +76,10 @@ class Module1(Module):
         controls,action = self.get_controls(state) #Forward
         self.update_controls(controls)
         #self.V_Set('Qco2',0)
+        #Vsat = V_sa( T = self.V('T2') ) # nuevo
+        #V1 = self.V('V1') / 7  # nuevo 
+        #RH = 100 * ( V1 / Vsat ) # nuevo 
+        #self.V_Set('RH', RH) # nuevo   # definit RH como variable 
         self.AdvanceRungeKutta(t1)
         self.AdvanceAssigment(t1)
         self.i  += 1

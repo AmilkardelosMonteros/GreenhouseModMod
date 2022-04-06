@@ -13,6 +13,7 @@ This is a project about the simulation of a Greenhouse using the programming fra
   * `torch`
   * `scipy`
   * `numpy`
+  * `reportlab`
 
 ### Instalation
 

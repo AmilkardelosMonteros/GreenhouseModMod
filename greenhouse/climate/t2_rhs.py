@@ -13,7 +13,8 @@ from .functions import h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11
 state_names = ['T1', 'V1', 'T2']
 control_names = ['U1', 'U2', 'U3', 'U4', 'U5', 'U6','U7', 'U8', 'U9', 'U11']
 input_names = ['I1', 'I2', 'I3', 'I4', 'I5', 'I6', 'I7', 'I8']
-function_names = ['f1','h4', 'h6']
+#function_names = ['f1','h4', 'h6']
+function_names = ['h1','h2','h3','h4','h5','h6','r8','h7','h10','l2','r10','h11']
 constant_names = ['tau3', 'phi7', 'alpha6', 'eta6', 'eta7', 'eta8', 'phi8', 'nu4', 'nu5', 
                     'omega1', 'nu6', 'beta3', 'gamma1', 'phi1', 'tau1','tau2', 'lamb5', 'lamb7', 
                     'lamb8', 'alpha5', 'nu1', 'eta10', 'nu3', 'nu2', 'eta11', 'alpha8', 
@@ -81,6 +82,6 @@ class T2_rhs(StateRHS):
         r_10 = r10(r11=r_11, r12=r_12, r13=r_13)
         h_11 = h11(T2=self.Vk('T2'), I7=self.V('I7'), nu7=self.V('nu7'), nu8=self.V('nu8'), phi2=self.V('phi2'))
         ###Save 
-        self.mod.V_Set('h4', h_4)
-        self.mod.V_Set('h6', h_6)
+        to_save = {'h1':h_1,'h2':h_2,'h3':h_3,'h4':h_4,'h5':h_5,'h6':h_6,'r8':r_8,'h7':h_7,'h10':h_10,'l2':l_2,'r10':r_10,'h11':h_11}
+        [self.mod.V_Set(k, v) for k,v in to_save.items()]
         return (kappa_2**-1)*(h_1 + h_2 + h_3 + h_4 + h_5 + h_6 + r_8 - h_7 - h_10 - l_2 - r_10 - h_11)

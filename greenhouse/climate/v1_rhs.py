@@ -11,7 +11,8 @@ import numpy as np
 state_names = ['T1', 'V1', 'T2', 'C1']
 control_names = ['U1', 'U2', 'U3', 'U4', 'U5', 'U6', 'U7', 'U8', 'U9']
 input_names = ['I8', 'I5', 'I6', 'I1', 'I11']
-function_names = ['h6', 'f1', 'p1', 'p2', 'p3', 'q1', 'q2', 'q3', 'q4', 'q5', 'q7', 'q8', 'q9', 'q10']
+#function_names = ['h6', 'f1', 'p1', 'p2', 'p3', 'q1', 'q2', 'q3', 'q4', 'q5', 'q7', 'q8', 'q9', 'q10']
+function_names = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7']
 constant_names = ['lamb4', 'alpha6', 'phi7', 'eta6', 'eta7', 'eta8', 'phi8', 'nu4', 'nu5',
                             'omega1', 'nu6', 'lamb1', 'lamb3', 'gamma2', 'nu1', 'eta10', 'nu3', 
                             'nu2', 'eta11', 'rho3', 'alpha5', 'gamma', 'gamma3', 'delta1', 'delta2', 
@@ -75,17 +76,7 @@ class V1_rhs(StateRHS):
         p_5 = p5(T2=self.Vk('T2'), V1=self.Vk('V1'), I5=self.V('I5'),I11=self.V('I11'),psi1=self.V('psi1'), omega2=self.V('omega2'), f2=f_2, f3=f_3, f4=f_4)
         p_6 = p6(T2=self.Vk('T2'), V1=self.Vk('V1'), psi1=self.V('psi1'), omega2=self.V('omega2'), f1=f_1)
         p_7 = p7(V1=self.Vk('V1'), h3=h_3, q6=q_6)
-        self.mod.V_Set('p1', p_1)
-        self.mod.V_Set('p2', p_2)
-        self.mod.V_Set('p3', p_3)
-        self.mod.V_Set('q1', q_1)
-        self.mod.V_Set('q2', q_2)
-        self.mod.V_Set('q3', q_3)
-        self.mod.V_Set('q4', q_4)
-        self.mod.V_Set('q5', q_5)
-        self.mod.V_Set('q7', q_7)
-        self.mod.V_Set('q8', q_8)
-        self.mod.V_Set('q5', q_5)
-        self.mod.V_Set('q9', q_9)
-        self.mod.V_Set('q10', q_10)
+        #Save
+        to_save = {'p1':p_1, 'p2':p_2, 'p3':p_3, 'p4':p_4, 'p5':p_5, 'p6':p_6, 'p7':p_7}
+        [self.mod.V_Set(k, v) for k,v in to_save.items()]
         return (kappa_3**-1)*(p_1 + p_2 + p_3 + p_4 - p_5 - p_6 - p_7)

@@ -9,7 +9,7 @@ mt, mg, m, C, s, W, mg_CO2, J, Pa, kg_water, kg, K, ppm, kmol, kg_air, kg_vapour
 ok = 'OK'
 # from .constants import ALPHA, BETA, GAMMA, DELTA, EPSIL, ETA, LAMB, RHO, TAU, NU, PHI, PSI, OMEGA
 #theta = np.array([3000, 20, 7.2*(10**4)]) # psi2 = 7.2*(10**4)
-nrec = 1
+nrec = 10*24*60
 MODEL_NOISE = False
 mt = symbols('mt') #Minutos
 
@@ -28,7 +28,9 @@ OTHER_CONSTANTS = {
                     desc="Stefan-Boltzmann constant", units=W * m**-2 * K**-4, val=5.670e-8, ok=ok), # Constante de Stefan-Boltzmann (W m−2)
     'etadrain':  Struct(typ='Cnts', varid='etadrain', prn=r'$\eta_{drain}$',
                     desc="Missing", units=1, val=30, ok='falta descripción y unidades'),
-    'model_noise': Struct(val = MODEL_NOISE,ok = 'Controla si se agrega o no aleatoriedad al modelo')
+    'model_noise': Struct(val = MODEL_NOISE,ok = 'Controla si se agrega o no aleatoriedad al modelo'),
+    'sum_A': Struct(typ='State', varid='sum_A', prn=r'$ \sum A$',
+                    desc="Total assimilation rate", units=g * (m**-2), val=0, ok='Para usarlo hay que cambiar unidades')
 }
 
 
@@ -259,7 +261,7 @@ INPUTS ={
     'I1' : Struct(typ='Cnts', varid='I1', prn=r'$I_1$',
                     desc="Leaf area index", units=m**2 * m**-2, val=2, ok = 'Valor tesis Vanthoor'),
     'I2' : Struct(typ='State', varid='I2', prn=r'$I_2$',
-                    desc="External global radiation", units=W * m**-2, val=100.0, ok = 'Sin comentario'), 
+                    desc="External global radiation", units=W * m**-2, rec=nrec, val=100.0, ok = 'Sin comentario'), 
     'I3' : Struct(typ='State', varid='I3', prn=r'$I_3$',
                     desc="Heating pipe temperature", units=C, val=20, ok = 'Sin comentario'),      
     'I4' : Struct(typ='State', varid='I4', prn=r'$I_4$',
@@ -284,7 +286,7 @@ INPUTS ={
 ################## State variables ##################
 STATE_VARS = {
     'C1' : Struct(typ='State', varid='C1', prn=r'$C_1$',
-                    desc="CO2 concentrartion in the greenhouse air", units=mg * m**-3, val=429.3, rec=nrec,ok='falta valor inicial'),
+                    desc="CO2 concentrartion in the greenhouse air", units=mg * m**-3, val=429.3, rec=nrec, ok='falta valor inicial'),
     'V1' : Struct(typ='State', varid='V1', prn=r'$V_1$',
                     desc="Greenhouse air vapor pressure", units=Pa, val=1200, rec=nrec, ok='https://www.dimluxlighting.com/knowledge/blog/vapor-pressure-deficit-the-ultimate-guide-to-vpd/'), 
     'T1' : Struct(typ='State', varid='T1', prn=r'$T_1$',
@@ -324,33 +326,50 @@ CONTROLS = {
 }
 
 FUNCTIONS = {
-    'h1': Struct(typ='State', varid='h1', prn=r'$h_1$', desc="Intercambio de calor desde el dosel", units=1, val=0, ok=ok),
-    'h2': Struct(typ='State', varid='h2', prn=r'$h_2$', desc="intercambio de calor desde el dosel hacia la almohadilla de enfriamiento", units=1, val=0, ok=ok),
-    'h3': Struct(typ='State', varid='h3', prn=r'$h_3$', desc="intercambio de calor desde el dosel hacia el sistema de enfriamiento mecanico", units=1, val=0, ok=ok),
-    'h4': Struct(typ='State', varid='h4', prn=r'$h_4$', desc="intercambio de calor desde el dosel hacia la tuberia de calentamiento", units=1, val=0, ok=ok),
-    'h5': Struct(typ='State', varid='h5', prn=r'$h_5$', desc="intercambio de calor desde el dosel hacia el buffer de energia pasiva", units=1, val=0, ok=ok),
-    'h6': Struct(typ='State', varid='h6', prn=r'$h_6$', desc="intercambio de calor desde el dosel hacia el calentador de aire directo", units=1, val=0, ok=ok),
-    'r8': Struct(typ='State', varid='r8', prn=r'$r_8$', desc="radiacion global que es absorbida por los elementos", units=1, val=0, ok=ok),
-    'h7': Struct(typ='State', varid='h7', prn=r'$h_7$', desc="intercambio de calor desde el aire al interior hacia el aire externo", units=1, val=0, ok=ok),
-    'h11': Struct(typ='State', varid='h11', prn=r'$h_11$', desc="intercambio de calor desde el aire y el suelo", units=1, val=0, ok=ok),
-    'h10': Struct(typ='State', varid='h10', prn=r'$h_10$', desc="intercambio del sistema de ventilador-almohadilla", units=1, val=0, ok=ok),
-    'l2': Struct(typ='State', varid='l2', prn=r'$l_2$', desc="por el sistema de neblina", units=1, val=0, ok=ok),
-    'r10': Struct(typ='State', varid='r10', prn=r'$r_10$', desc="FIR que el aire al interior del invernadero le transmite al cielo", units=1, val=0, ok=ok),
+    ########Funciones Auxiliares para T1 (Temperatura del dosel) ########
+    'r1': Struct(typ='State', varid='r1', prn=r'$r_1$', desc="Radiacion PAR absorbida por el dosel (T1+)", units=1, val=0, rec = nrec ,ok=ok),
+    'r5': Struct(typ='State', varid='r5', prn=r'$r_5$', desc="Radiacion NIR absorbida por el dosel (T1+)", units=1, val=0, ok=ok),
+    'r6': Struct(typ='State', varid='r6', prn=r'$r_6$', desc="Radiacion FIR que la tuberia de calentamiento le transmite al dosel (T1+)", units=1, val=0, ok=ok),
+    'h1': Struct(typ='State', varid='h1', prn=r'$h_1$', desc="Intercambio de calor desde el dosel (T1-, T2+)", units=1, val=0, ok=ok),
+    'l1': Struct(typ='State', varid='l1', prn=r'$l_1$', desc="Flujo de calor latente causado por transpiracion (T1-)", units=1, val=0, ok=ok),
+    'r7': Struct(typ='State', varid='r7', prn=r'$r_7$', desc="Radiacion FIR que el dosel le transmite al cielo (T1-)", units=1, val=0, ok=ok),
     
-
-
-
-
-
+    ######## Funciones Auxiliares para T1 (Temperatura del aire) ########
+    'h2': Struct(typ='State', varid='h2', prn=r'$h_2$', desc="Intercambio de calor desde el dosel hacia la almohadilla de enfriamiento (T2+)", units=1, val=0, ok=ok),
+    'h3': Struct(typ='State', varid='h3', prn=r'$h_3$', desc="Intercambio de calor desde el dosel hacia el sistema de enfriamiento mecanico (T2+)", units=1, val=0, ok=ok),
+    'h4': Struct(typ='State', varid='h4', prn=r'$h_4$', desc="Intercambio de calor desde el dosel hacia la tuberia de calentamiento (T2+)", units=1, val=0, ok=ok),
+    'h5': Struct(typ='State', varid='h5', prn=r'$h_5$', desc="Intercambio de calor desde el dosel hacia el buffer de energia pasiva (T2+)", units=1, val=0, ok=ok),
+    'h6': Struct(typ='State', varid='h6', prn=r'$h_6$', desc="Intercambio de calor desde el dosel hacia el calentador de aire directo (T2+)", units=1, val=0, ok=ok),
+    'r8': Struct(typ='State', varid='r8', prn=r'$r_8$', desc="Radiacion global que es absorbida por los elementos (T2+)", units=1, val=0, ok=ok),
+    'h7': Struct(typ='State', varid='h7', prn=r'$h_7$', desc="Intercambio de calor desde el aire al interior hacia el aire externo(T2-)", units=1, val=0, ok=ok),
+    'h10': Struct(typ='State', varid='h10', prn=r'$h_{10}$', desc="Intercambio del sistema de ventilador-almohadilla (T2-)", units=1, val=0, ok=ok),
+    'l2': Struct(typ='State', varid='l2', prn=r'$l_2$', desc="Disminucion del calor latente por el sistema de neblina (T2-)", units=1, val=0, ok=ok),
+    'r10': Struct(typ='State', varid='r10', prn=r'$r_{10}$', desc="FIR que el aire al interior del invernadero le transmite al cielo (T2-)", units=1, val=0, ok=ok),
+    'h11': Struct(typ='State', varid='h11', prn=r'$h_{11}$', desc="Intercambio de calor desde el aire y el suelo (T2-)", units=1, val=0, ok=ok),
+    
+    ######## Funciones Auxiliares para V1 (Presion de Vapor) ########
+    'p1': Struct(typ='State', varid='p1', prn=r'$p_1$', desc="Inter. de vapor dosel - aire del invernadero (V1+)", units=1, val=0, ok=ok),
+    'p2': Struct(typ='State', varid='p2', prn=r'$p_2$', desc="Inter. de vapor aire del invernadero - almohadilla de enfriamiento (V1+)", units=1, val=0, ok=ok),
+    'p3': Struct(typ='State', varid='p3', prn=r'$p_3$', desc="Inter. de vapor aire del invernadero - sistema de niebla (V1+)", units=1, val=0, ok=ok),
+    'p4': Struct(typ='State', varid='p4', prn=r'$p_4$', desc="Inter. de vapor aire del invernadero - calentador de aire directo (V1+)", units=1, val=0, ok=ok),
+    'p6': Struct(typ='State', varid='p6', prn=r'$p_6$', desc="Inter. de vapor aire del invernadero - el sistema de ventilador-almohadilla (V1-)", units=1, val=0, ok=ok),
+    'p5': Struct(typ='State', varid='p5', prn=r'$p_5$', desc="Inter. de vapor aire del invernadero - exterior (V1-)", units=1, val=0, ok=ok),
+    'p7': Struct(typ='State', varid='p7', prn=r'$p_7$', desc="Inter. de vapor aire del invernadero - sistema de enfriamiento mecanico (V1-)", units=1, val=0, ok=ok),
+   
+    ######## Funciones Auxiliares para C1 (Concentracion de CO2) ########
+    'o1': Struct(typ='State', varid='o1', prn=r'$o_1$', desc="Inter. de CO2 aire del invernadero - calentador de aire directo (C1+)", units=1, val=0, ok=ok), 
+    'o2': Struct(typ='State', varid='o2', prn=r'$o_2$', desc="Inter. de CO2 aire del invernadero - fuente externa de CO2 (C1+)", units=1, val=0, ok=ok), 
+    'o3': Struct(typ='State', varid='o3', prn=r'$o_3$', desc="Inter. de CO2 aire del invernadeo - sistema de ventilador-almohadilla (C1+)", units=1, val=0, ok=ok), 
+    'o4': Struct(typ='State', varid='o4', prn=r'$o_4$', desc="Inter. de CO2 aire del invernadeo - planta (C1-)", units=1, val=0, ok=ok), 
+    'o5': Struct(typ='State', varid='o5', prn=r'$o_5$', desc="Inter. de CO2 aire invernadero - el exterior (C1-)", units=1, val=0, ok=ok),
     'a1': Struct(typ='State', varid='a1', prn=r'$a_1$', desc="Superficie del dosel", units=1, val=0, ok=ok), 
+
+    ######## Funciones sub-auxiliares ######## 
     'f1': Struct(typ='State', varid='f1', prn=r'$f_1$', desc="flujo de ventilacion debido al sistema de ventilador-almohadilla", units=1, val=0, ok=ok),
     'g1': Struct(typ='State', varid='g1', prn=r'$g_1$', desc="Factor de vista desde la tuberia decalentamiento hacia el dosel", units=1, val=0, ok=ok), 
     'h4': Struct(typ='State', varid='h4', prn=r'$h_4$', desc="Inter. de calor tubería de calentamiento - aire del invernadero", units=1, val=0, ok=ok),
     'h6': Struct(typ='State', varid='h6', prn=r'$h_6$', desc="Inter. de calor aire del invernadero - el calentador de aire directo", units=1, val=0, ok=ok),
     'o2': Struct(typ='State', varid='o2', prn=r'$o_2$', desc="Inter. de CO2 aire del invernadero - la fuente externa de CO2", units=1, val=0, ok=ok),
-    'p1': Struct(typ='State', varid='p1', prn=r'$p_1$', desc="Inter. de vapor dosel - aire del invernadero", units=1, val=0, ok=ok),
-    'p2': Struct(typ='State', varid='p2', prn=r'$p_2$', desc="Inter. de vapor aire del invernadero - almohadilla de enfriamiento", units=1, val=0, ok=ok),
-    'p3': Struct(typ='State', varid='p3', prn=r'$p_3$', desc="Inter. de vapor aire del invernadero - sistema de niebla", units=1, val=0, ok=ok),
     'q1': Struct(typ='State', varid='q1', prn=r'$q_1$', desc="Coeficiente de intercambio de vapor dosel - aire del invernadero", units=1, val=0, ok=ok),
     'q2': Struct(typ='State', varid='q2', prn=r'$q_2$', desc="Presion de vapor saturada a temperatura del dosel", units=1, val=0, ok=ok),
     'q3': Struct(typ='State', varid='q3', prn=r'$q_3$', desc="Resistencia estomatica del dosel", units=1, val=0, ok=ok),
@@ -360,7 +379,7 @@ FUNCTIONS = {
     'q8': Struct(typ='State', varid='q8', prn=r'$q_8$', desc="Auxiliar function for q4", units=1, val=0, ok=ok),
     'q9': Struct(typ='State', varid='q9', prn=r'$q_9$', desc="Auxiliar function for q5", units=1, val=0, ok=ok),
     'q10':Struct(typ='State', varid='q10', prn=r'$q_{10}$', desc="Auxiliar function for q3", units=1, val=0, ok=ok),
-    'r6': Struct(typ='State', varid='r6', prn=r'$r_6$', desc="Radiacion FIR que la tuberia de calentamiento le transmite al dosel", units=1, val=0, ok=ok)
+    
 }
 
 NREC = {'nrec':nrec}
