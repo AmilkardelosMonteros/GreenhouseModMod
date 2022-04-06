@@ -12,3 +12,5 @@ greenhouse/climate/__pycache__/*
 __pycache__
 .DS_Store
 simulation_results
+greenhouse/__pycache__/
+control_function.py

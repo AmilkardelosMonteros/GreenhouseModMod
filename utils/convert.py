@@ -10,6 +10,9 @@ def day2seconds(x):
 def week2seconds(x):
     return 7*day2seconds()
 
+def hour2minute(x):
+    return x*60
+
 def day2minute(x):
     return x*24*60
 

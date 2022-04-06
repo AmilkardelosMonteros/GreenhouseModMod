@@ -19,5 +19,6 @@ class ModuleControls(Module):
     def Advance(self, t1):
         ## Actualización de los flujos de interés  --- Nota: Dentro de este método no se puede usar self.Vk, únicamente self.V
         ## Avance del RHS
-        self.AdvanceRungeKutta(t1)
+        #self.AdvanceRungeKutta(t1)
+        self.AdvanceAssigment(t1)
         return 1

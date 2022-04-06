@@ -52,7 +52,7 @@ class ReadModule(Module):
             while tk <= t1:
                 self.input_vars.loc[vid,'time_index'] += 1 ##Next row
                 tk = self.GetTime(vid)
-            
+            #breakpoint()
             tk_1 = self.GetTime(vid, s=-1 )
             vk_1 = self.GetVal(vid, s=-1)
             vk = self.GetVal(vid)

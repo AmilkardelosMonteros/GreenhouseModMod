@@ -37,11 +37,16 @@ class Climate_model(Director):
         self.V_Set('V1', 1200) 
         self.V_Set('C1', 600) 
 
+    #def Run(self, Dt, n, sch, save=None, active=True):
+    #    return super().Run(Dt, n, sch, save, active)
 
-    def Advance(self, t1): # un día en segundos
-        n = int(t1 / self.Dt)
-        try:
-            self.Run(Dt=self.Dt, n=n, sch=self.sch, save=None)
-        except:
-            return 0
-        return 1
+
+    #def Advance(self, t1): # un día en segundos
+    #    n = int(t1 / self.Dt)
+    #    try:
+    #        self.Run(Dt=self.Dt, n=n, sch=self.sch, save=None,active=False)
+    #    except:
+    #        print('Error en Run')
+    #        return 0
+
+    #    return 1

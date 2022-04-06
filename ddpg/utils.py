@@ -1,3 +1,4 @@
+from pickle import TRUE
 import numpy as np
 import gym
 from collections import deque
@@ -8,15 +9,16 @@ import pandas as pd
 # Ornstein-Ulhenbeck Process
 # Taken from #https://github.com/vitchyr/rlkit/blob/master/rlkit/exploration_strategies/ou_strategy.py
 class OUNoise(object):
-    def __init__(self, action_space, parameters):
+    def __init__(self, parameters):
         self.mu           = parameters['mu']
         self.theta        = parameters['theta']
         self.sigma        = parameters['max_sigma']
         self.max_sigma    = parameters['max_sigma']
         self.min_sigma    = parameters['min_sigma']
-        self.action_dim   = action_space.shape[0]
-        self.low          = action_space.low
-        self.high         = action_space.high
+        self.low          = parameters['low']
+        self.high         = parameters['high']
+        self.action_dim   = parameters['dim']
+        self.decay_period   = parameters['decay_period']
         self.reset()
         self.on = True
         
@@ -27,15 +29,18 @@ class OUNoise(object):
     def evolve_state(self):
         x  = self.state
         dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(self.action_dim)
-        self.state = np.clip(x + dx,self.low, self.high) if self.on else np.ones(self.action_dim) * self.mu 
+        self.state = np.clip(x + dx,self.low, self.high)
         self.state = x + dx
         return self.state
     
     def get_action(self, action):
-        ou_state = self.evolve_state()
-        self.sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period)
-        self.t += 1
-        return np.clip(action + ou_state, self.low, self.high)
+        if self.on == True:
+            ou_state = self.evolve_state()
+            self.sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period)
+            self.t += 1
+            return np.clip(action + ou_state, self.low, self.high)
+        else:
+            return action
 
 
 # https://github.com/openai/gym/blob/master/gym/core.py
