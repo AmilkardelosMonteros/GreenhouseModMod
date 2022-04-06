@@ -72,7 +72,7 @@ class T1_rhs(StateRHS):
         r_7 = r7(T1=self.Vk('T1'), I4=self.V('I4'), epsil2=self.V('epsil2'), epsil3=self.V('epsil3'), lamb=self.V('sigma'), a1=a_1, g2=g_2)
         #Save
         to_save = {'r1':r_1,'r5':r_5,'r6':r_6,'h1':h_1,'l1':l_1,'r7':r_7}
-        [self.mod.V_Set(k, v) for k,v in to_save.items()]
+        [self.mod.D.Vars[k].Set(v) for k,v in to_save.items()]
         return (kappa_1**-1)*(r_1 + r_5 + r_6 - h_1 - l_1 - r_7)
 
 
