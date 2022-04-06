@@ -7,6 +7,7 @@ def create_images(model, module, list_var=None,PATH=None):
     for j,name in enumerate(list_var):
         if model.Vars[name].typ == 'State':
             try:
+                fig = plt.figure()
                 x = model.OutVar(name)
                 t = range(len(x))
                 print('Graficando',name)
@@ -18,6 +19,7 @@ def create_images(model, module, list_var=None,PATH=None):
                 plt.xlabel('Time')
                 plt.title(title)
                 plt.suptitle(subtitle)
+                fig.tight_layout(rect = [0,0.03,1,0.95])
                 if SHOW:
                     plt.show()
                     plt.close()
