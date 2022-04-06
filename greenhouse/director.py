@@ -16,12 +16,14 @@ s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 
 class Greenhouse(Director):
     def __init__(self):
         super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
+        self.Dt = None
+        self.n = None
         self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g, val=0.0)
         self.AddVar( typ='State', varid='NF', prn=r'$N_k$', desc="Accumulated  number of fruits harvested", units= n_f, val=0.0)
         self.AddVar( typ='State', varid='h', prn=r'$h_k$', desc="Weight of all harvested fruits.", units= g, val=0.0)
         self.AddVar( typ='State', varid='n', prn=r'$n_k$', desc="Total  number of fruits harvested", units= n_f, val=0.0)
         self.AddVar( typ='State', varid='m', prn=r'$m_k$', desc="Simulation of the total  number of fruits harvested", units= n_f, val=0.0)
-        self.AddVar( typ='State', varid='sum_A', prn=r'$ \sum A$',desc="Total assimilation rate", units= g * (m**-2), val=0)
+        self.AddVar( typ='State', varid='sum_A', prn=r'$ \sum A$',desc="Total assimilation rate", units= g * (m**-2), val=0,rec = 1440) ##Revisar
         
     def Scheduler(self, t1, sch):
         """Advance the modules to time t1. sch is a list of modules id's to run
