@@ -48,8 +48,10 @@ class Plant(Module):
         if t1 % 86400 == 0:
             #tt = append( arange( self.t(), t1, step=self.Dt_g), [t1])  ### <---- no se deberia de usar
             ## tt = append( arange( self.t(), t1, step=self.Dt_g), [t1])
-            sd = 60 * 60 * 24 # Seconds per day
-            md = 60 * 24 # minutes per day --> Se usa con los modelos de clima y fotosíntesis que trabajan en minutos
+            #sd = 60 * 60 * 24 # Seconds per day
+            #md = 60 * 24 # minutes per day --> Se usa con los modelos de clima y fotosíntesis que trabajan en minutos
+            Dt_c = self.D.master_dir.Dt
+            md = int(86400/Dt_c)
             # Las ecuaciones del modelo de crecimiento de plnatas estan unidades de dias. 
             # Para ser consistentes definimos una unidad de tiempo en dias Dtdias 
             Dtdias = 1 # Unidad de tiendo en dias.
