@@ -2,6 +2,7 @@ from auxModMod.Dir import Module
 from scipy.stats import norm
 import numpy as np
 from .functions import * 
+
 class Module1(Module):
     def __init__(self, agent,noise, Dt=60, **kwargs):
         """Models one part of the process, uses the shared variables

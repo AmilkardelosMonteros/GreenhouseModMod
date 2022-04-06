@@ -1,18 +1,12 @@
 from vars import Vars
 import pandas as pd
-from math import exp
 import numpy as np
-from Struct_weather import Struct_weather
-HEADER = False
-####################Dt de Meteo####################
-#    t0      = 2667452400
-#    t1      = 2667456000             
-#    t1 - t0 = 3600 
-#    3600  is equivalent to 60 minutes -> 1 = second
-#
+from numpy import exp
 
-active_vars = ['Temperature','Shortwave_Radiation','Wind_Speed10m']
-new_vars = ['Outside_Vapor_Pressure']
+HEADER = False
+
+active_vars = ['Temperature','Shortwave_Radiation',
+       'Wind_Speed10m']
 time_var = ['Time_Stamp']
 
 def presion_de_vapor_exterior(i5,rh):
@@ -49,13 +43,9 @@ def create_dataset(limit = None):
 def create_inputs_table():
     columns = ['Var', 'Description','Units','Sheet'	,'Column','Column_units','Column_conv_shift','Column_conv',	'Time_column',	'Time_column_units','Time_conv_shift','Time_conv']
     data    = pd.DataFrame(columns = columns)
-    New_vars = {'Outside_Vapor_Pressure': Struct_weather(orig_name='Outside_Vapor_Pressure',units='Pa',new_name = 'I11',obs = 'q2(i5)*(rh/100.0)')} 
     for i,var in enumerate(active_vars):
-        list_tem    = [Vars[var].new_name,Vars[var].new_name + Vars[var].obs,Vars[var].units,'Meteo',var,Vars[var].units,Vars[var].conv_shift,Vars[var].conv,'Time_Stamp',pd.NA,2667452400,1]
+        list_tem    = [Vars[var].new_name,Vars[var].new_name + Vars[var].obs,Vars[var].units,'Meteo',var,Vars[var].units,0,1,'Time_Stamp',pd.NA,2667452400,60*(1/3600)]
         data.loc[i] = list_tem
-    for j,var in enumerate(new_vars):
-        list_tem    = [New_vars[var].new_name,New_vars[var].new_name + New_vars[var].obs,New_vars[var].units,'Meteo',var,New_vars[var].units,New_vars[var].conv_shift,New_vars[var].conv,'Time_Stamp',pd.NA,2667452400,1]
-        data.loc[i+j+1] = list_tem
     return data
 
 

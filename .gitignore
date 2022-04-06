@@ -2,8 +2,15 @@ simulation_results
 greenhouse/climate/__pycache__/
 __pycache__/
 *.zip
+weather_data/pandas_to_excel.xlsx
+.DS_Store
+Fruit_Production_V8/
+M\303\263dulos_Juntos/
 auxModMod/__pycache__/
 greenhouse/climate/__pycache__/*
 **/__pycache__/
+__pycache__
+.DS_Store
+simulation_results
 greenhouse/__pycache__/
 control_function.py
