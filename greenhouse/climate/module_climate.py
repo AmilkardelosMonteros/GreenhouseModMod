@@ -79,9 +79,7 @@ class Module1(Module):
         #Vsat = V_sa( T = self.V('T2') ) # nuevo
         #V1 = self.V('V1') / 7  # nuevo 
         #RH = 100 * ( V1 / Vsat ) # nuevo 
-        #self.V_Set('RH', RH) # nuevo   # definit RH como variable 
-        print('o4')
-        print(self.V_GetRec('o4'))
+        #self.V_Set('RH', RH) # nuevo   # definit RH como variable
         self.AdvanceRungeKutta(t1)
         self.AdvanceAssigment(t1)
         self.i  += 1
