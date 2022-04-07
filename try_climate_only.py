@@ -21,7 +21,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from util import Loader
 from utils.convert import get_dt_and_n
-from utils.convert import day2seconds, hour2seconds, minute2seconds, day2minute,day2hour,hour2minute
+from utils.convert import day2seconds, hour2seconds, minute2seconds, day2minutes,day2hours,hour2minutes
 from utils.graphics import create_images
 from utils.create_folders import create_path
 from utils.images_to_pdf import create_pdf_images
@@ -132,7 +132,7 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-Dt, n = get_dt_and_n(minute=15, days=7)
+Dt, n = get_dt_and_n(minute=15, days=30)
 director.Dt = Dt
 director.n = n
 director.Run(director.Dt, director.n, director.sch,active=True)
