@@ -51,7 +51,7 @@ class Plant(Module):
             ## tt = append( arange( self.t(), t1, step=self.Dt_g), [t1])
             #sd = 60 * 60 * 24 # Seconds per day
             #md = 60 * 24 # minutes per day --> Se usa con los modelos de clima y fotosíntesis que trabajan en minutos
-            Dt_c = self.D.master_dir.Dt
+            Dt_c = self.D.Modules['Photosynt'].Dt
             md = int(86400/Dt_c)
             # Las ecuaciones del modelo de crecimiento de plnatas estan unidades de dias. 
             # Para ser consistentes definimos una unidad de tiempo en dias Dtdias 
@@ -62,7 +62,10 @@ class Plant(Module):
             T_mean = self.V_Mean('T2', ni=-md ) # Se saca el promedio sobre los registros del último día
             PAR_mean = self.V_Mean('I2', ni=-md ) # Se saca el promedio sobre los registros del último día
             ## Asimilados acumulados (integrados) en el último día
-            A_int = self.V_Int('A', ni=-md,t=arange(0,1440,60)) # Se integra sobre los registros del último día 
+            try:
+                A_int = self.V_Int('A', ni=-md,t=arange(0, 86400, 60)) # Se integra sobre los registros del último día 
+            except:
+                breakpoint()
             #print(tt)
             #steps = len(1)
             #for i in range( 1, steps):      ####<---------------- corregir este for no va 
