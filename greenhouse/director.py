@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 #from module_control import ModuleControl
 #from director_production import I_2, Production_model
 from ModMod import Director
+from .climate. functions import Aclima
 from sympy import symbols
 
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
@@ -47,6 +48,7 @@ class Greenhouse(Director):
         t_m_k = 0
         sum_A = 0 
         A_Mean = 0
+        aclima = lambda x: Aclima(x, self.V('I1'))
         for plant in self.PlantList:
             t_w_hist += self.Modules[plant].Modules['Plant'].V('Q_h')
             t_n_f += self.Modules[plant].Modules['Plant'].n_fruits_h 
@@ -55,7 +57,7 @@ class Greenhouse(Director):
             t_m_k += self.Modules[plant].Modules['Plant'].V('m_k')
             sum_A += self.Modules[plant].Modules['Plant'].V('A')
             idx = int(t1 / self.Modules[plant].Modules['Photosynt'].Dt)
-            A_Mean += self.Modules[plant].Modules['Photosynt'].V_Mean('A', ni=-idx ) 
+            A_Mean += self.Modules[plant].Modules['Photosynt'].V_Mean('A', ni=-idx, g=aclima) 
         self.V_Set( 'H', t_w_hist)
         self.V_Set( 'NF', t_n_f)
         self.V_Set( 'h', t_w_k)
