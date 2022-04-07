@@ -37,7 +37,7 @@ class Ci_rhs(StateRHS):
                     desc="Intracellular CO2", units= ppm , val=410)
         
         self.AddVarLocal( typ='State', varid='A', prn=r'$A$',\
-           desc="Assimilation rate", units= g * (m**-2), val=0)
+           desc="Assimilation rate", units= g * (m**-2), val=0, rec=15)
         
         ## Inputs
         self.AddVar( typ='State', varid='C1', prn=r'$C_1$',\
@@ -193,8 +193,9 @@ class Ci_rhs(StateRHS):
         self.AddVar( typ='State', varid='ind_pho', prn=r'$ind_pho',\
                     desc="It is a global auxiliary variable that allows to control the index that is used to make the calculations of photosynthesis", \
                     units= 1 , val= - int( self.V('Dt_dir') / self.V('Dt_pho') ) ) # The val is minus the number of steps that must do photosynthesis module per each principal director step
-        
-    
+        self.AddVar( typ='State', varid='int_A', prn=r'$\int A',\
+                    desc="Integral de los asimilados", \
+                    units= 1 , val= 0 )
     def RHS( self, Dt):
         """RHS( Dt ) = \kappa_1^{-1} F_1( t+Dt, X+k) where X is the current value of
            all state variables.  k is a simple dictionary { 'v1':k1, 'v2':k2 ... etc}
