@@ -4,7 +4,7 @@ from .functions import f1, f2, f3, f4, f5, f6, f7
 from .functions import o1, o2, o3, o4, o5, o6 
 from .functions import h6, n1, n2, n3
 from .functions import kappa4
-from .functions import Amg
+from .functions import Amg, Aclima
 
 state_names    = ['T2', 'C1']
 control_names  = ['U1', 'U2', 'U4', 'U5', 'U6', 'U7', 'U8', 'U10']
@@ -55,12 +55,13 @@ class C1_rhs(StateRHS):
         o_1 = o1(eta13=self.V('eta13'), h6=h_6)
         o_2 = o2(U10=self.V('U10'), psi2=self.V('psi2'), alpha6=self.V('alpha6')) #MC_ext_air
         o_3 = o3(C1=self.Vk('C1'), I10=self.V('I10'), f1=f_1)
-        o_4 = Amg(C=self.Vk('C1'),PAR = self.V('I2'))
+        #o_4 = Amg(C=self.Vk('C1'),PAR = self.V('I2'))
         o_5 = o5(C1=self.Vk('C1'), I10=self.V('I10'), f2=f_2, f3=f_3, f4=f_4)
-        sum_A = self.V('sum_A') / 1000 ## g m^2 -> mg m^2
+        sum_A = self.V('sum_A')/(24*60) 
+        o_4 = Aclima(sum_A,I1=self.V('I1'))
+
         to_save = {'o1':o_1,'o2':o_2,'o3':o_3,'o4':o_4,'o5':o_5,'sum_A':sum_A}
         [self.mod.V_Set(k, v) for k,v in to_save.items()]
-        o_4 = sum_A
         return (kappa_4**-1)*(o_1 + o_2 + o_3 - o_4 - o_5 )
 
 

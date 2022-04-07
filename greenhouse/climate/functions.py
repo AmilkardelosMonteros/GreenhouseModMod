@@ -77,6 +77,24 @@ def Amg(C,PAR,I_1=2,phi_2=4):
     factor_conversion = 0.044
     return I_1*factor_conversion*A(Cppm,I)
 
+# Esta es la tasa de asimilacion de CO2 calculada con el modelo
+# completo de fotosintesis. Esta tasa debe de estar en unidades 
+# de mg(de CO2) m**-2(de invernadero) s**-1
+# Este es el sumidero de CO2 debido a las plantas en el modelo de 
+# fotosintesis
+def Aclima(A,I1):   
+    # A es la tasa de asimilación de CO2 en mumol (de CO2) m**-2(hoja) s**-1
+    # I1 es el LAI m**2 hoja m**2 invernadero
+    # esta funcion nos da la A en mg de CO2 m**-2(Invernadero) s**-1
+    return (4.4/100)*I1*A
+
+def Acrop(A,I1, CropDensity=2):
+    # A es la tasa de asimilación de CO2 en mumol (de CO2) m**-2(hoja) s**-1
+    # Crop density es el numero de plantas por metro cuadrado
+    # I1 es el LAI m**2 hoja m**2 invernadero
+    # esta funcion nos da la A en mg CH20 planta**-1 s**-1
+    return (30/10**6)*(I1/CropDensity)*A
+
 
 def kappa3(T2, psi1, phi2, omega2):
     return (psi1*phi2) / (omega2*(T2+273.15))
