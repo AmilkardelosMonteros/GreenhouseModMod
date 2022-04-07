@@ -30,7 +30,9 @@ OTHER_CONSTANTS = {
                     desc="Missing", units=1, val=30, ok='falta descripción y unidades'),
     'model_noise': Struct(val = MODEL_NOISE,ok = 'Controla si se agrega o no aleatoriedad al modelo'),
     'sum_A': Struct(typ='State', varid='sum_A', prn=r'$ \sum A$',
-                    desc="Total assimilation rate", units=g * (m**-2), val=0,rec= 1440, ok='Para usarlo hay que cambiar unidades')
+                    desc="Total assimilation rate", units=g * (m**-2), val=0,rec= 1440, ok='Para usarlo hay que cambiar unidades'),
+    'A_Mean': Struct( typ='State', varid='A_Mean', prn=r'$ E\\left( A\\right)$',desc="Total mean assimilation rate", units= g * (m**-2), val=0,rec = 1440) ##Revisar
+
 }
 
 
