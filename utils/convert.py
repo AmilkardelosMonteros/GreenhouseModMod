@@ -10,12 +10,17 @@ def day2seconds(x):
 def week2seconds(x):
     return 7*day2seconds()
 
-def hour2minute(x):
+def hour2minutes(x):
     return x*60
 
-def day2minute(x):
+def day2minutes(x):
     return x*24*60
 
-def day2hour(x):
+def day2hours(x):
     return x*24
 
+def get_dt_and_n(minute, days):
+    Dt = minute2seconds(minute)
+    m = hour2minutes(1) // minute
+    n = m * day2hours(days)
+    return Dt, n 
