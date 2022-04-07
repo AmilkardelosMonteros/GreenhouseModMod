@@ -8,7 +8,7 @@ Created on Wed Feb  9 13:21:39 2022
 
 from ModMod import Module
 from numpy import exp, floor, clip, arange, append, sqrt
-from .functions import TF, Y_pot, t_wg # importar funciones crecimiento de la planta
+from .functions import TF, Y_pot, t_wg, Acrop # importar funciones crecimiento de la planta
 from scipy.stats import norm, gamma
 import copy
 
@@ -62,8 +62,9 @@ class Plant(Module):
             T_mean = self.V_Mean('T2', ni=-md ) # Se saca el promedio sobre los registros del último día
             PAR_mean = self.V_Mean('I2', ni=-md ) # Se saca el promedio sobre los registros del último día
             ## Asimilados acumulados (integrados) en el último día
+            acrop = lambda x: Acrop(x, I1=2) #### Cambiar valor de I1
             try:
-                A_int = self.V_Int('A', ni=-md,t=arange(0, 86400, 60)) # Se integra sobre los registros del último día 
+                A_int = self.V_Int('A', ni=-md,t=arange(0, 86400, 60), g=acrop) # Se integra sobre los registros del último día 
             except:
                 breakpoint()
             #print(tt)
