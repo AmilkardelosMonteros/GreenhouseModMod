@@ -51,7 +51,7 @@ class Q_rhs(StateRHS):
         
         ### Local variables, separate for each plant
         self.AddVarLocal( typ='State', varid='A', prn=r'$A$',\
-           desc="Assimilation rate", units= g * (m**-2), val=0)
+           desc="Assimilation rate", units= g * (m**-2), val=0, rec=1440)
         
         self.AddVarLocal( typ='StatePartial', varid='Q', prn=r'$Q$',\
            desc="Weight of all fruits for plant", units= g, val=0.0)
