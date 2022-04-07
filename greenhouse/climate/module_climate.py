@@ -1,4 +1,4 @@
-from auxModMod.Dir import Module
+from ModMod import Module
 from scipy.stats import norm
 import numpy as np
 from .functions import * 
@@ -80,6 +80,8 @@ class Module1(Module):
         #V1 = self.V('V1') / 7  # nuevo 
         #RH = 100 * ( V1 / Vsat ) # nuevo 
         #self.V_Set('RH', RH) # nuevo   # definit RH como variable 
+        print('o4')
+        print(self.V_GetRec('o4'))
         self.AdvanceRungeKutta(t1)
         self.AdvanceAssigment(t1)
         self.i  += 1
