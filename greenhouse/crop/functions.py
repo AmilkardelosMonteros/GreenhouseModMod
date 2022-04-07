@@ -82,16 +82,12 @@ def R_d (V_cmax):
 def A (A_R, A_f, A_acum, R_d, fc):
     return  min( A_R, A_f, A_acum ) - R_d 
 
-# Esta es la tasa de asimilacion de CO2 calculada con el modelo
-# completo de fotosintesis. Esta tasa debe de estar en unidades 
-# de mg(de CO2) m**-2(de invernadero) s**-1
-# Este es el sumidero de CO2 debido a las plantas en el modelo de 
-# fotosintesis
-def Aclima(A,I1):   
+def Acrop(A,I1, CropDensity=2):
     # A es la tasa de asimilación de CO2 en mumol (de CO2) m**-2(hoja) s**-1
+    # Crop density es el numero de plantas por metro cuadrado
     # I1 es el LAI m**2 hoja m**2 invernadero
-    # 4.4/100 es el factor de conversion de (4.4/100 mg de CO2/ mumol de CO2)
-    return (4.4/100)*I1*A
+    # esta funcion nos da la A en mg CH20 planta**-1 s**-1
+    return (30/10**6)*(I1/CropDensity)*A
 
 #### Resistencia Estomática ####
     
