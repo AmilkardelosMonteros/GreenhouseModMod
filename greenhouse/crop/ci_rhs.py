@@ -37,11 +37,7 @@ class Ci_rhs(StateRHS):
                     desc="Intracellular CO2", units= ppm , val=410)
         
         self.AddVarLocal( typ='State', varid='A', prn=r'$A$',\
-<<<<<<< HEAD
            desc="Assimilation rate", units= g * (m**-2), val=0, rec=1440)
-=======
-           desc="Assimilation rate", units= g * (m**-2), val=0, rec=15)
->>>>>>> 0eb860fedd3a02081e19a64661b3d71854dcc129
         
         ## Inputs
         self.AddVar( typ='State', varid='C1', prn=r'$C_1$',\
