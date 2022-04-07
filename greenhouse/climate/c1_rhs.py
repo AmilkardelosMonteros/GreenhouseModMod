@@ -57,16 +57,9 @@ class C1_rhs(StateRHS):
         o_3 = o3(C1=self.Vk('C1'), I10=self.V('I10'), f1=f_1)
         #o_4 = Amg(C=self.Vk('C1'),PAR = self.V('I2'))
         o_5 = o5(C1=self.Vk('C1'), I10=self.V('I10'), f2=f_2, f3=f_3, f4=f_4)
-<<<<<<< HEAD
         A_Mean = self.V('A_Mean') ## g m^2 -> mg m^2
         o_4 = A_Mean
         to_save = {'o1':o_1,'o2':o_2,'o3':o_3,'o4':o_4,'o5':o_5}#,'A_Mean':A_Mean}
-=======
-        sum_A = self.V('sum_A')/(24*60) 
-        o_4 = Aclima(sum_A,I1=self.V('I1'))
-
-        to_save = {'o1':o_1,'o2':o_2,'o3':o_3,'o4':o_4,'o5':o_5,'sum_A':sum_A}
->>>>>>> 0eb860fedd3a02081e19a64661b3d71854dcc129
         [self.mod.V_Set(k, v) for k,v in to_save.items()]
         return (kappa_4**-1)*(o_1 + o_2 + o_3 - o_4 - o_5 )
 
