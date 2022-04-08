@@ -235,7 +235,7 @@ def f2(U1, eta6, eta7, eta8, f5, f6):
     if (eta7 >= eta8):
         return eta6*f5 + 0.5*f6
     else:
-        return eta6*(U1*f5 + (1-U1)*f5) + 0.5*f6
+        return eta6*(U1*f5) + 0.5*f6
 
 
 def f3(U7, phi8, alpha6):
