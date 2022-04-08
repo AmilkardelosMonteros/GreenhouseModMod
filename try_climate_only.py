@@ -132,7 +132,7 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-Dt, n = get_dt_and_n(minute=15, days=30)
+Dt, n = get_dt_and_n(minute=15, days=10)
 director.Dt = Dt
 director.n = n
 director.Run(director.Dt, director.n, director.sch,active=True)
