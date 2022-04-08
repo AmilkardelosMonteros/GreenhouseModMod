@@ -48,7 +48,7 @@ class PhotoModule(Module):
             I_21 = I_2( I = I2, f=self.V('f'), ab=self.V('ab') )
             J1 = J( I_2=I_21, J_max=self.V('J_max'), theta=self.V('theta') )
             A_R1 = A_R( O_a=self.V('O_a'), tau=tau1, C_ippm=self.V('Ci'), V_cmax=V_cmax1, Gamma_st=Gamma_st1, K_C=K_C1, K_O=K_O1)
-            A_f1 = A_f( C_ippm=self.V('Ci'), Gamma_st=Gamma_st1, J=J1, k_JV=self.V('k_JV') )
+            A_f1 = A_f( C_ippm=self.V('Ci'), Gamma_st=Gamma_st1, J=J1 )
             A_acum1 = A_acum( V_cmax=V_cmax1 )
             A1 = A( A_R=A_R1, A_f=A_f1, A_acum=A_acum1, R_d=R_d1, fc=self.V('fc') ) 
             self.V_Set('A', A1)
