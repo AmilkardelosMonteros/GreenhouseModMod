@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from ModMod import Director
 from .climate. functions import Aclima
 from sympy import symbols
+from numpy import arange
 
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 
@@ -48,6 +49,7 @@ class Greenhouse(Director):
         t_m_k = 0
         sum_A = 0 
         A_Mean = 0
+        A_int  = 0
         aclima = lambda x: Aclima(x, self.V('I1'))
         for plant in self.PlantList:
             t_w_hist += self.Modules[plant].Modules['Plant'].V('Q_h')
@@ -56,8 +58,20 @@ class Greenhouse(Director):
             t_n_k += self.Modules[plant].Modules['Plant'].V('n_k')
             t_m_k += self.Modules[plant].Modules['Plant'].V('m_k')
             sum_A += self.Modules[plant].Modules['Plant'].V('A')
-            idx = int(t1 / self.Modules[plant].Modules['Photosynt'].Dt)
-            A_Mean += self.Modules[plant].Modules['Photosynt'].V_Mean('A', ni=-idx, g=aclima) 
+            idx = int(self.Dt / self.Modules[plant].Modules['Photosynt'].Dt)
+            #t = None if idx == 1 
+            #A_Mean += self.Modules[plant].Modules['Photosynt'].V_Mean('A', ni=-idx)
+            if idx == 1: 
+                A_Mean += aclima(self.Modules[plant].Modules['Photosynt'].V('A'))
+            else:
+                try:
+                    #breakpoint()
+                    A_Mean += self.Modules[plant].Modules['Photosynt'].V_Int('A', ni=-idx,t=arange(0, 60*idx, 60))/(60)
+                except:
+                    breakpoint() 
+        
+            #A_Mean += aclima(self.Modules[plant].Modules['Photosynt'].V('A'))
+        #breakpoint()
         self.V_Set( 'H', t_w_hist)
         self.V_Set( 'NF', t_n_f)
         self.V_Set( 'h', t_w_k)
