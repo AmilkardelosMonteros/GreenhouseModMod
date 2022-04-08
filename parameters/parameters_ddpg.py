@@ -7,7 +7,7 @@ CONTROLS = {'U1':  False,
             'U3':  False, 
             'U4':  False,   
             'U5':  False, #No hace nada por los parametros
-            'U6':  False, 
+            'U6':  True, 
             'U7':  False, 
             'U8':  False,  
             'U9':  False, 
