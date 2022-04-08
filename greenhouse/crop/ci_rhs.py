@@ -34,7 +34,7 @@ class Ci_rhs(StateRHS):
         ### Add variables ###
         ## State variables
         self.AddVarLocal( typ='State', varid='Ci', prn=r'$C_i$',\
-                    desc="Intracellular CO2", units= ppm , val=410)
+                    desc="Intracellular CO2", units= ppm , val=410, rec=nrec*10)
         
         self.AddVarLocal( typ='State', varid='A', prn=r'$A$',\
            desc="Assimilation rate", units= g * (m**-2), val=0, rec=1440)
@@ -224,5 +224,5 @@ class Ci_rhs(StateRHS):
         ## Cálculos absorción de CO2
         g_s = gTC( k=self.V('ks'), Rb=self.V('Rb'), Rs=R_s1 )
         Ca1 = Ca( gtc=g_s, C = C1, Ci=self.Vk('Ci') )
-        Dt_Ci = ( Ca1 - (1e-3)*self.V('A') )/0.554 # Los asimilados se pasan a mg/m**2 y el incremento del Ci queda en ppm
+        Dt_Ci = ( Ca1 - self.V('A')) /0.554 # Los asimilados se pasan a mg/m**2 y el incremento del Ci queda en ppm
         return Dt_Ci
