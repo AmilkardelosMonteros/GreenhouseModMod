@@ -203,9 +203,9 @@ def kappa1(I1, alpha1):
 def r1(r2, r3):
     return r2 + r3
 
-
-def r5(I2, alpha2, eta1, eta3):
-    return (1 - eta1)*alpha2*eta3*I2
+# se modificio para inlcuir las lamparas
+def r5(I2, U12, alpha2, eta1, eta3, eta14, alpha12 ):
+    return (1 - eta1)*alpha2*(eta3*I2 +eta14*alpha12*U12)
 
 
 def r6(T1, I3, alpha3, epsil1, epsil2, lamb, g1):
@@ -369,6 +369,13 @@ def r10(r11, r12, r13):
 def h11(T2, I7, nu7, nu8, phi2):
     return 2*nu7*(T2 - I7)/(phi2 + nu8)
 
+# flujo de calor debido a las lamparas
+def h12(U12, eta15, eta16, alpha12):
+    return (eta15+eta16)*alpha12*U12
+
+# funcion para sumar la radiación PAR solar a la radiación PAR de las lamparas 
+def I2T(I2, U12, eta17, alpha12):
+    return I2 + eta17*alpha12*U12
 
 def H_Boil_Pipe(r6,h4):
     return max(r6 + h4,0)
