@@ -59,6 +59,7 @@ class C1_rhs(StateRHS):
         o_5 = o5(C1=self.Vk('C1'), I10=self.V('I10'), f2=f_2, f3=f_3, f4=f_4)
         A_Mean = self.V('A_Mean') ## g m^2 -> mg m^2
         o_4 = A_Mean
+        #breakpoint()
         to_save = {'o1':o_1,'o2':o_2,'o3':o_3,'o4':o_4,'o5':o_5}#,'A_Mean':A_Mean}
         [self.mod.V_Set(k, v) for k,v in to_save.items()]
         return (kappa_4**-1)*(o_1 + o_2 + o_3 - o_4 - o_5 )
