@@ -6,7 +6,7 @@ Created on Wed Feb  9 12:55:08 2022
 @author: jdmolinam
 """
 
-from numpy import exp, floor, clip, arange, append, sqrt, maximum
+from numpy import exp, floor, clip, arange, append, sqrt
 from sympy import symbols
 
 ###########################
@@ -52,23 +52,19 @@ def J (I_2, J_max, theta):
     return ( (I_2) + (J_max) - ( ( (I_2 + J_max) )**2 -4*theta*I_2*J_max )**(0.5) ) / (2*theta)
 
 ## Factores limitantes en la producción de asimilados ##    
-def A_R (O_a, tau, C_i, V_cmax, Gamma_st, K_C, K_O): 
+def A_R (O_a, tau, C_ippm, V_cmax, Gamma_st, K_C, K_O): 
     """
     Asimilación por Rubisco
     """
-    C_i1 = C_i*(28.96/44) # El CO2 está pasando de ppm a (mu_mol_CO2/mol_air)
-    tem = maximum(( 1 - ( O_a / (2.0*tau*C_i1) ) ),0) * V_cmax * maximum((C_i1 - Gamma_st),0) / ( K_C *(1 + (O_a/K_O) ) + C_i1 )
-    if tem < 0:
-        breakpoint()
-    return tem
-    
+    return max([( 1 - ( O_a / (2.0*tau*C_ippm) ) ),0]) * V_cmax * max([(C_ippm - Gamma_st),0]) / ( K_C *(1 + (O_a/K_O) ) + C_ippm )
 
-def A_f (C_i, Gamma_st, J, k_JV): 
+def A_f (C_ippm, Gamma_st, J): 
     """
     Asimilación por radiación PAR
+    En esta ecuación C_ippm este en ppm
     """
-    C_i1 = C_i*(28.96/44) # El CO2 está pasando de ppm a (mu_mol_CO2/mol_air)
-    return ( (maximum(C_i1 - Gamma_st,0))*J / ( 4*C_i1 + 8*Gamma_st) )*k_JV
+     # El CO2 está pasando de ppm a (mu_mol_CO2/mol_air)
+    return  (max([C_ippm - Gamma_st,0])) * J / ( 4*C_ippm + 8*Gamma_st) 
 
 def A_acum(V_cmax):
     """
@@ -111,11 +107,15 @@ def f_R (I, C_ev1, C_ev2):
     """
     return (I + C_ev1) / (I + C_ev2)
 
-def f_C (C_ev3, C1, k_fc):
+def f_C (C_ev3, C1):
     """
     Factor de resistencia debida al CO2 
+
+    En este formual es necesario que C1 este en ppms 
+    el factor de conversion es 1 ppm de CO2 = 0.553 mg m**-3
     """
-    return 1 + C_ev3*( (C1 - 200*k_fc)**2 )
+    C1_ppm = C1 /(0.553)
+    return 1 + C_ev3*( (C1_ppm - 200)**2 )
 
 def C_ev3 (C_ev3n, C_ev3d, Sr):
     return C_ev3n*(1 - Sr) + C_ev3d*Sr
@@ -153,13 +153,15 @@ def gTC (k, Rb, Rs):
     gtc = ( (1+k)*(1.6/gs) + (1.37/gb) )**-1 + k*( ( (1+k)*(1.6/gs) + k*(1.37/gb) )**-1 )
     return gtc
 
-def Ca (gtc, C, Ci):
+def Ca (gtc, C1, Ci):
     """
-    Esta función calcula el CO2 absorbido (mg / m**2 * d) 
-    por una determinada capa del dosel
+    Esta función calcula el CO2 absorbido ppm s**-1 
+    El C1 (CO2 del invernadero) esta en mg m**-3 y se debe usar 
+    en ppm para esto la convertimos 1 ppm de CO2 = 0.553 mg m**-3
+
     """
-    C1 = C*(44/28.96) # El CO2 pasa de (mu_mol_CO2/mol_air) a ppm
-    return gtc*( (C1 - Ci)*0.554 ) # El CO2 se está pasando de ppm a mg/m**2
+    C1_ppm = C1/0.553 # El CO2 pasa de (mu_mol_CO2/mol_air) a ppm
+    return gtc * ( C1_ppm - Ci ) #El CO2 absorbido se calcula en ppm
 
 
 #### Modelo de crecimiento ####
