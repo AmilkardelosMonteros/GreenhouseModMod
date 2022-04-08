@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 from util import Loader
 from utils.convert import get_dt_and_n
 from utils.convert import day2seconds, hour2seconds, minute2seconds, day2minutes,day2hours,hour2minutes
-from utils.graphics import create_images
+from utils.graphics import create_images, create_images_per_module
 from utils.create_folders import create_path
 from utils.images_to_pdf import create_pdf_images
 from reports.report_constants import Constants
@@ -132,10 +132,13 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-Dt, n = get_dt_and_n(minute=15, days=10)
+Dt, n = get_dt_and_n(minute=15, days=1)
 director.Dt = Dt
 director.n = n
+import os
+#os.system("spongebob-cli 1")
 director.Run(director.Dt, director.n, director.sch,active=True)
+
 
 #Dt de Director = 1440 (numero de minutos en un dia)
 #Dt de Director clima = 60, 1440/60 = 24 numero de registros de clima * n
@@ -158,6 +161,7 @@ for v in variables:
 PATH = create_path('simulation_results')
 Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
-create_images(director,'Climate',PATH = PATH)
+#create_images(director,'Climate',PATH = PATH)
+create_images_per_module(director, 'Plant0', list_var=['Ci', 'C1'])
 print(PATH)
 
