@@ -6,7 +6,7 @@ Created on Wed Feb  9 12:55:08 2022
 @author: jdmolinam
 """
 
-from numpy import exp, floor, clip, arange, append, sqrt, max
+from numpy import exp, floor, clip, arange, append, sqrt, maximum
 from sympy import symbols
 
 ###########################
@@ -57,14 +57,18 @@ def A_R (O_a, tau, C_i, V_cmax, Gamma_st, K_C, K_O):
     Asimilación por Rubisco
     """
     C_i1 = C_i*(28.96/44) # El CO2 está pasando de ppm a (mu_mol_CO2/mol_air)
-    return max(( 1 - ( O_a / (2.0*tau*C_i1) ) ),0) * V_cmax * max((C_i1 - Gamma_st),0) / ( K_C *(1 + (O_a/K_O) ) + C_i1 )
+    tem = maximum(( 1 - ( O_a / (2.0*tau*C_i1) ) ),0) * V_cmax * maximum((C_i1 - Gamma_st),0) / ( K_C *(1 + (O_a/K_O) ) + C_i1 )
+    if tem < 0:
+        breakpoint()
+    return tem
+    
 
 def A_f (C_i, Gamma_st, J, k_JV): 
     """
     Asimilación por radiación PAR
     """
     C_i1 = C_i*(28.96/44) # El CO2 está pasando de ppm a (mu_mol_CO2/mol_air)
-    return ( (max(C_i1 - Gamma_st,0))*J / ( 4*C_i1 + 8*Gamma_st) )*k_JV
+    return ( (maximum(C_i1 - Gamma_st,0))*J / ( 4*C_i1 + 8*Gamma_st) )*k_JV
 
 def A_acum(V_cmax):
     """
@@ -80,7 +84,8 @@ def R_d (V_cmax):
 
 # Tasa de asimilación
 def A (A_R, A_f, A_acum, R_d, fc):
-    return  min( A_R, A_f, A_acum ) - R_d 
+
+    return min([A_R, A_f, A_acum]) - R_d 
 
 def Acrop(A,I1, CropDensity=2):
     # A es la tasa de asimilación de CO2 en mumol (de CO2) m**-2(hoja) s**-1
