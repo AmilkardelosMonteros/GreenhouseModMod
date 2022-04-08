@@ -65,8 +65,7 @@ class Greenhouse(Director):
                 A_Mean += aclima(self.Modules[plant].Modules['Photosynt'].V('A'))
             else:
                 try:
-                    #breakpoint()
-                    A_Mean += self.Modules[plant].Modules['Photosynt'].V_Int('A', ni=-idx,t=arange(0, 60*idx, 60))/(60)
+                    A_Mean += self.Modules[plant].Modules['Photosynt'].V_Int('A', ni=-idx,t=arange(0, 60*idx, self.Modules[plant].Modules['Photosynt'].Dt))/self.Modules[plant].Modules['Photosynt'].Dt
                 except:
                     breakpoint() 
         
@@ -80,13 +79,6 @@ class Greenhouse(Director):
         self.V_Set( 'sum_A', sum_A)
         self.V_Set( 'A_Mean', A_Mean)
 
-
     def reset(self):
         pass
         #self.V_Set('<nombre>', valor) # -> cualquier variable que no sea constante
-
-    def step(self, action):
-        pass
-
-    def reward(self, state, action):
-        pass
