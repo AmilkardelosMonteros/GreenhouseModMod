@@ -50,8 +50,10 @@ class PhotoModule(Module):
             A_R1 = A_R( O_a=self.V('O_a'), tau=tau1, C_i=self.V('Ci'), V_cmax=V_cmax1, Gamma_st=Gamma_st1, K_C=K_C1, K_O=K_O1)
             A_f1 = A_f( C_i=self.V('Ci'), Gamma_st=Gamma_st1, J=J1, k_JV=self.V('k_JV') )
             A_acum1 = A_acum( V_cmax=V_cmax1 )
-            A1 = abs( A( A_R=A_R1, A_f=A_f1, A_acum=A_acum1, R_d=R_d1, fc=self.V('fc') ) )
+            A1 = A( A_R=A_R1, A_f=A_f1, A_acum=A_acum1, R_d=R_d1, fc=self.V('fc') ) 
             self.V_Set('A', A1)
+            #if A1 > 1000:
+                #breakpoint()
             #
             self.V_Set('ind_pho', ind_pho + 1) # Después de que se calcularon los asimilados, se actualiza el valor del indice auxiliar pues se avanza un minuto
             ## Avance del RHS
