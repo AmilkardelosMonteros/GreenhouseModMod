@@ -169,7 +169,6 @@ labels = [str(i) for i in range(episodes)]
 set_axis_style(axis, labels)
 
 plt.show()
-breakpoint()
 
 
 #Dt de Director = 1440 (numero de minutos en un dia)

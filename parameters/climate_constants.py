@@ -53,7 +53,9 @@ ALPHA ={
     'alpha8': Struct(typ='Cnts', varid='alpha8', prn=r'$\alpha_8$',
                     desc="PAR absorption coefficient of the cover", units=1, val=1, ok='no dan el valor'), # Coeficiente de absorci ́on PAR de la cubierta # En el artículo no dan el valor
     'alpha9': Struct(typ='Cnts', varid='alpha9', prn=r'$\alpha_9$',
-                    desc="NIR absorption coefficient of the cover", units=1, val=1, ok='no dan el valor')
+                    desc="NIR absorption coefficient of the cover", units=1, val=1, ok='no dan el valor'),
+    'alpha12': Struct(typ='Cnts', varid='alpha12', prn=r'$\alpha_{12}$',
+                    desc="Total lamp radiation per square meter ", units = W * m**-2, val=112, ok='Calculo Antonio')                
 }
 
 
@@ -148,7 +150,16 @@ ETA = {
     'eta12': Struct(typ='Cnts', varid='eta12', prn=r'$\eta_{12}$',
                     desc="Amount of vapor that is released when a joule of sensible energy is produced by the direct air heater", units=kg_vapour * J**-1, val=4.43e-8, ok=ok), # Cantidad de vapor que es liberado cuando un joule de energía sensible es producido por el calentador de aire directo # ok
     'eta13': Struct(typ='Cnts', varid='eta13', prn=r'$\eta_{13}$',
-                    desc="Amount of CO2 that is released when a joule of sensible energy is produced by the direct air heater", units=mg_CO2 * J**-1, val=0.057, ok=ok)
+                    desc="Amount of CO2 that is released when a joule of sensible energy is produced by the direct air heater", units=mg_CO2 * J**-1, val=0.057, ok=ok),
+    'eta14': Struct(typ='Cnts', varid='eta14', prn=r'$\eta_{14}$',
+                    desc="Percentage lamps radiation that is NIR", units=1, val=0.18, ok='Aaron dio el valor '),
+    'eta15': Struct(typ='Cnts', varid='eta15', prn=r'$\eta_{15}$',
+                    desc="Porcentaje de la radiacion de las lamparas que es calor en el reflector", units=1, val=0.0074, ok='Aaron dio el valor '),
+    'eta16': Struct(typ='Cnts', varid='eta16', prn=r'$\eta_{16}$',
+                    desc="Porcentaje de la radiacion de las lamparas que es calor directo al aire del invernadero", units=1, val=0.39, ok='Aaron dio el valor '),
+    'eta17': Struct(typ='Cnts', varid='eta17', prn=r'$\eta_{17}$',
+                    desc="Percentage lamps radiation that is PAR", units=1, val=0.3626, ok='Aaron dio el valor ')
+    
 }
 
 LAMB = {
@@ -277,16 +288,16 @@ INPUTS ={
     'I9' : Struct(typ='State', varid='I9', prn=r'$I_{9}$',
                     desc="Global radiation above the canopy", units=W * m**-2, val=100, ok = ' Sin comentario'),
     'I10' : Struct(typ='Cnts', varid='I10', prn=r'$I_{10}$',
-                    desc="Outdoor CO2 concentration", units=mg * m**-3, val = 668,ok = '668 mg/m**3 (370 ppm);'),
+                    desc="Outdoor CO2 concentration", units=mg * m**-3, val = 738,ok = '738 mg/m**3 (410 ppm);'),
     'I11' : Struct(typ='State', varid='I11', prn=r'$I_{11}$',
-                    desc= "external air vapor pressure ", units= Pa, val = 668,ok = 'Hay que calcularla,valor inicial incorrecto'),
+                    desc= "external air vapor pressure ", units= Pa, val = 668,ok = 'Hay que calcularla,valor inicial incorrecto')                  
 }
 
 
 ################## State variables ##################
 STATE_VARS = {
     'C1' : Struct(typ='State', varid='C1', prn=r'$C_1$',
-                    desc="CO2 concentrartion in the greenhouse air", units=mg * m**-3, val=429.3, rec=nrec, ok='falta valor inicial'),
+                    desc="CO2 concentrartion in the greenhouse air", units=mg * m**-3, val=738, rec=nrec, ok='falta valor inicial'),
     'V1' : Struct(typ='State', varid='V1', prn=r'$V_1$',
                     desc="Greenhouse air vapor pressure", units=Pa, val=1200, rec=nrec, ok='https://www.dimluxlighting.com/knowledge/blog/vapor-pressure-deficit-the-ultimate-guide-to-vpd/'), 
     'T1' : Struct(typ='State', varid='T1', prn=r'$T_1$',
@@ -333,8 +344,9 @@ FUNCTIONS = {
     'h1': Struct(typ='State', varid='h1', prn=r'$h_1$', desc="Intercambio de calor desde el dosel (T1-, T2+)", units=1, val=0, ok=ok),
     'l1': Struct(typ='State', varid='l1', prn=r'$l_1$', desc="Flujo de calor latente causado por transpiracion (T1-)", units=1, val=0, ok=ok),
     'r7': Struct(typ='State', varid='r7', prn=r'$r_7$', desc="Radiacion FIR que el dosel le transmite al cielo (T1-)", units=1, val=0, ok=ok),
+    'I2T': Struct(typ='State', varid='I2T', prn=r'$I_{2T}$', desc="Radiacion PAR total (sol + lamparas)", units=1, val=0, ok=ok),
     
-    ######## Funciones Auxiliares para T1 (Temperatura del aire) ########
+    ######## Funciones Auxiliares para T2 (Temperatura del aire) ########
     'h2': Struct(typ='State', varid='h2', prn=r'$h_2$', desc="Intercambio de calor desde el dosel hacia la almohadilla de enfriamiento (T2+)", units=1, val=0, ok=ok),
     'h3': Struct(typ='State', varid='h3', prn=r'$h_3$', desc="Intercambio de calor desde el dosel hacia el sistema de enfriamiento mecanico (T2+)", units=1, val=0, ok=ok),
     'h4': Struct(typ='State', varid='h4', prn=r'$h_4$', desc="Intercambio de calor desde el dosel hacia la tuberia de calentamiento (T2+)", units=1, val=0, ok=ok),
@@ -346,6 +358,7 @@ FUNCTIONS = {
     'l2': Struct(typ='State', varid='l2', prn=r'$l_2$', desc="Disminucion del calor latente por el sistema de neblina (T2-)", units=1, val=0, ok=ok),
     'r10': Struct(typ='State', varid='r10', prn=r'$r_{10}$', desc="FIR que el aire al interior del invernadero le transmite al cielo (T2-)", units=1, val=0, ok=ok),
     'h11': Struct(typ='State', varid='h11', prn=r'$h_{11}$', desc="Intercambio de calor desde el aire y el suelo (T2-)", units=1, val=0, ok=ok),
+    'h12': Struct(typ='State', varid='h12', prn=r'$h_{12}$', desc="Intercambio de calor desde las lamparas al aire del invernadero", units=1, val=0, ok=ok),
     
     ######## Funciones Auxiliares para V1 (Presion de Vapor) ########
     'p1': Struct(typ='State', varid='p1', prn=r'$p_1$', desc="Inter. de vapor dosel - aire del invernadero (V1+)", units=1, val=0, ok=ok),

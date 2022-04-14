@@ -42,7 +42,7 @@ class Ci_rhs(StateRHS):
         ## Inputs
         self.AddVar( typ='State', varid='C1', prn=r'$C_1$',\
                     desc="CO2 concentrartion in the greenhouse air", \
-                    units= mg * m**-3 , rec=nrec, val=429.3) ######################## -> NO REPETIR
+                    units= mg * m**-3 , rec=nrec, val=738) ######################## -> NO REPETIR
         
         self.AddVar( typ='State', varid='RH', prn=r'$RH$',\
            desc="Relative humidity percentage in the greenhouse air", \
@@ -212,7 +212,7 @@ class Ci_rhs(StateRHS):
         f_R1 = f_R( I=I2, C_ev1=self.V('C_ev1'), C_ev2=self.V('C_ev2') )
         Sr1 = Sr( I=I2, S=self.V('S'), Rs=self.V('Rs') )
         C_ev31 = C_ev3( C_ev3n=self.V('C_ev3n'), C_ev3d=self.V('C_ev3d'), Sr=Sr1 )
-        f_C1 = f_C( C_ev3=C_ev31, C1=C1, k_fc=self.V('k_fc') ) 
+        f_C1 = f_C( C_ev3=C_ev31, C1=C1 ) 
         C_ev41 = C_ev4( C_ev4n=self.V('C_ev4n'), C_ev4d=self.V('C_ev4d'), Sr=Sr1 )
         V_sa1 = V_sa( T = T1 )
         VPD1 = VPD( V_sa=V_sa1, RH = RH1 )
@@ -220,6 +220,12 @@ class Ci_rhs(StateRHS):
         R_s1 = r_s( r_m=self.V('r_m'), f_R=f_R1, f_C=f_C1, f_V=f_V1) 
         ## Cálculos absorción de CO2
         g_s = gTC( k=self.V('ks'), Rb=self.V('Rb'), Rs=R_s1 )
-        Ca1 = Ca( gtc=g_s, C = C1, Ci=self.Vk('Ci') )
-        Dt_Ci = ( Ca1 - self.V('A')) /0.554 # Los asimilados se pasan a mg/m**2 y el incremento del Ci queda en ppm
+        Ca1 = Ca( gtc=g_s, C1 = C1, Ci=self.Vk('Ci') )
+
+        # Necesitamos derfinir una nueva constante para el grosor de la hoja
+        LeafThickness = 5e-4 # metros = 0.5 mm
+        #Los asimilados esta en  mu_mol m**-2 s**-1 y los necesitamos en ppm
+        
+        Dt_Ci = ( Ca1 - (self.V('A')/LeafThickness)*(0.044/0.553))
+        
         return Dt_Ci
