@@ -47,6 +47,9 @@ class T2_rhs(StateRHS):
         # This can be done with TranslateArgNames(h1)
         # Once defined h1 in your terminal run TranslateArgNames(h1)
         # and follow the instrucions
+        # control de la tuberia de calentamiento
+        I3control = self.V('T1')+self.V('U11')*(95-self.V('T1'))
+        self.mod.V_Set('I3',I3control)
         # añado luz solar a lus de las lamparas
         I_2T = I2T(I2 = self.V('I2'), U12 = self.V('U12'),eta17=self.V('eta17'), alpha12=self.V('alpha12'))
         self.mod.V_Set('I2T', I_2T)

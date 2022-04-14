@@ -45,7 +45,8 @@ class T1_rhs(StateRHS):
         # Once defined h1 in your terminal run TranslateArgNames(h1)
         # and follow the instrucions
         #### Sub-functions ####
-        
+        I3control = self.V('T1')+self.V('U11')*(95-self.V('T1'))
+        self.mod.V_Set('I3',I3control)
         I_2T = I2T(I2 = self.V('I2'), U12 = self.V('U12'),eta17=self.V('eta17'), alpha12=self.V('alpha12'))
         self.mod.V_Set('I2T', I_2T)
         self.mod.V_Set('I9', self.V('I2')) 
