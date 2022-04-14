@@ -132,7 +132,7 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-Dt, n = get_dt_and_n(minute=15, days=1)
+Dt, n = get_dt_and_n(minute=5, days=90)
 director.Dt = Dt
 director.n = n
 import os
@@ -161,7 +161,7 @@ for v in variables:
 PATH = create_path('simulation_results')
 Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
-#create_images(director,'Climate',PATH = PATH)
+create_images(director,'Climate',PATH = PATH)
 create_images_per_module(director, 'Plant0', list_var=['Ci', 'C1'])
 print(PATH)
 

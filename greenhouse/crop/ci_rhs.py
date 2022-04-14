@@ -42,7 +42,7 @@ class Ci_rhs(StateRHS):
         ## Inputs
         self.AddVar( typ='State', varid='C1', prn=r'$C_1$',\
                     desc="CO2 concentrartion in the greenhouse air", \
-                    units= mg * m**-3 , rec=nrec, val=429.3) ######################## -> NO REPETIR
+                    units= mg * m**-3 , rec=nrec, val=738) ######################## -> NO REPETIR
         
         self.AddVar( typ='State', varid='RH', prn=r'$RH$',\
            desc="Relative humidity percentage in the greenhouse air", \
@@ -229,6 +229,6 @@ class Ci_rhs(StateRHS):
         LeafThickness = 5e-4 # metros = 0.5 mm
         #Los asimilados esta en  mu_mol m**-2 s**-1 y los necesitamos en ppm
         
-        Dt_Ci = ( Ca1 - (self.V('A')/LeafThickness)*(0.044/0.553)) 
+        Dt_Ci = ( Ca1 - (self.V('A')/LeafThickness)*(0.044/0.553))
         
         return Dt_Ci

@@ -33,8 +33,16 @@ def V_cmax (T_f, V_cmax25, Q10_Vcmax, k_T):
     pow2 =  0.128 * (T_f - 40*k_T) / (1*k_T) 
     return (V_cmax25) * Q10_Vcmax**( pow1 ) / ( 1 + exp(pow2) )  
 
-def Gamma_st (T_f): # Esta función la estoy calculando como lo hace Aarón
+'''def Gamma_st (T_f): # Esta función la estoy calculando como lo hace Aarón
     return 150 * exp( 26.355 - ( 65.33 / ( 0.008314 * (T_f + 273.15) ) ) ) # La temperatura se está pasando de °C a Kelvins
+'''
+
+'''Este calculo de gamma_st esta basado en Xin & struick 2009'''
+def Gamma_st (T_f): # No estoy seguro de los valores que da esta funcion
+    R = 8.314
+    ESoc = -24460
+    return 0.5/(2800*exp((T_f-25)*(ESoc)/(298*R*(T_f+273))))
+    
 
 def tau (T_f, tau_25, Q10_tau, k_T):
     return tau_25 * Q10_tau**( (T_f - 25*k_T)/(10*k_T) )
@@ -56,7 +64,7 @@ def A_R (O_a, tau, C_ippm, V_cmax, Gamma_st, K_C, K_O):
     """
     Asimilación por Rubisco
     """
-    return max([( 1 - ( O_a / (2.0*tau*C_ippm) ) ),0]) * V_cmax * max([(C_ippm - Gamma_st),0]) / ( K_C *(1 + (O_a/K_O) ) + C_ippm )
+    return max([( 1 - ( O_a / (2.0*tau*C_ippm) ) ),0]) * V_cmax * max([C_ippm - Gamma_st,0]) / ( K_C *(1 + (O_a/K_O) ) + C_ippm )
 
 def A_f (C_ippm, Gamma_st, J): 
     """
@@ -78,13 +86,18 @@ def R_d (V_cmax):
     """
     return 0.015*V_cmax
 
-# Tasa de asimilación
-def A (A_R, A_f, A_acum, R_d, fc):
+# factores limitantes de la tasa de asimilación
+def A (A_R, A_f, A_acum):
 
-    return min([A_R, A_f, A_acum]) - R_d 
+    return  min([A_R, A_f, A_acum]) 
+  
 
-def Acrop(A,I1, CropDensity=2):
+def Acrop(A,I1, CropDensity = 2):
     # A es la tasa de asimilación de CO2 en mumol (de CO2) m**-2(hoja) s**-1
+    # esta tasa se calcula para cada planta. 
+    #
+    # Esta se debe usar por planta. Por lo tanto 
+    #
     # Crop density es el numero de plantas por metro cuadrado
     # I1 es el LAI m**2 hoja m**2 invernadero
     # esta funcion nos da la A en mg CH20 planta**-1 s**-1
@@ -111,10 +124,10 @@ def f_C (C_ev3, C1):
     """
     Factor de resistencia debida al CO2 
 
-    En este formual es necesario que C1 este en ppms 
+    En esta formula es necesario que C1 este en ppms 
     el factor de conversion es 1 ppm de CO2 = 0.553 mg m**-3
     """
-    C1_ppm = C1 /(0.553)
+    C1_ppm = C1 *(0.553)
     return 1 + C_ev3*( (C1_ppm - 200)**2 )
 
 def C_ev3 (C_ev3n, C_ev3d, Sr):
@@ -160,21 +173,21 @@ def Ca (gtc, C1, Ci):
     en ppm para esto la convertimos 1 ppm de CO2 = 0.553 mg m**-3
 
     """
-    C1_ppm = C1/0.553 # El CO2 pasa de (mu_mol_CO2/mol_air) a ppm
+    C1_ppm = C1*0.553 # El CO2 pasa de (mu_mol_CO2/mol_air) a ppm
     return gtc * ( C1_ppm - Ci ) #El CO2 absorbido se calcula en ppm
 
 
 #### Modelo de crecimiento ####
 # Floration rate
 
-def TF(  PA_mean, T_mean, time, Dt):
+def TF( PA_mean, T_mean, time, Dt):
     # The input PA_Mean is in Watts/m^2 but 
     # the formula needs the PAR radiation in MJ/day 
     kc = 11.57 # Transform Watts to MJ/day 1 MJ/d = 11.57 Watts
     # therefore we use PA_mean/fc
 
     # We need at least D days before flowering for first time  
-    D = 22 # days 
+    D = 2 # days 
     if time <= D*24*60*60:
         return 0
     else:     

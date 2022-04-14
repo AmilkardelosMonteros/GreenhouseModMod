@@ -33,7 +33,7 @@ def o5(C1, I10, f2, f3, f4):
 def o6 (C1, omega3):
     return omega3*C1
 
-def A(C,I, alpha_R=0.0625, beta_R=-4, alpha_f=0.0622,beta_a=30):
+def A2(C,I, alpha_R=0.0625, beta_R=-4, alpha_f=0.0622,beta_a=30):
     '''
     Units 
     [ A ] = mu_mol m**-2 s**-1
@@ -75,7 +75,7 @@ def Amg(C,PAR,I_1=2,phi_2=4):
     Cppm = C/(0.553*phi_2)
     I = PAR/0.217
     factor_conversion = 0.044
-    return I_1*factor_conversion*A(Cppm,I)
+    return I_1*factor_conversion*A2(Cppm,I)
 
 # Esta es la tasa de asimilacion de CO2 calculada con el modelo
 # completo de fotosintesis. Esta tasa debe de estar en unidades 
@@ -85,20 +85,12 @@ def Amg(C,PAR,I_1=2,phi_2=4):
 def Aclima(A,I1):   
     # A es la tasa de asimilación de CO2 en mumol (de CO2) m**-2(hoja) s**-1
     # I1 es el LAI m**2 hoja m**2 invernadero
+    # 4.4/100 es el factor de conversion de (4.4/100 mg de CO2 =  mumol de CO2)
     # esta funcion nos da la A en mg de CO2 m**-2(Invernadero) s**-1
-    return (4.4/100)*I1*A
 
-# Esta es la tasa de asimilacion de CO2 calculada con el modelo
-# completo de fotosintesis. Esta tasa debe de estar en unidades 
-# de mg(de CO2) m**-2(de invernadero) s**-1
-# Este es el sumidero de CO2 debido a las plantas en el modelo de 
-# fotosintesis
-def Aclima(A,I1):   
-    # A es la tasa de asimilación de CO2 en mumol (de CO2) m**-2(hoja) s**-1
-    # I1 es el LAI m**2 hoja m**2 invernadero
-    # 4.4/100 es el factor de conversion de (4.4/100 mg de CO2/ mumol de CO2)
-    return (4.4/100)*I1*A
-
+    ''' hayt que corregir esta función para que multiplique por la 
+    # altura del invernadero'''
+    return (4.4/100)*I1*A 
 
 def kappa3(T2, psi1, phi2, omega2):
     return (psi1*phi2) / (omega2*(T2+273.15))

@@ -290,7 +290,7 @@ INPUTS ={
     'I9' : Struct(typ='State', varid='I9', prn=r'$I_{9}$',
                     desc="Global radiation above the canopy", units=W * m**-2, val=100, ok = ' Sin comentario'),
     'I10' : Struct(typ='Cnts', varid='I10', prn=r'$I_{10}$',
-                    desc="Outdoor CO2 concentration", units=mg * m**-3, val = 668,ok = '668 mg/m**3 (370 ppm);'),
+                    desc="Outdoor CO2 concentration", units=mg * m**-3, val = 738,ok = '738 mg/m**3 (410 ppm);'),
     'I11' : Struct(typ='State', varid='I11', prn=r'$I_{11}$',
                     desc= "external air vapor pressure ", units= Pa, val = 668,ok = 'Hay que calcularla,valor inicial incorrecto')                  
 }
@@ -299,7 +299,7 @@ INPUTS ={
 ################## State variables ##################
 STATE_VARS = {
     'C1' : Struct(typ='State', varid='C1', prn=r'$C_1$',
-                    desc="CO2 concentrartion in the greenhouse air", units=mg * m**-3, val=429.3, rec=nrec, ok='falta valor inicial'),
+                    desc="CO2 concentrartion in the greenhouse air", units=mg * m**-3, val=738, rec=nrec, ok='falta valor inicial'),
     'V1' : Struct(typ='State', varid='V1', prn=r'$V_1$',
                     desc="Greenhouse air vapor pressure", units=Pa, val=1200, rec=nrec, ok='https://www.dimluxlighting.com/knowledge/blog/vapor-pressure-deficit-the-ultimate-guide-to-vpd/'), 
     'T1' : Struct(typ='State', varid='T1', prn=r'$T_1$',
