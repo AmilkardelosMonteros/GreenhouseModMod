@@ -56,7 +56,7 @@ class C1_rhs(StateRHS):
         o_2 = o2(U10=self.V('U10'), psi2=self.V('psi2'), alpha6=self.V('alpha6')) #MC_ext_air
         o_3 = o3(C1=self.Vk('C1'), I10=self.V('I10'), f1=f_1)
         #o_4 = Amg(C=self.Vk('C1'),PAR = self.V('I2'))
-        o_5 = o5(C1=self.Vk('C1'), I10=self.V('I10'), f2=f_2, f3=f_3, f4=f_4)
+        o_5 = o5(C1=self.Vk('C1'), I10=self.V('I10'), f2 = f_2, f3 =f_3, f4=f_4)
         A_Mean = self.V('A_Mean') ## A mean esta en en mg * m**-2(Invernadero) s**-1
 
         o_4 = A_Mean   ## o4 debe estar en mg * m**2(invernadero) * s*-1
