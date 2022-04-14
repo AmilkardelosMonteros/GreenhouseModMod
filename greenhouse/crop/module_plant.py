@@ -77,7 +77,8 @@ class Plant(Module):
             Npoda = 2
             PA_mean_i = self.beta * PAR_mean
             self.new_fruit += TF(PA_mean=PA_mean_i, T_mean=T_mean, time = self.t(), Dt = Dtdias)/Npoda
-
+            #if t1 >= 22*24*60*60:
+                #breakpoint()
             new_fruit_n = self.new_fruit 
             if new_fruit_n >= 1:
                 #nw = new_fruit_n

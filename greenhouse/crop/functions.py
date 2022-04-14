@@ -84,8 +84,8 @@ def R_d (V_cmax):
 
 # Tasa de asimilación
 def A (A_R, A_f, A_acum, R_d, fc):
-
-    return min([A_R, A_f, A_acum]) - R_d 
+    tem = min([A_R, A_f, A_acum]) - R_d 
+    return max([tem,0])
 
 def Acrop(A,I1, CropDensity=2):
     # A es la tasa de asimilación de CO2 en mumol (de CO2) m**-2(hoja) s**-1

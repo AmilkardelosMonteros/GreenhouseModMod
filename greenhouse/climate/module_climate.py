@@ -15,6 +15,8 @@ class Module1(Module):
         self.i = 0
         self.agent = agent
         self.noise = noise
+        self.train = True
+
         for key, value in kwargs.items():
             self.AddStateRHS(key, value)
         # print("State Variables for this module:", self.S_RHS_ids)
@@ -30,7 +32,7 @@ class Module1(Module):
             else:
                 controls[k] = action[j]
                 j+= 1 
-        return controls,action
+        return controls
     
     def get_vars(self):
         '''
@@ -73,7 +75,8 @@ class Module1(Module):
     
     def Advance(self, t1):
         state = self.get_state()
-        controls,action = self.get_controls(state) #Forward
+        controls = self.get_controls(state) #Forward
+        action = list(controls.values())
         self.update_controls(controls)
         #self.V_Set('Qco2',0)
         #Vsat = V_sa( T = self.V('T2') ) # nuevo
@@ -86,7 +89,7 @@ class Module1(Module):
         new_state = self.get_state()
         done = self.is_done()
         reward = self.get_reward()
-        self.agent.memory.push(state, action, reward, new_state, done)
-        #self.update() #Backpropagation
-        #breakpoint()
+        if self.train:
+            self.agent.memory.push(state, action, reward, new_state, done)
+            self.update() #Backpropagation
         return 1

@@ -1,3 +1,4 @@
+from ast import Name
 from pickle import TRUE
 from re import S
 from greenhouse.climate.module_climate import Module1
@@ -30,6 +31,7 @@ from parameters.climate_constants import INPUTS, CONTROLS, OTHER_CONSTANTS, STAT
 #Para el entrenamiento
 from try_ddpg import agent
 from try_noise import noise
+from utils.for_simulation import set_simulation
 beta_list = [0.99, 0.95] # Only 2 plants are simulated, assuming this is approximately one m**2
 theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
 theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
@@ -132,12 +134,42 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-Dt, n = get_dt_and_n(minute=15, days=1)
+from parameters.parameters_dir import PARAMS_DIR
+
+Dt, n = get_dt_and_n(minute=PARAMS_DIR['minutes'], days=PARAMS_DIR['days'])
 director.Dt = Dt
-director.n = n
-import os
-#os.system("spongebob-cli 1")
-director.Run(director.Dt, director.n, director.sch,active=True)
+director.n = n 
+
+def set_axis_style(ax, labels):
+    ax.get_xaxis().set_tick_params(direction='out')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.set_xticks(np.arange(1, len(labels) + 1))
+    ax.set_xticklabels(labels)
+    ax.set_xlim(0.25, len(labels) + 0.75)
+    ax.set_xlabel('')
+
+from keeper import keeper
+
+#set_simulation(director)
+Keeper = keeper()
+
+episodes = 10
+for i in range(episodes):
+    director.Run(director.Dt, director.n, director.sch,active=True)
+    Keeper.add(director)
+
+_, axis= plt.subplots(sharex=True, figsize=(10,5))
+new_data = list()
+for name in range(episodes):
+    new_data.append( Keeper.actions[str(name)]['U1'])   
+
+axis.violinplot(new_data, showmeans=True)
+axis.set_title('Distribucion de Acciones')
+labels = [str(i) for i in range(episodes)]
+set_axis_style(axis, labels)
+
+plt.show()
+breakpoint()
 
 
 #Dt de Director = 1440 (numero de minutos en un dia)
@@ -161,7 +193,7 @@ for v in variables:
 PATH = create_path('simulation_results')
 Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
-#create_images(director,'Climate',PATH = PATH)
+create_images(director,'Climate',PATH = PATH)
 create_images_per_module(director, 'Plant0', list_var=['Ci', 'C1'])
 print(PATH)
 
