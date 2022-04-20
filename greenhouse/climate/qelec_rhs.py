@@ -1,11 +1,12 @@
 from ModMod import StateRHS
 
-"""Pendiente!!!"""
+constant_names = ['alpha12']
+state_names = ['Qelec']
+controls = ['U12']
+all_parameters = constant_names + state_names + controls
 
-all_parameters = []
 
-
-class QElec_rhs(StateRHS):
+class Qelec_rhs(StateRHS):
     """Define a RHS, this is the rhs for QH2O"""
     def __init__(self, parameters):
         # uses the super class __init__
@@ -17,6 +18,7 @@ class QElec_rhs(StateRHS):
     def RHS(self, Dt):
         '''Costo del electricidad '''
         U_12 = self.V('U12') 
-        qelect = self.V('q_elect')/(3.6 * 10**6) # transformo de ($ mxn)/kiloWatt-hola a ($ mxn) / watt-seg
+        qelect = self.V('Qelec')/(3.6 * 10**6) # transformo de ($ mxn)/kiloWatt-hola a ($ mxn) / watt-seg
         # el resultado esta en $ mxn / m**-2 (ya que alpha12 esta en W * m**-2)
+        #breakpoint()
         return qelect*self.V('alpha12')*U_12 
