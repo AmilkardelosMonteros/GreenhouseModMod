@@ -140,36 +140,37 @@ Dt, n = get_dt_and_n(minute=PARAMS_DIR['minutes'], days=PARAMS_DIR['days'])
 director.Dt = Dt
 director.n = n 
 
-def set_axis_style(ax, labels):
-    ax.get_xaxis().set_tick_params(direction='out')
-    ax.xaxis.set_ticks_position('bottom')
-    ax.set_xticks(np.arange(1, len(labels) + 1))
-    ax.set_xticklabels(labels)
-    ax.set_xlim(0.25, len(labels) + 0.75)
-    ax.set_xlabel('')
+
 
 from keeper import keeper
+from parameters.parameters_ddpg import CONTROLS
+ACTIVE_CONTROLS = list()
+for k,v in CONTROLS.items(): 
+    if v:
+        ACTIVE_CONTROLS.append(k)
+
 
 #set_simulation(director)
 Keeper = keeper()
 
-episodes = 10
+episodes = 3
 for i in range(episodes):
     director.Run(director.Dt, director.n, director.sch,active=True)
     Keeper.add(director)
+    Keeper.reset_noise(director)
 
-_, axis= plt.subplots(sharex=True, figsize=(10,5))
-new_data = list()
-for name in range(episodes):
-    new_data.append( Keeper.actions[str(name)]['U1'])   
+Keeper.plot_cost()
+Keeper.plot_rewards()
+breakpoint()
+#set_simulation(director)
+#director.Run(director.Dt, director.n, director.sch,active=True)
+#Keeper.add(director)
+#Keeper.reset_noise(director)
 
-axis.violinplot(new_data, showmeans=True)
-axis.set_title('Distribucion de Acciones')
-labels = [str(i) for i in range(episodes)]
-set_axis_style(axis, labels)
 
-plt.show()
+#Keeper.plot_actions(ACTIVE_CONTROLS)
 
+breakpoint()
 
 #Dt de Director = 1440 (numero de minutos en un dia)
 #Dt de Director clima = 60, 1440/60 = 24 numero de registros de clima * n
