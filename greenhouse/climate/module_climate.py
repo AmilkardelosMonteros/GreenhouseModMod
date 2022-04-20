@@ -22,6 +22,7 @@ class Module1(Module):
         # print("State Variables for this module:", self.S_RHS_ids)
 
     def get_controls(self,state):
+        #breakpoint()
         action   = self.agent.get_action(state)
         action   = self.noise.get_action(action) #No hace nada si noise.on = False
         j        = 0
@@ -32,6 +33,7 @@ class Module1(Module):
             else:
                 controls[k] = action[j]
                 j+= 1 
+        #breakpoint()
         return controls
     
     def get_vars(self):
@@ -58,8 +60,28 @@ class Module1(Module):
         state = np.array(list(partial_vars.values()))
         return state
 
-    def get_reward(self):
-        return 0
+    def G(self,H):
+        '''
+        Precio del pepino 
+        H esta en gramos
+        '''
+        return 0.015341*H
+
+    def get_reward(self,t1):
+        Qco2      = self.D.Vars['Qco2'].GetRecord()
+        Qgas      = self.D.Vars['Qgas'].GetRecord()
+        Qh2o      = self.D.Vars['Qh2o'].GetRecord()
+        deltaQco2 = Qco2[-1] - Qco2[-2]
+        deltaQgas = Qgas[-1] - Qgas[-2]
+        deltaQh2o = Qh2o[-1] - Qh2o[-2]
+        G = 0.0
+        if t1 % 86400 == 0:
+            H_     = self.D.master_dir.Vars['H'].GetRecord()
+            deltaH = H_[-1] - H_[-2]
+            G      = self.G(deltaH) #Ganancia 
+        reward =  G - (deltaQco2 + deltaQgas + deltaQh2o)
+        self.V_Set('reward',reward) 
+        return reward
     
     def is_done(self):
         if self.i == self.noise.decay_period: 
@@ -88,7 +110,7 @@ class Module1(Module):
         self.i  += 1
         new_state = self.get_state()
         done = self.is_done()
-        reward = self.get_reward()
+        reward = self.get_reward(t1)
         if self.train:
             self.agent.memory.push(state, action, reward, new_state, done)
             self.update() #Backpropagation
