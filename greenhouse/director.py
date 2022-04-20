@@ -21,7 +21,7 @@ class Greenhouse(Director):
         super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
         self.Dt = None
         self.n = None
-        self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g, val=0.0)
+        self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g,rec=1000, val=0.0)
         self.AddVar( typ='State', varid='NF', prn=r'$N_k$', desc="Accumulated  number of fruits harvested", units= n_f, val=0.0)
         self.AddVar( typ='State', varid='h', prn=r'$h_k$', desc="Weight of all harvested fruits.", units= g, val=0.0)
         self.AddVar( typ='State', varid='n', prn=r'$n_k$', desc="Total  number of fruits harvested", units= n_f, val=0.0)
