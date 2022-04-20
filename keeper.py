@@ -39,6 +39,7 @@ class keeper:
         self.Qgas[str(self.i)]    = dir.Modules['Climate'].Vars['Qgas'].GetRecord()[-1]
         self.Qco2[str(self.i)]    = dir.Modules['Climate'].Vars['Qco2'].GetRecord()[-1]
         self.Qh2o[str(self.i)]    = dir.Modules['Climate'].Vars['Qh2o'].GetRecord()[-1]
+        self.Qelec[str(self.i)]   = dir.Modules['Climate'].Vars['Qelec'].GetRecord()[-1]
         self.G[str(self.i)]       = 0.015341*dir.Vars['H'].GetRecord()[-1]
         self.rewards[str(self.i)] = sum(dir.Modules['Climate'].Vars['reward'].GetRecord())
         return 1
@@ -67,43 +68,21 @@ class keeper:
             set_axis_style(axis, labels)
             plt.show()
 
-    def plot_Qgas(self):
+    def plot_dir(self,dic,title):
         t = range(self.i)
-        x = list(self.Qgas.values())
-        plt.title('Costo del Gas')
-        plt.xlabel('Episodio')
-        plt.plot(t,x)
-        plt.show()
-        plt.close()
-
-    def plot_Qco2(self):
-        t = range(self.i)
-        x = list(self.Qco2.values())
-        plt.title(r'$Costo del CO_{2}$')
-        plt.xlabel('Episodio')
-        plt.plot(t,x)
-        plt.show()
-        plt.close()
-
-    def plot_Qh2o(self):
-        t = range(self.i)
-        x = list(self.Qh2o.values())
-        plt.title('Costo del agua')
-        plt.xlabel('Episodio')
+        x = list(dic.values())
+        plt.title(title)
+        plt.xlabel('Episodios')
         plt.plot(t,x)
         plt.show()
         plt.close()
 
     def plot_cost(self):
-        self.plot_Qco2()
-        self.plot_Qh2o()
-        self.plot_Qgas()
+        self.plot_dir(self.Qco2,'Costo del Co2')
+        self.plot_dir(self.Qelec,'Costo de la electricidad')
+        self.plot_dir(self.Qgas,'Costo del Gas')
+        self.plot_dir(self.Qh2o,'Costo del agua')
+
 
     def plot_rewards(self):
-        t = range(self.i)
-        x = list(self.rewards.values())
-        plt.title('Rewards')
-        plt.xlabel('Episodio')
-        plt.plot(t,x)
-        plt.show()
-        plt.close()
+        self.plot_dir(self.rewards,'Reward acumulado')
