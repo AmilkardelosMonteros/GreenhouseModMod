@@ -65,7 +65,8 @@ class Greenhouse(Director):
                 A_Mean += aclima(self.Modules[plant].Modules['Photosynt'].V('A'))
             else:
                 try:
-                    A_Mean += self.Modules[plant].Modules['Photosynt'].V_Int('A', ni=-idx,t=arange(0, 60*idx, self.Modules[plant].Modules['Photosynt'].Dt))/self.Modules[plant].Modules['Photosynt'].Dt
+                    #breakpoint()
+                    A_Mean += aclima(self.Modules[plant].Modules['Photosynt'].V_Int('A', ni=-idx,t=arange(0, 60*idx, 60))/(60*idx))
                 except:
                     breakpoint() 
         
