@@ -1,6 +1,6 @@
 from ModMod import StateRHS
 
-constant_names = ['alpha12']
+constant_names = ['alpha12', 'cost_elect']
 state_names = ['Qelec']
 controls = ['U12']
 all_parameters = constant_names + state_names + controls
@@ -18,7 +18,7 @@ class Qelec_rhs(StateRHS):
     def RHS(self, Dt):
         '''Costo del electricidad '''
         U_12 = self.V('U12') 
-        qelect = self.V('Qelec')/(3.6 * 10**6) # transformo de ($ mxn)/kiloWatt-hola a ($ mxn) / watt-seg
-        # el resultado esta en $ mxn / m**-2 (ya que alpha12 esta en W * m**-2)
+        costelect = self.V('cost_elect')/(3.6 * 10**6) # transformo de ($ mxn)/kiloWatt-hola a ($ mxn) / Watt-seg
+        # el resultado esta en $ mxn / m**-2 (ya que alpha12 esta en Watt * m**-2)
         #breakpoint()
-        return qelect*self.V('alpha12')*U_12 
+        return costelect*self.V('alpha12')*U_12 
