@@ -49,14 +49,15 @@ T1_rhs_ins = T1_rhs(constant_climate)
 T2_rhs_ins = T2_rhs(constant_climate)
 
 #Cost
-Qh2o_rhs_ins = Qh2o_rhs(constant_climate)
-Qco2_rhs_ins = Qco2_rhs(constant_climate)
-Qgas_rhs_ins = Qgas_rhs(constant_climate)
+Qh2o_rhs_ins  = Qh2o_rhs(constant_climate)
+Qco2_rhs_ins  = Qco2_rhs(constant_climate)
+Qgas_rhs_ins  = Qgas_rhs(constant_climate)
+Qelec_rhs_ins = Qelec_rhs(constant_climate)
 
 RHS_list  = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins]
-RHS_list += [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins]#, Qelec_rhs_ins]
+RHS_list += [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins, Qelec_rhs_ins]
 dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-dir_climate.AddModule('ModuleClimate', Module1(agent,noise,Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
+dir_climate.AddModule('ModuleClimate', Module1(agent,noise,Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins))
 
 meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) 
 dir_climate.AddModule('ModuleMeteo', meteo)
