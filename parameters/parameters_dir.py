@@ -1,1 +1,1 @@
-PARAMS_DIR = {'minutes': 15,'days':1}
+PARAMS_DIR = {'minutes': 1,'days':1}
