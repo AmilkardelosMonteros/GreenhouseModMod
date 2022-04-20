@@ -68,18 +68,20 @@ class Module1(Module):
         return 0.015341*H
 
     def get_reward(self,t1):
-        Qco2      = self.D.Vars['Qco2'].GetRecord()
-        Qgas      = self.D.Vars['Qgas'].GetRecord()
-        Qh2o      = self.D.Vars['Qh2o'].GetRecord()
-        deltaQco2 = Qco2[-1] - Qco2[-2]
-        deltaQgas = Qgas[-1] - Qgas[-2]
-        deltaQh2o = Qh2o[-1] - Qh2o[-2]
+        Qco2       = self.D.Vars['Qco2'].GetRecord()
+        Qgas       = self.D.Vars['Qgas'].GetRecord()
+        Qh2o       = self.D.Vars['Qh2o'].GetRecord()
+        Qlec       = self.D.Vars['Qelec'].GetRecord()
+        deltaQco2  = Qco2[-1] - Qco2[-2]
+        deltaQgas  = Qgas[-1] - Qgas[-2]
+        deltaQh2o  = Qh2o[-1] - Qh2o[-2]
+        deltaQelec = Qlec[-1] - Qlec[-2]
         G = 0.0
         if t1 % 86400 == 0:
             H_     = self.D.master_dir.Vars['H'].GetRecord()
             deltaH = H_[-1] - H_[-2]
             G      = self.G(deltaH) #Ganancia 
-        reward =  G - (deltaQco2 + deltaQgas + deltaQh2o)
+        reward =  G - (deltaQco2 + deltaQgas + deltaQh2o + deltaQelec)
         self.V_Set('reward',reward) 
         return reward
     
