@@ -14,7 +14,7 @@ function_names = ['o1','o2','o3','o4','o5']
 constant_names = ['lamb4', 'alpha6', 'phi7', 'eta6', 'eta7', 'eta8', 'phi8', 'nu4', 
                             'nu5', 'omega1', 'nu6', 'nu1', 'eta10', 'nu3', 'nu2', 'eta11', 
                             'phi2', 'eta13', 'psi2', 'psi3', 'omega3']
-others = ['A_Mean']
+others = ['A_Mean','reward']
 all_parameters = state_names + control_names + input_names + function_names + constant_names  + others
 
 class C1_rhs(StateRHS):
