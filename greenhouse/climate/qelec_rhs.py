@@ -15,4 +15,8 @@ class QElec_rhs(StateRHS):
             parameters[name].addvar_rhs(self)
         
     def RHS(self, Dt):
-        pass 
+        '''Costo del electricidad '''
+        U_12 = self.V('U12') 
+        qelect = self.V('q_elect')/(3.6 * 10**6) # transformo de ($ mxn)/kiloWatt-hola a ($ mxn) / watt-seg
+        # el resultado esta en $ mxn / m**-2 (ya que alpha12 esta en W * m**-2)
+        return qelect*self.V('alpha12')*U_12 

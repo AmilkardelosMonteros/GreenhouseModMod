@@ -57,14 +57,17 @@ class Plant(Module):
             # Para ser consistentes definimos una unidad de tiempo en dias Dtdias 
             Dtdias = 1 # Unidad de tiendo en dias.
             # este indice se avanza en el <-----------------------------
-            self.V_Set('ind_pho', - int( self.V('Dt_dir') / self.V('Dt_pho') )  ) # Se reinicia el valor del indice auxiliar  
+            #self.V_Set('ind_pho', - int( self.V('Dt_dir') / self.V('Dt_pho') )  ) # Se reinicia el valor del indice auxiliar  
             ## Promedios diarios de temperatura y PAR
             T_mean = self.V_Mean('T2', ni=-md ) # Se saca el promedio sobre los registros del último día
             PAR_mean = self.V_Mean('I2', ni=-md ) # Se saca el promedio sobre los registros del último día
             ## Asimilados acumulados (integrados) en el último día
             acrop = lambda x: Acrop(x, I1=2) #### Cambiar valor de I1
             try:
-                A_int = self.V_Int('A', ni=-md,t=arange(0, 86400, 60), g=acrop) # Se integra sobre los registros del último día 
+                A_int = self.V_Int('A', ni=-md,t=arange(0, 86400, Dt_c), g=acrop) # Se integra sobre los registros del último día 
+                #if t1 > 86400*22:
+
+                   #breakpoint()
             except:
                 breakpoint()
             #print(tt)
@@ -77,7 +80,6 @@ class Plant(Module):
             Npoda = 2
             PA_mean_i = self.beta * PAR_mean
             self.new_fruit += TF(PA_mean=PA_mean_i, T_mean=T_mean, time = self.t(), Dt = Dtdias)/Npoda
-
             new_fruit_n = self.new_fruit 
             if new_fruit_n >= 1:
                 #nw = new_fruit_n
@@ -92,7 +94,7 @@ class Plant(Module):
 
             ### Update thermic age (we use average temperature) of all fruits
             for fruit in self.fruits:
-                fruit[0] += ( max( 0 , T_mean - 10 ) ) * Dtdias ## Thermic age never decreases
+                fruit[0] += ( max( [0 , T_mean - 10 ]) ) * Dtdias ## Thermic age never decreases
             ### Update growth potencial for vegetative part
             self.veget[1] = self.V('a') + self.V('b')*T_mean 
             ### Update Growth potential and Michaelis-Menten constants of all fruits
@@ -123,8 +125,8 @@ class Plant(Module):
                 pdw = 0.023 # percentage of dry weight
                 fruit[1] += dwh / pdw # Fresh weight  
                 tmp2 += fruit[1] #Total weight
-
-
+                
+            
             ### Check if a fruit is ready to be harvest
             fruits = copy.deepcopy(self.fruits) # copy of all fruits
             wk = 0 

@@ -1,3 +1,4 @@
+from tkinter import Menu
 import numpy as np
 import pandas as pd
 import numpy as np
@@ -49,6 +50,7 @@ class Greenhouse(Director):
         t_m_k = 0
         sum_A = 0 
         A_Mean = 0
+        A_Mean1 = 0
         A_int  = 0
         aclima = lambda x: Aclima(x, self.V('I1'))
         for plant in self.PlantList:
@@ -67,8 +69,10 @@ class Greenhouse(Director):
                 try:
                     #breakpoint()
                     A_Mean += aclima(self.Modules[plant].Modules['Photosynt'].V_Int('A', ni=-idx,t=arange(0, 60*idx, 60))/(60*idx))
+                    
                 except:
                     breakpoint() 
+        
         
             #A_Mean += aclima(self.Modules[plant].Modules['Photosynt'].V('A'))
         #breakpoint()
@@ -79,6 +83,7 @@ class Greenhouse(Director):
         self.V_Set( 'm', t_m_k)
         self.V_Set( 'sum_A', sum_A)
         self.V_Set( 'A_Mean', A_Mean)
+        
 
     def reset(self):
         pass
