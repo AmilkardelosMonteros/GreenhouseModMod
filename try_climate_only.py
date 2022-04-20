@@ -1,3 +1,4 @@
+from ast import Name
 from pickle import TRUE
 from re import S
 from greenhouse.climate.module_climate import Module1
@@ -28,6 +29,7 @@ from parameters.climate_constants import INPUTS, CONTROLS, OTHER_CONSTANTS, STAT
 #Para el entrenamiento
 from try_ddpg import agent
 from try_noise import noise
+from utils.for_simulation import set_simulation
 beta_list = [0.99, 0.95] # Only 2 plants are simulated, assuming this is approximately one m**2
 theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
 theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
@@ -45,14 +47,15 @@ T1_rhs_ins = T1_rhs(constant_climate)
 T2_rhs_ins = T2_rhs(constant_climate)
 
 #Cost
-Qh2o_rhs_ins = Qh2o_rhs(constant_climate)
-Qco2_rhs_ins = Qco2_rhs(constant_climate)
-Qgas_rhs_ins = Qgas_rhs(constant_climate)
+Qh2o_rhs_ins  = Qh2o_rhs(constant_climate)
+Qco2_rhs_ins  = Qco2_rhs(constant_climate)
+Qgas_rhs_ins  = Qgas_rhs(constant_climate)
+Qelec_rhs_ins = Qelec_rhs(constant_climate)
 
 RHS_list  = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins]
-RHS_list += [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins]#, Qelec_rhs_ins]
+RHS_list += [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins, Qelec_rhs_ins]
 dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-dir_climate.AddModule('ModuleClimate', Module1(agent,noise,Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
+dir_climate.AddModule('ModuleClimate', Module1(agent,noise,Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins))
 
 meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) 
 dir_climate.AddModule('ModuleMeteo', meteo)
@@ -130,13 +133,43 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-Dt, n = get_dt_and_n(minute=5, days=90)
-director.Dt = Dt
-director.n = n
-import os
-#os.system("spongebob-cli 1")
-director.Run(director.Dt, director.n, director.sch,active=True)
+from parameters.parameters_dir import PARAMS_DIR
 
+Dt, n = get_dt_and_n(minute=PARAMS_DIR['minutes'], days=PARAMS_DIR['days'])
+director.Dt = Dt
+director.n = n 
+
+
+
+from keeper import keeper
+from parameters.parameters_ddpg import CONTROLS
+ACTIVE_CONTROLS = list()
+for k,v in CONTROLS.items(): 
+    if v:
+        ACTIVE_CONTROLS.append(k)
+
+
+#set_simulation(director)
+Keeper = keeper()
+
+episodes = 3
+for i in range(episodes):
+    director.Run(director.Dt, director.n, director.sch,active=True)
+    Keeper.add(director)
+    Keeper.reset_noise(director)
+
+Keeper.plot_cost()
+Keeper.plot_rewards()
+breakpoint()
+#set_simulation(director)
+#director.Run(director.Dt, director.n, director.sch,active=True)
+#Keeper.add(director)
+#Keeper.reset_noise(director)
+
+
+#Keeper.plot_actions(ACTIVE_CONTROLS)
+
+breakpoint()
 
 #Dt de Director = 1440 (numero de minutos en un dia)
 #Dt de Director clima = 60, 1440/60 = 24 numero de registros de clima * n

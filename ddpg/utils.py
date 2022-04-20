@@ -5,7 +5,19 @@ from collections import deque
 import random
 import matplotlib.pyplot as plt
 from gym import spaces
-import pandas as pd 
+import pandas as pd
+from torch import zeros_like 
+
+def new_clip(array):
+    new_array = list()
+    for x in array:
+        if x<0:
+            new_array.append(-x)
+        elif x>1:
+            new_array.append(x-1)
+        else:
+            new_array.append(x)
+    return np.array(new_array)
 # Ornstein-Ulhenbeck Process
 # Taken from #https://github.com/vitchyr/rlkit/blob/master/rlkit/exploration_strategies/ou_strategy.py
 class OUNoise(object):
@@ -18,6 +30,7 @@ class OUNoise(object):
         self.low          = parameters['low']
         self.high         = parameters['high']
         self.action_dim   = parameters['dim']
+        #breakpoint()
         self.decay_period   = parameters['decay_period']
         self.reset()
         self.on = True
@@ -27,10 +40,11 @@ class OUNoise(object):
         self.state = np.ones(self.action_dim) * self.mu
         
     def evolve_state(self):
+        #breakpoint()
         x  = self.state
         dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(self.action_dim)
-        self.state = np.clip(x + dx,self.low, self.high)
-        self.state = x + dx
+        state =  new_clip(x + dx)#np.clip(x + dx,self.low, self.high)
+        self.state = state
         return self.state
     
     def get_action(self, action):
@@ -38,7 +52,10 @@ class OUNoise(object):
             ou_state = self.evolve_state()
             self.sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period)
             self.t += 1
-            return np.clip(action + ou_state, self.low, self.high)
+            #print(ou_state,ou_state)
+            #print(self.sigma)
+            #input()
+            return ou_state #np.clip(action + ou_state, self.low, self.high)
         else:
             return action
 
@@ -92,21 +109,18 @@ class Memory:
     def __len__(self):
         return len(self.buffer)
 
-def test_noise(dim):
-    n = PARAMS_UTILS['decay_period']
-    LOW_ACTION = np.zeros(dim)
-    HIGH_ACTION = np.ones(dim)
-    action_space = spaces.Box(low=LOW_ACTION, high=HIGH_ACTION)
+def test_noise(parameters,n):
+    #breakpoint()
     '''
     Grafica n acciones
     '''
-    noise = OUNoise(action_space)
+    noise = OUNoise(parameters)
     A = list()
     for _ in range(n):
-        A.append(noise.get_action(0*np.ones(dim)))
+        A.append(noise.get_action(np.zeros_like(range(noise.action_dim))))
     A = np.array(A)
-    A.reshape((action_space.shape[0],n))
-    A = pd.DataFrame(A,columns=['A'+ str(i) for i in range(action_space.shape[0])])
-    ax = A.plot(subplots=True, layout=(int(np.ceil(action_space.shape[0]/2)), 2), figsize=(10, 7),title = 'Ruido') 
+    #A = A.reshape((noise.action_dim,n))
+    A = pd.DataFrame(A,columns=['A'+ str(i) for i in range(noise.action_dim)])
+    ax = A.plot(subplots=True, layout=(int(np.ceil(noise.action_dim/2)), 2), figsize=(10, 7),title = 'Ruido') 
     plt.show()
     

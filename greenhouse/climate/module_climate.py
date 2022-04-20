@@ -15,11 +15,14 @@ class Module1(Module):
         self.i = 0
         self.agent = agent
         self.noise = noise
+        self.train = True
+
         for key, value in kwargs.items():
             self.AddStateRHS(key, value)
         # print("State Variables for this module:", self.S_RHS_ids)
 
     def get_controls(self,state):
+        #breakpoint()
         action   = self.agent.get_action(state)
         action   = self.noise.get_action(action) #No hace nada si noise.on = False
         j        = 0
@@ -30,7 +33,8 @@ class Module1(Module):
             else:
                 controls[k] = action[j]
                 j+= 1 
-        return controls,action
+        #breakpoint()
+        return controls
     
     def get_vars(self):
         '''
@@ -56,8 +60,30 @@ class Module1(Module):
         state = np.array(list(partial_vars.values()))
         return state
 
-    def get_reward(self):
-        return 0
+    def G(self,H):
+        '''
+        Precio del pepino 
+        H esta en gramos
+        '''
+        return 0.015341*H
+
+    def get_reward(self,t1):
+        Qco2       = self.D.Vars['Qco2'].GetRecord()
+        Qgas       = self.D.Vars['Qgas'].GetRecord()
+        Qh2o       = self.D.Vars['Qh2o'].GetRecord()
+        Qlec       = self.D.Vars['Qelec'].GetRecord()
+        deltaQco2  = Qco2[-1] - Qco2[-2]
+        deltaQgas  = Qgas[-1] - Qgas[-2]
+        deltaQh2o  = Qh2o[-1] - Qh2o[-2]
+        deltaQelec = Qlec[-1] - Qlec[-2]
+        G = 0.0
+        if t1 % 86400 == 0:
+            H_     = self.D.master_dir.Vars['H'].GetRecord()
+            deltaH = H_[-1] - H_[-2]
+            G      = self.G(deltaH) #Ganancia 
+        reward =  G - (deltaQco2 + deltaQgas + deltaQh2o + deltaQelec)
+        self.V_Set('reward',reward) 
+        return reward
     
     def is_done(self):
         if self.i == self.noise.decay_period: 
@@ -73,7 +99,8 @@ class Module1(Module):
     
     def Advance(self, t1):
         state = self.get_state()
-        controls,action = self.get_controls(state) #Forward
+        controls = self.get_controls(state) #Forward
+        action = list(controls.values())
         self.update_controls(controls)
         #self.V_Set('Qco2',0)
         #Vsat = V_sa( T = self.V('T2') ) # nuevo
@@ -85,8 +112,8 @@ class Module1(Module):
         self.i  += 1
         new_state = self.get_state()
         done = self.is_done()
-        reward = self.get_reward()
-        self.agent.memory.push(state, action, reward, new_state, done)
-        #self.update() #Backpropagation
-        #breakpoint()
+        reward = self.get_reward(t1)
+        if self.train:
+            self.agent.memory.push(state, action, reward, new_state, done)
+            self.update() #Backpropagation
         return 1

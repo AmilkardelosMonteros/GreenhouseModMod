@@ -21,13 +21,12 @@ class Greenhouse(Director):
         super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
         self.Dt = None
         self.n = None
-        self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g, val=0.0)
+        self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g,rec=1000, val=0.0)
         self.AddVar( typ='State', varid='NF', prn=r'$N_k$', desc="Accumulated  number of fruits harvested", units= n_f, val=0.0)
         self.AddVar( typ='State', varid='h', prn=r'$h_k$', desc="Weight of all harvested fruits.", units= g, val=0.0)
         self.AddVar( typ='State', varid='n', prn=r'$n_k$', desc="Total  number of fruits harvested", units= n_f, val=0.0)
         self.AddVar( typ='State', varid='m', prn=r'$m_k$', desc="Simulation of the total  number of fruits harvested", units= n_f, val=0.0)
-        self.AddVar( typ='State', varid='sum_A', prn=r'$ \sum A$',desc="Total assimilation rate", units= g * (m**-2), val=0,rec = 1440) ##Revisar
-        self.AddVar( typ='State', varid='A_Mean', prn=r'$ E\\left( A\\right)$',desc="Total mean assimilation rate", units= g * (m**-2), val=0,rec = 1440) ##Revisar
+        self.AddVar( typ='State', varid='A_Mean', prn=r'$E[A]$',desc="Total mean assimilation rate", units= g * (m**-2), val=0,rec = 1440) ##Revisar
 
         
     def Scheduler(self, t1, sch):
@@ -48,7 +47,6 @@ class Greenhouse(Director):
         t_w_k = 0.0
         t_n_k = 0
         t_m_k = 0
-        sum_A = 0 
         A_Mean = 0
         A_Mean1 = 0
         A_int  = 0
@@ -59,7 +57,6 @@ class Greenhouse(Director):
             t_w_k += self.Modules[plant].Modules['Plant'].V('h_k')
             t_n_k += self.Modules[plant].Modules['Plant'].V('n_k')
             t_m_k += self.Modules[plant].Modules['Plant'].V('m_k')
-            sum_A += self.Modules[plant].Modules['Plant'].V('A')
             idx = int(self.Dt / self.Modules[plant].Modules['Photosynt'].Dt)
             #t = None if idx == 1 
             #A_Mean += self.Modules[plant].Modules['Photosynt'].V_Mean('A', ni=-idx)
@@ -81,7 +78,6 @@ class Greenhouse(Director):
         self.V_Set( 'h', t_w_k)
         self.V_Set( 'n', t_n_k)
         self.V_Set( 'm', t_m_k)
-        self.V_Set( 'sum_A', sum_A)
         self.V_Set( 'A_Mean', A_Mean)
         
 

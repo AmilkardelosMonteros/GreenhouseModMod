@@ -14,7 +14,7 @@ function_names = ['o1','o2','o3','o4','o5']
 constant_names = ['lamb4', 'alpha6', 'phi7', 'eta6', 'eta7', 'eta8', 'phi8', 'nu4', 
                             'nu5', 'omega1', 'nu6', 'nu1', 'eta10', 'nu3', 'nu2', 'eta11', 
                             'phi2', 'eta13', 'psi2', 'psi3', 'omega3']
-others = ['A_Mean']
+others = ['A_Mean','reward']
 all_parameters = state_names + control_names + input_names + function_names + constant_names  + others
 
 class C1_rhs(StateRHS):
@@ -61,7 +61,7 @@ class C1_rhs(StateRHS):
 
         o_4 = A_Mean   ## o4 debe estar en mg * m**2(invernadero) * s*-1
         #breakpoint()
-        to_save = {'o1':o_1,'o2':o_2,'o3':o_3,'o4':o_4,'o5':o_5}#,'A_Mean':A_Mean}
+        to_save = {'o1':o_1,'o2':o_2,'o3':o_3,'o4':o_4,'o5':o_5,'A_Mean':A_Mean}
         [self.mod.V_Set(k, v) for k,v in to_save.items()]
         return (kappa_4**-1)*(o_1 + o_2 + o_3 - o_4 - o_5 )
 

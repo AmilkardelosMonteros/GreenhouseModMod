@@ -29,9 +29,8 @@ OTHER_CONSTANTS = {
     'etadrain':  Struct(typ='Cnts', varid='etadrain', prn=r'$\eta_{drain}$',
                     desc="Missing", units=1, val=30, ok='falta descripción y unidades'),
     'model_noise': Struct(val = MODEL_NOISE,ok = 'Controla si se agrega o no aleatoriedad al modelo'),
-    'sum_A': Struct(typ='State', varid='sum_A', prn=r'$ \sum A$',
-                    desc="Total assimilation rate", units=g * (m**-2), val=0,rec= 1440, ok='Para usarlo hay que cambiar unidades'),
-    'A_Mean': Struct( typ='State', varid='A_Mean', prn=r'$ E\\left( A\\right)$',desc="Total mean assimilation rate", units= g * (m**-2), val=0,rec = 1440) ##Revisar
+    'A_Mean': Struct( typ='State', varid='A_Mean', prn=r'$E[A]$',desc="Total mean assimilation rate", units= g * (m**-2), val=0,rec = 1440), ##Revisar
+    'reward': Struct( typ='State', varid='reward', prn=r'$r_{t}$',desc="Reward inmediato", units=  (m**-2), val=0,rec = 1440)
 
 }
 
@@ -325,18 +324,18 @@ COSTS = {
 
 ################## Controls ##################
 CONTROLS = {
-    'U1': Struct(typ='State', varid='U1', prn=r'$U_1$', desc="Thermal screen control", units=1, val=0, ok=ok),
-    'U2': Struct(typ='State', varid='U2', prn=r'$U_2$', desc="Fan and pad system control", units=1, val=0, ok=ok),
-    'U3': Struct(typ='State', varid='U3', prn=r'$U_3$', desc="Control of mechanical cooling system", units=1, val=0, ok=ok),
-    'U4': Struct(typ='State', varid='U4', prn=r'$U_4$', desc="Air heater control", units=1, val=0, ok=ok),
-    'U5': Struct(typ='State', varid='U5', prn=r'$U_5$', desc="External shading control", units=1, val=0, ok=ok),
-    'U6': Struct(typ='State', varid='U6', prn=r'$U_6$', desc="Side vents Control", units=1, val=0, ok=ok),
-    'U7': Struct(typ='State', varid='U7', prn=r'$U_7$', desc="Forced ventilation control", units=1, val=0, ok=ok),
-    'U8': Struct(typ='State', varid='U8', prn=r'$U_8$', desc="Roof vents control", units=1, val=0,ok=ok),
-    'U9': Struct(typ='State', varid='U9', prn=r'$U_9$', desc="Fog system control", units=1, val=0, ok=ok),
-    'U10': Struct(typ='State', varid='U10', prn=r'$U_{10}$', desc="Control of external CO2 source", units=1, val=0, ok=ok),
-    'U11': Struct(typ='State', varid='U11', prn=r'$U_{11}$', desc="", units=1, val=0, ok='falta descripción'),
-    'U12': Struct(typ='State', varid='U12', prn=r'$U_{12}$', desc="Control de lamparas", units=1, val=0, ok = ok)
+    'U1': Struct(typ='State', varid='U1', prn=r'$U_1$', desc="Thermal screen control", units=1, val=0, rec  = 100,ok=ok),
+    'U2': Struct(typ='State', varid='U2', prn=r'$U_2$', desc="Fan and pad system control", units=1, val=0, rec  = 100,ok=ok),
+    'U3': Struct(typ='State', varid='U3', prn=r'$U_3$', desc="Control of mechanical cooling system", units=1, val=0, rec  = 100,ok=ok),
+    'U4': Struct(typ='State', varid='U4', prn=r'$U_4$', desc="Air heater control", units=1, val=0, rec  = 100,ok=ok),
+    'U5': Struct(typ='State', varid='U5', prn=r'$U_5$', desc="External shading control", units=1, val=0, rec  = 100,ok=ok),
+    'U6': Struct(typ='State', varid='U6', prn=r'$U_6$', desc="Side vents Control", units=1, val=0,rec  = 100, ok=ok),
+    'U7': Struct(typ='State', varid='U7', prn=r'$U_7$', desc="Forced ventilation control", units=1, val=0, rec  = 100,ok=ok),
+    'U8': Struct(typ='State', varid='U8', prn=r'$U_8$', desc="Roof vents control", units=1, val=0,rec  = 100,ok=ok),
+    'U9': Struct(typ='State', varid='U9', prn=r'$U_9$', desc="Fog system control", units=1, val=0, rec  = 100,ok=ok),
+    'U10': Struct(typ='State', varid='U10', prn=r'$U_{10}$', desc="Control of external CO2 source", units=1, val=0, rec  = 100,ok=ok),
+    'U11': Struct(typ='State', varid='U11', prn=r'$U_{11}$', desc="", units=1, val=0,rec  = 100, ok='falta descripción'),
+    'U12': Struct(typ='State', varid='U12', prn=r'$U_{12}$', desc="Control de las lamparas", units=1, val=0,rec  = 100, ok='falta descripción')
 }
 
 FUNCTIONS = {

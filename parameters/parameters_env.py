@@ -1,7 +1,35 @@
 import json
-minutos = 60
+from .parameters_dir import PARAMS_DIR
 
-PARAMS_ENV = {'n':10}
+def minute2seconds(x):
+    return 60*x
+
+def hour2seconds(x):
+    return 60*minute2seconds(x)
+
+def day2seconds(x):
+    return 24*hour2seconds(x)
+
+def week2seconds(x):
+    return 7*day2seconds()
+
+def hour2minutes(x):
+    return x*60
+
+def day2minutes(x):
+    return x*24*60
+
+def day2hours(x):
+    return x*24
+
+minutes =   PARAMS_DIR['minutes']
+days = PARAMS_DIR['days']
+m = hour2minutes(1) // minutes
+n = m * day2hours(days)
+
+
+
+PARAMS_ENV = {'n': n}
 
 #Para entrenamiento SEASON puede ser 1,2 o 'RANDOM'
 #Para benchmark y tournament es recomendable que sea 'RANDOM', pero no absolutamente necesario.
