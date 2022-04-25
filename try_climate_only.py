@@ -13,8 +13,8 @@ from greenhouse.crop.module_photo import PhotoModule
 from greenhouse.crop.module_plant import Plant
 from greenhouse.director import Greenhouse
 from factory_of_rhs import*
-from auxModMod.Dir import Director
-from auxModMod.new_read_module import ReadModule
+from ModMod import Director
+from ModMod import ReadModule
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -152,6 +152,7 @@ for k,v in CONTROLS.items():
 #set_simulation(director)
 Keeper = keeper()
 
+breakpoint()
 episodes = 3
 for i in range(episodes):
     director.Run(director.Dt, director.n, director.sch,active=True)
