@@ -6,6 +6,9 @@ mt, mg, m, C, s, W, mg_CO2, J, g, mol_CH2O = symbols('mt mg m C s W mg_CO2 J g m
 mt, mg, m, C, s, W, mg_CO2, J, Pa, kg_water, kg, K, ppm, m_cover, kg_air = symbols('mt mg m C s W mg_CO2 J Pa kg_water kg K ppm m_cover kg_air')  # Symbolic use of base phisical units
 
 mt, mg, m, C, s, W, mg_CO2, J, Pa, kg_water, kg, K, ppm, kmol, kg_air, kg_vapour, mxn = symbols('mt mg m C s W mg_CO2 J Pa kg_water kg K ppm kmol kg_air kg_vapour mxn')  # Symbolic use of base phisical units
+
+kW, hour = symbols('kW hour')
+
 ok = 'OK'
 # from .constants import ALPHA, BETA, GAMMA, DELTA, EPSIL, ETA, LAMB, RHO, TAU, NU, PHI, PSI, OMEGA
 #theta = np.array([3000, 20, 7.2*(10**4)]) # psi2 = 7.2*(10**4)
@@ -22,6 +25,8 @@ OTHER_CONSTANTS = {
                     desc="Cost of natural gas", units=1, val=2.45, ok='checar unidades'),      
     'q_co2_ext': Struct(typ='Cnts', varid='q_co2_ext', prn=r'$\q_{CO_2}_{ext}$',
                     desc="", units=mxn * kg**-1, val=3.5, ok=ok),     # Costo del gas de la fuente externa lo tomamos al precio de la tesis 
+    'cost_elect': Struct(typ='Cnts', varid='cost_elect', prn=r'$\cost_{elect}$',
+                    desc="Cost of the electricity", units=mxn * kW**-1 * hour**-1, val=0.68, ok='Dato pagina CFE consumo agricola'),                         
     'T_cal':     Struct(typ='Cnts', varid='T_cal', prn=r'$T_{cal}$',
                     desc="Missing", units=1, val=95, ok='falta descripción y unidades'),          # Temperatura máxima de la caldera  
     'sigma':     Struct(typ='Cnts', varid='sigma', prn=r'$\sigma$',
