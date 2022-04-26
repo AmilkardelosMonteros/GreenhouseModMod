@@ -1,13 +1,13 @@
-from vars import Vars
+from vars import Vars,New_vars
 import pandas as pd
 import numpy as np
 from numpy import exp
-
+import Struct_weather
 HEADER = False
 
-active_vars = ['Temperature','Shortwave_Radiation',
-       'Wind_Speed10m']
+active_vars = ['Temperature','Shortwave_Radiation','Wind_Speed10m']
 time_var = ['Time_Stamp']
+
 
 def presion_de_vapor_exterior(i5,rh):
     def q2(T1):
@@ -33,8 +33,8 @@ def add_colums(data,f,x,y,name):
 def create_dataset(limit = None):
     data         = pd.read_csv('dataset.csv')
     data.columns = list(Vars.keys()) if HEADER == False else data.columns
-    data         = add_colums(data,presion_de_vapor_exterior,'Temperature','Relative_Humidity','Outside_Vapor_Pressure')
-    data         = data[active_vars + new_vars + time_var]
+    data         = add_colums(data,presion_de_vapor_exterior,'Temperature','Relative_Humidity',list(New_vars.keys())[0])
+    data         = data[active_vars + time_var + [list(New_vars.keys())[0]]]
     #check        = data.isnull().values.any()
     if limit != None:
         data = data.iloc[0:limit]
@@ -44,14 +44,17 @@ def create_inputs_table():
     columns = ['Var', 'Description','Units','Sheet'	,'Column','Column_units','Column_conv_shift','Column_conv',	'Time_column',	'Time_column_units','Time_conv_shift','Time_conv']
     data    = pd.DataFrame(columns = columns)
     for i,var in enumerate(active_vars):
-        list_tem    = [Vars[var].new_name,Vars[var].new_name + Vars[var].obs,Vars[var].units,'Meteo',var,Vars[var].units,0,1,'Time_Stamp',pd.NA,2667452400,60*(1/3600)]
+        list_tem    = [Vars[var].new_name,Vars[var].new_name + Vars[var].obs,Vars[var].units,'Meteo',var,Vars[var].units,0,1,'Time_Stamp',pd.NA,2667452400,1]
         data.loc[i] = list_tem
+    for j,var in enumerate(New_vars.keys()):
+         list_tem    = [New_vars[var].new_name,New_vars[var].new_name + New_vars[var].obs,New_vars[var].units,'Meteo',var,New_vars[var].units,0,1,'Time_Stamp',pd.NA,2667452400,1]
+         data.loc[i+1] = list_tem
     return data
 
 
 def create_xls():
     with pd.ExcelWriter('pandas_to_excel.xlsx') as writer:
-        create_dataset(3000).to_excel(writer, sheet_name='Meteo')
+        create_dataset().to_excel(writer, sheet_name='Meteo')
         create_inputs_table().to_excel(writer, sheet_name='InputVars')
 
 if __name__ == '__main__':
