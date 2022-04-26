@@ -9,6 +9,7 @@ Created on Mon Feb 14 11:46:50 2022
 from ModMod import Module
 from numpy import arange, append
 from .functions import V_cmax, R_d, tau, K_C, K_O, Gamma_st, I_2, J, A_R, A_f, A_acum, A # importar funciones fotosíntesis
+from .functions import f_R, V_sa, fRH, Sr, C_ev3, f_C, C_ev4, VPD, f_V, r_s, gsf # importar funciones fotosíntesis
 from .ci_rhs import Ci_rhs
 
 #####################################
@@ -40,70 +41,139 @@ class PhotoModule(Module):
             T1 = self.V_GetRec('T1', ind_get=-n+i)
             I2 = self.V_GetRec('I2', ind_get=-n+i)
             C1 = self.V_GetRec('C1', ind_get=-n+i)
+            V1 = self.V_GetRec('V1', ind_get=-n+i)
             #self.V_Set('Ci',(C1*0.554)*0.67) #67%  ppm and mg/m**-3 = 0.556 ppm
             
-            #if I2 > 400:
-            #    breakpoint()
+            # Calculo de la presión de vapor de saturación
+            Vsat = V_sa( T1)
+            # Calculo de la Humedad Relativa 
+            RH = fRH( V1, Vsat)
+            
+            # Calculo de las constantes para las formulas de fotosintesis 
             V_cmax1 = V_cmax( T_f=T1, V_cmax25=self.V('V_cmax25'), Q10_Vcmax=self.V('Q10_Vcmax'), k_T=self.V('k_T') )
             R_d1 = R_d( V_cmax=V_cmax1 )
-            tau1 = tau( T_f=T1, tau_25=self.V('tau_25'), Q10_tau=self.V('Q10_tau'), k_T=self.V('k_T') )
+            #tau1 = tau( T_f=T1, tau_25=self.V('tau_25'), Q10_tau=self.V('Q10_tau'), k_T=self.V('k_T') )
             K_C1 = K_C( T_f=T1, K_C25=self.V('K_C25'), Q10_KC=self.V('Q10_KC'), k_T=self.V('k_T') )
             K_O1 = K_O( T_f=T1, K_O25=self.V('K_O25'), Q10_KO=self.V('Q10_KO'), k_T=self.V('k_T') )
             Gamma_st1 = Gamma_st( T_f=T1 )
             I_21 = I_2( I = I2, f = self.V('f'), ab = self.V('ab') )
             J1 = J( I_2 = I_21, J_max=self.V('J_max'), theta = self.V('theta') )
 
-            # Solo tomamos el 67 % de la concentración de CO2 en Ci
-            C1ppm = (C1*0.554)*0.67 #C1 in ppm we use that mg/m**-3 = 0.556 ppm
-            # Conductividad estomática. 
-            # Hay que arreglar esto para que se calcule bien
-            # Conductividad (mesophylic) es 
-            g_s = 0.14370869660918402  # este número es consistente con Patrick et al   
 
-            # en este calculo seguimos a Von Creamer pp 42 que se basa en la 
-            # solución de una ecuación de segund grado. 
-            # OJO: la ecuación en Von Creamer tiene errores de signo.
-            # tomamos la raiz negativa en ambos casos. Esto da valores razonables
-            # de los parámetros. 
+            # Modelos de fotosintesis:
+            #
+            # (A) Surrogate: Consiste de una función concava en PAR y Ca 
+            #            (CO2 atmosférico) que simula  el comportamiento 
+            #            de la fotosintesis. 
+            #             
+            # (B) Simplificado: Considera el modelo completo de Farquhar, von Caemmerer 
+            #               & Berry 1980 (FvCB-1980), pero se asumen que: 
+            #
+            #               1) La conductancia del CO2 en los estomas es tal que 
+            #                  la concentración del CO2 intracelular (Ci) es el 68% 
+            #                  de la concentración del CO2 atmosférico  (Ca). Es decir:
+            #                       Cippm = 0.67*(0.554*Ca) (C1*)*0.67 
+            #                  En el modelo Ca esta mg * m**-3  ylo debemos trasnformar a ppm.
+            #                  En Factor de conversion es 1 mg * m**-3 = 0.556 ppm
+            #                  El 67% se toma de Vanthoor que a su vez lo toma de 
+            #                  Evans and Farquhar (1991). Ellos asumen que esto da el CO2
+            #                  a pasando los estimas (esto es Ci).
+            #               2) La conductancia de Ci a través de la membrana mesofilica es 
+            #                  constante y esta dada por g_t = g_m = 0.14  mu_mul m**-2 s**-1 ppm**-1 
+            #                  (= mol m**−2 s**−1 bar**−1)
+            #
+            #                  Con estas suposiciones el para el CO2 en los sitios de carboxilacion (Cc) 
+            #                  es:
+            #                               A = g_t(Cc - Cippm )
+            #                  De esta ecuación combinada con FvCB-1980 se obtienen las ecuaciones 
+            #                  cuadráticas para A_R y A_F (los asimilados limitados por Rubisto y Radiación) 
 
-            # En esta version la Rd1 ya esta incorposada, por lo que modificamos 
-            # a la función A mas adelante. 
+            # (C) Estomatas variables: Considera el modelo completo de Farquhar, von Caemmerer 
+            #               & Berry 1980 (FvCB-1980), pero se asumen que: 
+            #
+            #               1) La conductancia del CO2 en los estomas  (g_s) varia segun la 
+            #               concentración de CO2, radiación global y deficit de presión de valor según 
+            #               el modelo de Stanghellini 1980.  En realidad este modelo es para la resistrencia
+            #               del H2O en los estomas. La resistencia (rs_s) se mide en unidades de s * m**-1, 
+            #               y la conductancia sería:  g_s = rs**-1 (1.66)**-1. Para transformar este valor a las 
+            #               uniddades de mu_mol_CH20 * ppm_CO2**-1 * m**-2 s**-1 necesitmos multiplicar a 
+            #               gs * (0.553/0.044) ver función  gsf.     
+            #               
+            #               2) En este modelo no se toman en cuenta la conductancia de Ci a través 
+            #                  de la membrana mesofilica. 
+
+            ModeloFotosintesis = {
+                                'Surrogate':    False,
+                                'Simplificado': False,
+                                'EstomataVar':  True
+                                }
+
+            # Trasform C1 from mg * m*-3 to ppm  
+            # (Conversion factor 0.556 ppm / (mg * m*-3)  
+            C1ppm = (C1*0.554)
+            
+            if ModeloFotosintesis['Simplificado'] == True :
+                # 68 % para modelar la conductancia por estomas (Vanthoor)
+                C1ppm =  0.67 * C1ppm 
+                # Conductancia del mesofilo se usa consisntente con Patric2009
+                # Notemos que la g_s esta en unidades de mu_mol_CH20 * ppm_CO2**-1 * m**-2 s**-1
+                g_m = self.V('g_m25')
+                g_t = g_m
+ 
+            if ModeloFotosintesis['EstomataVar'] == True:
+                # Factor de resistencia debida a la radiación global
+                f_R1 = f_R( I=I_21, C_ev1=self.V('C_ev1'), C_ev2=self.V('C_ev2'), LAI = self.V('I1') )
+                Sr1 = Sr( I=I2, S=self.V('S'), Rs=self.V('Rs') )
+            
+                # Factor de resistencia debida a la concentración de CO2
+                C_ev31 = C_ev3( C_ev3n=self.V('C_ev3n'), C_ev3d=self.V('C_ev3d'), Sr=Sr1 )
+                f_C1 = f_C( C_ev3=C_ev31, C1=C1 ) 
+
+                # Factor de resistencia debida a presion de vapor
+                C_ev41 = C_ev4( C_ev4n=self.V('C_ev4n'), C_ev4d=self.V('C_ev4d'), Sr=Sr1 )
+                VPD1 = VPD( V_sa=Vsat, RH = RH )
+                f_V1 = f_V( C_ev4=C_ev41, VPD = VPD1)
+
+                # Resistencia estomática para el agua en unidades de s * m**-1
+                R_agua = r_s( r_m=self.V('r_m'), f_R=f_R1, f_C=f_C1, f_V=f_V1) 
+            
+                # La conductividad estomática del CO2 es proporcional a la del agua. 
+                # Notemos que la g_s esta en unidades de mu_mol_CH20 * ppm_CO2**-1 * m**-2 s**-1
+                g_s = gsf( Ragua = R_agua)
+                
+                # Con esto la conductancia total es:
+                g_t = g_s 
+             
+            # Calculo de los asimilados a partir de la relación cuadrática
+
+            # Rubisco limited cuadratic function
             Ra1 = 1
-            Rb1 = -(V_cmax1 + g_s*(C1ppm + K_C1*(1 + self.V('O_a')/K_O1)) - R_d1)
-            Rc1 =  g_s*( V_cmax1 *  max([C1ppm - Gamma_st1 ,0])  - R_d1 * (C1ppm + K_C1*(1+self.V('O_a')/K_O1)))
+            Rb1 = -(V_cmax1 + g_t*(C1ppm + K_C1*(1 + self.V('O_a')/K_O1)) - R_d1)
+            Rc1 =  g_t*( V_cmax1 *  max([C1ppm - Gamma_st1 ,0])  - R_d1 * (C1ppm + K_C1*(1+self.V('O_a')/K_O1)))
             A_R1 =  ( - Rb1 - (Rb1**2 - 4.0 * Ra1 * Rc1)**(0.5) ) / (2.0 * Ra1) 
 
+            # Radiation limited cuadratic fucntion
             if J1 < 0 :
                 A_f1 = - R_d1
             else:
                 fa1= 1
-                fb1= - ( J1 / 4.0 + g_s *( C1ppm + 2*Gamma_st1)  - R_d1)
-                fc1= g_s * (  max([ C1ppm - Gamma_st1, 0]) * J1 / 4.0 - R_d1 * (C1ppm + 2*Gamma_st1))
+                fb1= - ( J1 / 4.0 + g_t *( C1ppm + 2*Gamma_st1)  - R_d1)
+                fc1= g_t * (  max([ C1ppm - Gamma_st1, 0]) * J1 / 4.0 - R_d1 * (C1ppm + 2*Gamma_st1))
                 A_f1 = (- fb1 - (fb1**2 - 4.0 * fa1 * fc1 )**(0.5))/(2.0 * fa1)
-  
-            
-            #A_f1 = A_f( C_ippm=self.V('Ci'), Gamma_st=Gamma_st1, J=J1 )
-            #A_R1 = A_R( O_a=self.V('O_a'), tau=tau1, C_ippm=self.V('Ci'), V_cmax=V_cmax1, Gamma_st=Gamma_st1, K_C=K_C1, K_O=K_O1)
-           
+   
+            # Assimilates store limitation
             A_acum1 = A_acum( V_cmax = V_cmax1 ) - R_d1
 
-            #A1 = A( A_R=max([A_R1+R_d1,0]), A_f=max([A_f1+R_d1,0]), A_acum=A_acum1+R_d1, R_d=R_d1, fc=self.V('fc') ) 
+            # Combining all three limiting factors ti obtain the asimilates
             A1 = max([A( A_R = A_R1 , A_f = A_f1 , A_acum = A_acum1),- R_d1]) 
 
-            self.V_Set('Ci',C1ppm - A1/g_s) # Ci en ppm ( mg/m**-3 = 0.556 ppm)
 
-            #print(str(self.t())+'['+str(T1)+', '+str(I2)+', '+str(self.V('Ci'))+' ]' )
-            #print(str(self.t())+'A1 = '+str(A1)+' ['+str(A_R1)+', '+str(A_f1)+', '+str(A_acum1)+', '+str(R_d1)+' ] ' )
-            self.V_Set('A', A1)
-
-            #if J1 > 1:
-            #   print('Dia   '+' A = ' + str(A1))    
-            #else:  
-            #   print('Noche '+' A = ' + str(A1))     
-            #print(A1)
+            # Save variables computed during the step
+            self.V_Set('Ci',C1ppm - A1/g_t) # Ci en ppm ( mg/m**-3 = 0.556 ppm)
+            self.V_Set('RH', RH)            # Humedad relativa en porcentaje
+            self.V_Set('A', A1)             # Asimilados en 
             
-            #self.V_Set('ind_pho', ind_pho + 1) # Después de que se calcularon los asimilados, se actualiza el valor del indice auxiliar pues se avanza un minuto
-            ## Avance del RHS
+            ## Avance del RHS (En esta version no se usa, pero si las definiciones del RHS)
             #self.AdvanceRungeKutta(t1=tt[i], t0=tt[i-1]) 
 
         return 1

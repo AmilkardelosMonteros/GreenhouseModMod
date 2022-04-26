@@ -7,10 +7,10 @@ Created on Wed Feb  9 13:05:21 2022
 """
 
 from ModMod import StateRHS
-from .functions import s, mol_air, m, d, C, g, pa, ppm, mu_mol_O2, mu_mol_CO2, mu_mol_phot # importar simbolos 
+from .functions import s, mol_air, m, d, C, g, Pa, pa, ppm, mu_mol_O2, mu_mol_CO2, mu_mol_phot # importar simbolos 
 from .functions import f_R, Sr, C_ev3, f_C, C_ev4, V_sa, VPD, f_V, r_s, gTC, Ca, W, mg # importar funciones
 
-states = ['Ci', 'A', 'C1', 'RH', 'T1', 'I2'] 
+states = ['Ci', 'A', 'C1', 'RH', 'T1', 'I2', 'V1', 'I1'] 
 constants = ['k_Ag', 'r_m', 'C_ev1', 'C_ev2', 'k_fc', 'C_ev3d', 'C_ev3n', 'S', 'Rs', 
         'C_ev4d', 'C_ev4n', 'ks', 'Rb', 'k_T', 'k_JV', 'fc', 'phi', 'O_a', 'V_cmax25', 
         'Q10_Vcmax', 'K_C25', 'Q10_KC', 'K_O25', 'Q10_KO', 'tau_25', 'Q10_tau', 'J_max', 'ab', 
@@ -51,11 +51,16 @@ class Ci_rhs(StateRHS):
         self.AddVar( typ='State', varid='T1', prn=r'$T_1$',\
                     desc="Canopy temperature", units= C , rec=nrec, val=20) # It's take as the leaves temperature
         
+        self.AddVar(typ='State', varid='V1', prn=r'$V_1$',\
+                    desc="Greenhouse air vapor pressure", units = Pa , rec=nrec, val=1200)
+                   #ok='https://www.dimluxlighting.com/knowledge/blog/vapor-pressure-deficit-the-ultimate-guide-to-vpd/') 
         #self.AddVar( typ='State', varid='PAR', prn=r'$PAR$',\
         #    desc="PAR radiation", units=mu_mol_phot * (m**-2) * d**-1 , val=300.00)
         self.AddVar( typ='State', varid='I2', prn=r'$I_2$',\
                     desc="External global radiation", units= W * m**-2 , rec=nrec, val=100) # It's takes as the PAR 
          
+        self.AddVar(typ='Cnts', varid='I1', prn=r'$I_1$',
+                    desc="Leaf area index", units=m**2 * m**-2, val=2),  
         ## Canstants
         ### Stomatal Resistance Calculation
         self.AddVar( typ='Cnts', varid='k_Ag', \
@@ -64,15 +69,20 @@ class Ci_rhs(StateRHS):
         
         self.AddVar( typ='Cnts', varid='r_m', \
            desc="minimal stomatal resistance", \
-           units= s * m**-1, val=100)
+           units= s * m**-1, val=20) 
+           # Vanthor de acuerdo a Stanghellini 82 pero 
+           # no tenemos resultados razonables con valores tan altos. 
+           # Esto es los frutos no tienen suficiente comida para crecer 
+           # por esto proponemos valores de 40 (se puede justificar?)
+
         
         self.AddVar( typ='Cnts', varid='C_ev1', \
            desc="Constant in the formula of f_R", \
-           units= mu_mol_phot * (m**-2) * d**-1, val=4.3)
+           units= W * (m**-2), val=4.3)
         
         self.AddVar( typ='Cnts', varid='C_ev2', \
            desc="Constant in the formula of f_R", \
-           units= mu_mol_phot * (m**-2) * d**-1 , val=0.54)
+           units= W * (m**-2) , val=0.54)
         
         self.AddVar( typ='Cnts', varid='k_fc', \
            desc="Constant for units completation", \
@@ -80,11 +90,11 @@ class Ci_rhs(StateRHS):
         
         self.AddVar( typ='Cnts', varid='C_ev3d', \
            desc="Constant in the formula of f_C", \
-           units= mol_air * mu_mol_CO2**-1, val=6.1e-7)
+           units= ppm**-2, val=6.1e-7)
         
         self.AddVar( typ='Cnts', varid='C_ev3n', \
            desc="Constant in the formula of f_C", \
-           units= mol_air * mu_mol_CO2**-1, val=1.1e-11)
+           units= ppm**-2, val=1.1e-11)
         
         self.AddVar( typ='Cnts', varid='S', \
            desc="Constant in the formula of Sr", \
@@ -96,11 +106,11 @@ class Ci_rhs(StateRHS):
         
         self.AddVar( typ='Cnts', varid='C_ev4d', \
            desc="Constant in the formula of f_C", \
-           units= pa**-1, val=4.3e-6)
+           units= pa**-2, val=4.3e-6)
         
         self.AddVar( typ='Cnts', varid='C_ev4n', \
            desc="Constant in the formula of f_C", \
-           units= pa**-1, val=5.2e-6)
+           units= pa**-2, val=5.2e-6)
         
         ## CO2 absorption
         self.AddVar( typ='Cnts', varid='ks', \
@@ -135,7 +145,12 @@ class Ci_rhs(StateRHS):
         
         self.AddVar( typ='Cnts', varid='V_cmax25', \
            desc="Maximum Rubisco Rate, per unit area", \
-           units= mu_mol_CO2 * (m**-2) * d**-1, val=200)
+           units= mu_mol_CO2 * (m**-2) * d**-1, val=200) 
+
+        self.AddVar( typ='Cnts', varid='g_m25', \
+           desc="Mesophylic conductance", \
+           units= mu_mol_CO2 * (m**-2) * s**-1 * ppm**-1, val=0.144) 
+           # valores posibles 0.8 o 0.01  
         
         self.AddVar( typ='Cnts', varid='Q10_Vcmax', \
            desc="Temperatura response of Vcmax", \

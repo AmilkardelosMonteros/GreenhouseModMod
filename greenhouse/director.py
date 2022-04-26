@@ -85,9 +85,3 @@ class Greenhouse(Director):
     def reset(self):
         pass
         #self.V_Set('<nombre>', valor) # -> cualquier variable que no sea constante
-
-    def step(self, action):
-        pass
-
-    def reward(self, state, action):
-        pass

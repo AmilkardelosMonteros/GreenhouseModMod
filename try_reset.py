@@ -29,7 +29,7 @@ from parameters.climate_constants import INPUTS, CONTROLS, OTHER_CONSTANTS, STAT
 #Para el entrenamiento
 from try_ddpg import agent
 from try_noise import noise
-from utils.for_simulation import set_simulation,save_nets,set_index
+from utils.for_simulation import set_simulation
 beta_list = [0.99, 0.95] # Only 2 plants are simulated, assuming this is approximately one m**2
 theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
 theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
@@ -136,12 +136,9 @@ director.sch += director.PlantList.copy()
 from parameters.parameters_dir import PARAMS_DIR
 
 Dt, n = get_dt_and_n(minute=PARAMS_DIR['minutes'], days=PARAMS_DIR['days'])
-
-from read_dates import  create_date,compute_indexes,get_indexes
 director.Dt = Dt
 director.n = n 
-SEASON = PARAMS_DIR['season']
-INDEXES = get_indexes()[SEASON]
+
 
 
 from keeper import keeper
@@ -151,62 +148,17 @@ for k,v in CONTROLS.items():
     if v:
         ACTIVE_CONTROLS.append(k)
 
-PATH = create_path('simulation_results')
+
 #set_simulation(director)
 Keeper = keeper()
 
-episodes = 1
+episodes = 3
+y = np.array([])
 for i in range(episodes):
-    index1 = 0
-    #np.random.choice(INDEXES,size=1)[0]
-    print('Indice = ', index1)
-    set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=True)
-    save_nets(director,PATH=PATH,i=i)
-    Keeper.add(director)
-    Keeper.reset_noise(director)
+    x = director.OutVar('Qco2')
+    y = np.concatenate([y, x])
+    director.Reset()
 
-date = create_date(index1)
-frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en min
-
-dates = compute_indexes(date,n,frec)
-
-
-
-#set_simulation(director)
-#director.Run(director.Dt, director.n, director.sch,active=True)
-#Keeper.add(director)
-#Keeper.reset_noise(director)
-
-
-#Keeper.plot_actions(ACTIVE_CONTROLS)
-
-#Dt de Director = 1440 (numero de minutos en un dia)
-#Dt de Director clima = 60, 1440/60 = 24 numero de registros de clima * n
-variables = list(director.Vars.keys())
-Data = pd.DataFrame(columns=variables)
-for v in variables:
-    try:
-        Data[v] = director.OutVar(v)
-    except:
-        pass
-
-variables = list(director.Vars.keys())
-Data1 = pd.DataFrame(columns=variables)
-for v in variables:
-    try:
-        Data1[v] = director.OutVar(v)
-    except:
-        pass
-
-
-Keeper.plot_cost(PATH)
-Keeper.plot_rewards(PATH)
-Keeper.save(PATH)
-
-#Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
-#Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
-create_images(director,'Climate',dates,PATH = PATH)
-create_images_per_module(director, 'Plant0', list_var=['Ci', 'C1'],PATH=PATH)
-print(PATH)
-#Keeper.plot_actions(ACTIVE_CONTROLS)
+plt.plot(y)
+plt.show()
