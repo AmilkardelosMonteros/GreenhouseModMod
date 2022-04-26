@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sympy import Q
-
+import json
 def set_axis_style(ax, labels):
     ax.get_xaxis().set_tick_params(direction='out')
     ax.xaxis.set_ticks_position('bottom')
@@ -14,12 +14,15 @@ class keeper:
     def __init__(self):
         self.actions = {} 
         self.rewards = {} #reward acumulado al final del episodio
+        self.H       = {}
+        self.NF      = {}
         self.Qgas    = {} #Gasto por gas al final del episodio 
         self.Qco2    = {}
         self.Qh2o    = {} 
         self.Qelec   = {} #Gasto por electricidad al final del episodio 
         self.G       = {} #Ganacia al final del episodio 
         self.porc    = 0.5
+
         self.i       = 0 
 
     def add_actions(self,dir):
@@ -35,30 +38,32 @@ class keeper:
         #    return 0 
 
     def add_costs(self,dir):
-        #try:
         self.Qgas[str(self.i)]    = dir.Modules['Climate'].Vars['Qgas'].GetRecord()[-1]
         self.Qco2[str(self.i)]    = dir.Modules['Climate'].Vars['Qco2'].GetRecord()[-1]
         self.Qh2o[str(self.i)]    = dir.Modules['Climate'].Vars['Qh2o'].GetRecord()[-1]
         self.Qelec[str(self.i)]   = dir.Modules['Climate'].Vars['Qelec'].GetRecord()[-1]
         self.G[str(self.i)]       = 0.015341*dir.Vars['H'].GetRecord()[-1]
         self.rewards[str(self.i)] = sum(dir.Modules['Climate'].Vars['reward'].GetRecord())
-        return 1
-        #    return 1 
-        #except:
-        #    return 0
+
+    def add_reward(self,dir):
+        H_                        = dir.Vars['H'].GetRecord()[-1]
+        self.H[str(self.i)]       = H_
+        self.G[str(self.i)]       = 0.015341*H_
+        self.NF[str(self.i)]      = dir.Vars['NF'].GetRecord()[-1]
+        self.rewards[str(self.i)] = sum(dir.Modules['Climate'].Vars['reward'].GetRecord())
 
     def add(self,dir):
-        if self.add_actions(dir) == 1 and self.add_costs(dir) == 1:
-            self.i += 1
-        else:
-            print('Algo anda mal')
+        self.add_actions(dir)
+        self.add_costs(dir)
+        self.add_reward(dir)
+        self.i += 1
     
     def reset_noise(self,dir):
         dir.Modules['Climate'].Modules['ModuleClimate'].noise.reset()
 
-    def plot_actions(self,actions):
+    def plot_actions(self,actions,PATH=None):
+        _, axis= plt.subplots(sharex=True, figsize=(10,5))
         for a in actions:
-            _, axis= plt.subplots(sharex=True, figsize=(10,5))
             new_data = list()
             for name in range(self.i):
                 new_data.append(self.actions[str(name)][a])   
@@ -66,23 +71,71 @@ class keeper:
             axis.set_title('Distribucion de ' + a)
             labels = [str(i) for i in self.actions.keys()]
             set_axis_style(axis, labels)
-            plt.show()
+            if PATH != None:
+                plt.savefig(PATH + '/output')
+                plt.cla()
+                plt.clf()
+                plt.close('all')
+            else:
+                plt.show()
+                plt.cla()
+                plt.clf()
+                plt.close('all')
 
-    def plot_dir(self,dic,title):
+    def plot_dir(self,dic,title,PATH=None):
+        plt.cla()
+        plt.clf()
         t = range(self.i)
         x = list(dic.values())
         plt.title(title)
         plt.xlabel('Episodios')
         plt.plot(t,x)
-        plt.show()
-        plt.close()
+        if PATH != None:
+            plt.savefig(PATH + '/output/' + title.replace(' ','_') + '.png')
+            plt.close('all')
+        else:
+            plt.show()
+            plt.close('all')
 
-    def plot_cost(self):
-        self.plot_dir(self.Qco2,'Costo del Co2')
-        self.plot_dir(self.Qelec,'Costo de la electricidad')
-        self.plot_dir(self.Qgas,'Costo del Gas')
-        self.plot_dir(self.Qh2o,'Costo del agua')
+    def plot_cost(self,PATH = None):
+        self.plot_dir(self.Qco2,'Costo del Co2',PATH)
+        self.plot_dir(self.Qelec,'Costo de la electricidad',PATH)
+        self.plot_dir(self.Qgas,'Costo del Gas',PATH)
+        self.plot_dir(self.Qh2o,'Costo del agua',PATH)
 
 
-    def plot_rewards(self):
-        self.plot_dir(self.rewards,'Reward acumulado')
+    def plot_rewards(self,PATH = None):
+        self.plot_dir(self.rewards,'Reward acumulado',PATH)
+
+    def save_(self,path,dic,name):
+        with open(path + '/output/' +name + '.json', 'w') as outfile:
+            json.dump(dic, outfile,indent = 4)
+    
+    def stress_test(self,path):
+        t = lambda x: np.array(list(x.values()))
+        Qgas = t(self.Qgas)
+        Qco2 = t(self.Qco2)
+        Qh2o = t(self.Qh2o)
+        Qelec = t(self.Qelec)
+        G = t(self.G)
+        rewards = t(self.rewards)
+        test = (G - (Qgas + Qco2 + Qh2o + Qelec))  - rewards
+        self.test = {}
+        for i in range(self.i):
+            self.test[str(i)] = test[i]
+        self.save_(path, self.test,'test')
+
+
+    def save(self,path):
+        self.stress_test(path)
+        self.save_(path, self.rewards,'rewards')
+        self.save_(path, self.Qco2,'Qco2')
+        self.save_(path, self.Qelec,'Qele')
+        self.save_(path, self.Qgas,'Qgas')
+        self.save_(path, self.Qh2o,'Qh2o')
+        self.save_(path, self.actions,'actions')
+        self.save_(path, self.NF,'NF')
+        self.save_(path, self.H,'H')
+        self.save_(path, self.G,'G')
+
+        
