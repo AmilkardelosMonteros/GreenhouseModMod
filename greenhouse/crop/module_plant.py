@@ -132,10 +132,8 @@ class Plant(Module):
             wk = 0 
             nfk = 0
             
-
-            
             for fruit in  self.fruits: # h is the indice and fruit is the object
-                if (fruit[0] > 275 or fruit[1]>360): # It is harvested when a fruit reaches a thermic age of 275 °C d or if the fruit's weigth is greater than 360 g
+                if (fruit[0] > 275 or fruit[1] > 360): # It is harvested when a fruit reaches a thermic age of 275 °C d or if the fruit's weigth is greater than 360 g
                     self.n_fruits -= 1 # number fruits in crop
                     wk += fruit[1] # weight of harvested fruits in this moment
                     nfk += 1       # number fruits harvested in this moment

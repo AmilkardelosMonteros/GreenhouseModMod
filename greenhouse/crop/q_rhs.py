@@ -13,7 +13,7 @@ from .functions import m, d, C, g, mu_mol_phot, n_f, MJ, W, s # importar simbolo
 
 global_constants = ['k1_TF', 'k2_TF']
 local_constants = ['k3_TF', 'dw_ef', 'dw_ef_veg','a_ef', 'C_t', 'B', 'D', 'M', 'a', 'b']
-states = ['T2', 'I2'] ### NO VA
+states = ['T2', 'I2', 'C1', 'V1', 'I1'] ### NO VA
 local_states = ['A', 'Q', 'm_k', 'n_k', 'h_k', 'Q_h', 'Y_sum']
 local_parameters = local_states + local_constants
 global_parameters = states + global_constants

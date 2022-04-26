@@ -19,7 +19,7 @@ mu_mol_phot = 1e-6 * mol_phot
 mu_mol_O2 = 1e-6 * mol_O2
 mg = 1e-3*g
 ## Growth model
-n_f, n_p, MJ, W, mg  = symbols('n_f n_p MJ W, mg') # number of fruits, number of plants
+n_f, n_p, MJ, W, mg, Pa  = symbols('n_f n_p MJ W mg Pa') # number of fruits, number of plants
 
 
 ###########################
@@ -102,7 +102,7 @@ def Acrop(A,I1, CropDensity = 2):
     # I1 es el LAI m**2 hoja m**2 invernadero
     # esta funcion nos da la A en mg CH20 planta**-1 s**-1
     return (30/10**6)*(I1/CropDensity)*A
-
+    
 #### Resistencia Estomática ####
     
 def r_s (r_m, f_R, f_C, f_V):
@@ -114,11 +114,14 @@ def r_s (r_m, f_R, f_C, f_V):
     """
     return (r_m) * f_R * f_C * f_V  # f_R, f_C y f_V son adimensionales
 
-def f_R (I, C_ev1, C_ev2):
+def f_R (I, C_ev1, C_ev2, LAI):
     """
     Factor de resistencia debida a la radiación global I
+    La radiación global debe estar dividida por el LAI 
+    segun Stanghelini 1987 por lo tanto
     """
-    return (I + C_ev1) / (I + C_ev2)
+   
+    return (I/LAI + C_ev1) / (I/LAI + C_ev2)
 
 def f_C (C_ev3, C1):
     """
@@ -150,11 +153,29 @@ def V_sa (T):
     Esta función cálcula la presión de vapor de saturación,
     basandose en la ecuación de Arden Buck. T es la temperatura del aire en °C.
     Ver: https://en.wikipedia.org/wiki/Arden_Buck_equation
-    """
-    return 0.61121 * exp( ( 18.678 - (T/234.5) ) * ( T /(257.14 + T) ) )
 
+    Units trasnformed to pascals 
+    """
+    if T > 0:
+        pvsat = 6.1121 * exp( ( 18.678 - (T/234.5) ) * ( T /(257.14 + T) ) )
+    else:
+        pvsat = 6.1121 * exp( ( 23.678 - (T/333.7) ) * ( T /(279.82 + T) ) )    
+    return pvsat*100
+
+def fRH (V1,Vsat):
+    # Calculo del procentaje de humedad relativa en terminos de
+    # la presion de vapor real y la presion de vapor de saturación
+    return 100*( V1 / Vsat )
 
 #### Cálculo del CO2 intracelular ####
+def gsf ( Ragua ):
+    # toma la conductancia del agua en unidade de  s * m**-1
+    # la conductancia del CO2 es (1/1.6) veces la del agua
+    # regresa la resistencia en unidades de mu_mol_CH2O * m**-1 * s**-1 * ppm_CO2
+    # Los factores de conversion son:
+    # 1/rs *(0.553/0.044)
+    return (0.553/0.044)*(1.6 * Ragua)**-1
+
 ### Flujo de absorción del CO2 ###
 def gTC (k, Rb, Rs):
     """
