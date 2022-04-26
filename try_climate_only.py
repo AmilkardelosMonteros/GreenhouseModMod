@@ -152,12 +152,8 @@ for k,v in CONTROLS.items():
 set_simulation(director)
 Keeper = keeper()
 
-<<<<<<< HEAD
 breakpoint()
 episodes = 3
-=======
-episodes = 1
->>>>>>> fa5d44a (Cambios en el modelo de conductancia de CO2)
 for i in range(episodes):
     director.Run(director.Dt, director.n, director.sch,active=True)
     Keeper.add(director)
