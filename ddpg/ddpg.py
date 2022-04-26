@@ -106,20 +106,20 @@ class DDPGagent:
         for target_param, param in zip(self.critic_target.parameters(), self.critic.parameters()):
             target_param.data.copy_(param.data * self.tau + target_param.data * (1.0 - self.tau))
 
-    def save(self, path, name=""):
-        pathlib.Path(path).mkdir(parents=True, exist_ok=True) 
-        torch.save(self.critic.state_dict(), path + "/critic"+name)
-        torch.save(self.critic_optimizer.state_dict(), path + "/critic_optimizer"+name)
-        torch.save(self.actor.state_dict(), path + "/actor"+name)
-        torch.save(self.actor_optimizer.state_dict(), path + "/actor_optimizer"+name)
-        with open(path +'/memory.pickle', 'wb') as handle:
+    def save(self, path, name=""): 
+        pathlib.Path(path+'/nets/'+name).mkdir(parents=True, exist_ok=True)
+        torch.save(self.critic.state_dict(), path + "/nets/"+ name +"/critic")
+        torch.save(self.critic_optimizer.state_dict(), path + "/nets/"+ name +"/critic_optimizer")
+        torch.save(self.actor.state_dict(), path + "/nets/"+ name +"/actor")
+        torch.save(self.actor_optimizer.state_dict(), path + "/nets/"+ name +"/actor_optimizer")
+        with open(path +'/output/memory.pickle', 'wb') as handle:
             pickle.dump(self.memory, handle, protocol=pickle.HIGHEST_PROTOCOL)
     
     def load(self, path, name=""):
-        self.critic.load_state_dict(torch.load(path + "/critic"+name, map_location=device))
-        self.critic_optimizer.load_state_dict(torch.load(path + "/critic_optimizer"+name,  map_location=device))
+        self.critic.load_state_dict(torch.load(path + "/nets/"+ name +"/critic", map_location=device))
+        self.critic_optimizer.load_state_dict(torch.load(path + "/nets/"+ name +"critic_optimizer",  map_location=device))
         self.critic_target = copy.deepcopy(self.critic)
-        self.actor.load_state_dict(torch.load(path + "/actor"+name,  map_location=device))
-        self.actor_optimizer.load_state_dict(torch.load(path + "/actor_optimizer"+name,  map_location=device))
+        self.actor.load_state_dict(torch.load(path + "/nets/"+ name +"/actor",  map_location=device))
+        self.actor_optimizer.load_state_dict(torch.load(path + "/nets/"+ name +"/actor_optimizer",  map_location=device))
         self.actor_target = copy.deepcopy(self.actor)
 
