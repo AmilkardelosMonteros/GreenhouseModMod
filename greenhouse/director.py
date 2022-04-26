@@ -21,7 +21,7 @@ class Greenhouse(Director):
         super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
         self.Dt = None
         self.n = None
-        self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g,rec=1000, val=0.0)
+        self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g,rec=86401, val=0.0)
         self.AddVar( typ='State', varid='NF', prn=r'$N_k$', desc="Accumulated  number of fruits harvested", units= n_f, val=0.0)
         self.AddVar( typ='State', varid='h', prn=r'$h_k$', desc="Weight of all harvested fruits.", units= g, val=0.0)
         self.AddVar( typ='State', varid='n', prn=r'$n_k$', desc="Total  number of fruits harvested", units= n_f, val=0.0)
@@ -51,6 +51,7 @@ class Greenhouse(Director):
         A_Mean1 = 0
         A_int  = 0
         aclima = lambda x: Aclima(x, self.V('I1'))
+        #breakpoint()
         for plant in self.PlantList:
             t_w_hist += self.Modules[plant].Modules['Plant'].V('Q_h')
             t_n_f += self.Modules[plant].Modules['Plant'].n_fruits_h 
