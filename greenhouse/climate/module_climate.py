@@ -15,8 +15,7 @@ class Module1(Module):
         self.i = 0
         self.agent = agent
         self.noise = noise
-        self.train = True
-
+        self.train = True        
         for key, value in kwargs.items():
             self.AddStateRHS(key, value)
         # print("State Variables for this module:", self.S_RHS_ids)
@@ -68,21 +67,27 @@ class Module1(Module):
         return 0.015341*H
 
     def get_reward(self,t1):
+        index_back = int(self.D.master_dir.Dt/self.Dt) if self.D.master_dir.Dt/self.Dt > 1 else 2 
         Qco2       = self.D.Vars['Qco2'].GetRecord()
-        Qgas       = self.D.Vars['Qgas'].GetRecord()
+        Qgas       = self.D.Vars['Qgas'].GetRecord() 
         Qh2o       = self.D.Vars['Qh2o'].GetRecord()
         Qlec       = self.D.Vars['Qelec'].GetRecord()
-        deltaQco2  = Qco2[-1] - Qco2[-2]
-        deltaQgas  = Qgas[-1] - Qgas[-2]
-        deltaQh2o  = Qh2o[-1] - Qh2o[-2]
-        deltaQelec = Qlec[-1] - Qlec[-2]
+        deltaQco2  = Qco2[-1] - Qco2[-index_back]
+        deltaQgas  = Qgas[-1] - Qgas[-index_back] 
+        deltaQh2o  = Qh2o[-1] - Qh2o[-index_back]
+        deltaQelec = Qlec[-1] - Qlec[-index_back]
         G = 0.0
         if t1 % 86400 == 0:
             H_     = self.D.master_dir.Vars['H'].GetRecord()
-            deltaH = H_[-1] - H_[-2]
-            G      = self.G(deltaH) #Ganancia 
+            #deltaH = H_[-1] - H_[-86400]
+            h = self.D.master_dir.Vars['h'].GetRecord()[-1]
+            #if h != 0:
+            #    breakpoint()
+            G      = self.G(h) #Ganancia
+            #G  = 0 
         reward =  G - (deltaQco2 + deltaQgas + deltaQh2o + deltaQelec)
         self.V_Set('reward',reward) 
+
         return reward
     
     def is_done(self):
@@ -101,6 +106,7 @@ class Module1(Module):
         state = self.get_state()
         controls = self.get_controls(state) #Forward
         action = list(controls.values())
+        #breakpoint()
         self.update_controls(controls)
         #self.V_Set('Qco2',0)
         #Vsat = V_sa( T = self.V('T2') ) # nuevo
