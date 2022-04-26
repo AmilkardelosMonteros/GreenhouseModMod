@@ -20,3 +20,5 @@ Vars = {'Time_Stamp' : Struct_weather(orig_name='Time Stamp',new_name='Time_unit
         'Wind_Speed900mb': Struct_weather(orig_name='Wind Speed900mb',units='km h-1',obs= '900 mb'),
         'Wind_Direction900mb': Struct_weather(orig_name='Wind Direction900mb',units='km h-1',obs = '900 mb')
 }
+
+New_vars = {'Outside_Vapor_Pressure': Struct_weather(orig_name = 'Outside_Vapor_Pressure', units= 'Pa',new_name = 'I11', obs = 'Se calcula con RH y T')}
