@@ -79,10 +79,10 @@ class Module1(Module):
         G = 0.0
         if t1 % 86400 == 0:
             H_     = self.D.master_dir.Vars['H'].GetRecord()
-            #deltaH = H_[-1] - H_[-86400]
+            deltaH = H_[-1] - H_[-1400]
             h = self.D.master_dir.Vars['h'].GetRecord()[-1]
-            #if h != 0:
-            #    breakpoint()
+            if h != 0:
+                breakpoint()
             G      = self.G(h) #Ganancia
             #G  = 0 
         reward =  G - (deltaQco2 + deltaQgas + deltaQh2o + deltaQelec)
