@@ -155,11 +155,11 @@ PATH = create_path('simulation_results')
 #set_simulation(director)
 Keeper = keeper()
 
-episodes = 1
+episodes = 2
 for i in range(episodes):
-    index1 = 0
-    #np.random.choice(INDEXES,size=1)[0]
+    index1 = 0#np.random.choice(INDEXES,size=1)[0]
     print('Indice = ', index1)
+    director.reset()
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=True)
     save_nets(director,PATH=PATH,i=i)
@@ -200,13 +200,16 @@ for v in variables:
         pass
 
 
-Keeper.plot_cost(PATH)
-Keeper.plot_rewards(PATH)
+#Keeper.plot_cost(PATH)
+#Keeper.plot_rewards(PATH)
 Keeper.save(PATH)
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
 create_images(director,'Climate',dates,PATH = PATH)
-create_images_per_module(director, 'Plant0', list_var=['Ci', 'C1'],PATH=PATH)
+create_images_per_module(director, 'Plant0' ,PATH=PATH)
+create_images_per_module(director, 'Plant1' ,PATH=PATH)
+from save_parameters import save
+save(PATH)
 print(PATH)
 #Keeper.plot_actions(ACTIVE_CONTROLS)
