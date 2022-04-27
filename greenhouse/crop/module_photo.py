@@ -40,7 +40,7 @@ class PhotoModule(Module):
         for i in range( 1, n): 
             #ind_pho = self.V('ind_pho')
             T1 = self.V_GetRec('T1', ind_get=-n+i)
-            I2 = self.V_GetRec('I2', ind_get=-n+i)
+            I2 = self.V_GetRec('I2T', ind_get=-n+i) # Este es el I2 = sol + lamparas
             C1 = self.V_GetRec('C1', ind_get=-n+i)
             V1 = self.V_GetRec('V1', ind_get=-n+i)
             #self.V_Set('Ci',(C1*0.554)*0.67) #67%  ppm and mg/m**-3 = 0.556 ppm
