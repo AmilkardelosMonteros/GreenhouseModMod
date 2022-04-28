@@ -169,7 +169,7 @@ for i in range(episodes):
     save_nets(director,PATH=PATH,i=i)
     Keeper.add(director)
     Keeper.reset_noise(director)
-
+breakpoint()
 date = create_date(index1)
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en min
 
