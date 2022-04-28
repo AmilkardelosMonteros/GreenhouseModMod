@@ -67,28 +67,26 @@ class Module1(Module):
         return 0.015341*H
 
     def get_reward(self,t1):
-        index_back = int(self.D.master_dir.Dt/self.Dt) if self.D.master_dir.Dt/self.Dt > 1 else 2 
+        index_back = int(self.D.master_dir.Dt/self.Dt) #if self.D.master_dir.Dt/self.Dt > 1 else 2 
         Qco2       = self.D.Vars['Qco2'].GetRecord()
         Qgas       = self.D.Vars['Qgas'].GetRecord() 
         Qh2o       = self.D.Vars['Qh2o'].GetRecord()
         Qlec       = self.D.Vars['Qelec'].GetRecord()
-        deltaQco2  = Qco2[-1] - Qco2[-index_back]
-        deltaQgas  = Qgas[-1] - Qgas[-index_back] 
-        deltaQh2o  = Qh2o[-1] - Qh2o[-index_back]
-        deltaQelec = Qlec[-1] - Qlec[-index_back]
+        deltaQco2  = Qco2[-1] - Qco2[-index_back-1] 
+        deltaQgas  = Qgas[-1] - Qgas[-index_back-1]  
+        deltaQh2o  = Qh2o[-1] - Qh2o[-index_back-1] 
+        deltaQelec = Qlec[-1] - Qlec[-index_back-1] 
         G = 0.0
         if t1 % 86400 == 0:
             H_     = self.D.master_dir.Vars['H'].GetRecord()
-            deltaH = H_[-1] - H_[-1400]
-            h = self.D.master_dir.Vars['h'].GetRecord()[-1]
-            if h != 0:
-                breakpoint()
-            G      = self.G(h) #Ganancia
-            #G  = 0 
-        reward =  G - (deltaQco2 + deltaQgas + deltaQh2o + deltaQelec)
-        self.V_Set('reward',reward) 
-
-        return reward
+            deltaH = H_[-1] - H_[-1439]
+            h_     = self.D.master_dir.Vars['h'].GetRecord()
+            G      = self.G(h_[-1]) # self.G(deltaH) #Ganancia
+        reward_ =  G - (deltaQco2 + deltaQgas + deltaQh2o + deltaQelec)
+        self.V_Set('reward',reward_) 
+        if reward_ > 0 :
+            print(reward_)
+        return reward_
     
     def is_done(self):
         if self.i == self.noise.decay_period: 

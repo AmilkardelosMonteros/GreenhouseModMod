@@ -10,7 +10,7 @@ from ModMod import StateRHS
 from .functions import s, mol_air, m, d, C, g, Pa, pa, ppm, mu_mol_O2, mu_mol_CO2, mu_mol_phot # importar simbolos 
 from .functions import f_R, Sr, C_ev3, f_C, C_ev4, V_sa, VPD, f_V, r_s, gTC, Ca, W, mg # importar funciones
 
-states = ['Ci', 'A', 'C1', 'RH', 'T1', 'I2', 'V1', 'I1'] 
+states = ['Ci', 'A', 'C1', 'RH', 'T1', 'I2', 'V1', 'I1', 'I2T'] 
 constants = ['k_Ag', 'r_m', 'C_ev1', 'C_ev2', 'k_fc', 'C_ev3d', 'C_ev3n', 'S', 'Rs', 
         'C_ev4d', 'C_ev4n', 'ks', 'Rb', 'k_T', 'k_JV', 'fc', 'phi', 'O_a', 'V_cmax25', 
         'Q10_Vcmax', 'K_C25', 'Q10_KC', 'K_O25', 'Q10_KO', 'tau_25', 'Q10_tau', 'J_max', 'ab', 
@@ -59,6 +59,9 @@ class Ci_rhs(StateRHS):
         self.AddVar( typ='State', varid='I2', prn=r'$I_2$',\
                     desc="External global radiation", units= W * m**-2 , rec=nrec, val=100) # It's takes as the PAR 
          
+        self.AddVar(typ='State', varid='I2T', prn=r'$I_{2T}$',\
+             desc="Radiacion PAR total (sol + lamparas)", units=1,rec=nrec, val=0)
+    
         self.AddVar(typ='Cnts', varid='I1', prn=r'$I_1$',
                     desc="Leaf area index", units=m**2 * m**-2, val=2),  
         ## Canstants
