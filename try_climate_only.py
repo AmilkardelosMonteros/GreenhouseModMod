@@ -27,6 +27,7 @@ from utils.images_to_pdf import create_pdf_images
 from reports.report_constants import Constants
 from parameters.climate_constants import INPUTS, CONTROLS, OTHER_CONSTANTS, STATE_VARS
 from parameters.modelo_fotosintesis import MODELO_FOTOSINTESIS
+from parameters.parameters_env import PARAMS_TRAIN 
 #Para el entrenamiento
 from try_ddpg import agent
 from try_noise import noise
@@ -159,13 +160,15 @@ PATH = create_path('simulation_results')
 #set_simulation(director)
 Keeper = keeper()
 
-episodes = 1
+episodes = PARAMS_TRAIN['EPISODES']
+active = not(PARAMS_TRAIN['SERVER'])
 for i in range(episodes):
-    index1 = 0#np.random.choice(INDEXES,size=1)[0]
+    index1 = np.random.choice(INDEXES,size=1)[0]
     print('Indice = ', index1)
     director.reset()
     set_index(director,index1)
-    director.Run(director.Dt, director.n, director.sch,active=True)
+    breakpoint()
+    director.Run(director.Dt, director.n, director.sch,active=active)
     save_nets(director,PATH=PATH,i=i)
     Keeper.add(director)
     Keeper.reset_noise(director)
