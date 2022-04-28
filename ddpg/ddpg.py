@@ -74,6 +74,7 @@ class DDPGagent:
 
     def update(self, batch_size):
         states, actions, rewards, next_states, _ = self.memory.sample(batch_size)
+        states, actions, rewards, next_states = np.array(states), np.array(actions), np.array(rewards), np.array(next_states)
         states = torch.FloatTensor(states).to(device)
         actions = torch.FloatTensor(actions).to(device)
         rewards = torch.FloatTensor(rewards).to(device)
