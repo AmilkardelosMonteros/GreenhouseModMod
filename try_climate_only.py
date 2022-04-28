@@ -26,6 +26,7 @@ from utils.create_folders import create_path
 from utils.images_to_pdf import create_pdf_images
 from reports.report_constants import Constants
 from parameters.climate_constants import INPUTS, CONTROLS, OTHER_CONSTANTS, STATE_VARS
+from parameters.modelo_fotosintesis import MODELO_FOTOSINTESIS
 #Para el entrenamiento
 from try_ddpg import agent
 from try_noise import noise
@@ -41,7 +42,7 @@ dir_climate = Climate_model()
 #dir_climate.Dt = minute2seconds(5) # minutos
 
 """ Climate module"""
-C1_rhs_ins = C1_rhs(constant_climate)
+C1_rhs_ins = C1_rhs(MODELO_FOTOSINTESIS,constant_climate)
 V1_rhs_ins = V1_rhs(constant_climate)
 T1_rhs_ins = T1_rhs(constant_climate)
 T2_rhs_ins = T2_rhs(constant_climate)
@@ -57,8 +58,11 @@ RHS_list += [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins, Qelec_rhs_ins]
 dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
 dir_climate.AddModule('ModuleClimate', Module1(agent,noise,Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins))
 
+mensaje = "Leyendo datos"
+loader = Loader(mensaje).start()
 meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) 
 dir_climate.AddModule('ModuleMeteo', meteo)
+loader.stop()
 #dir_climate.AddModule('Control', Random(constant_control))
 
 
@@ -104,7 +108,7 @@ def PlantDirector( beta, return_Q_rhs_ins=False):
     Dir.MergeVarsFromRHSs( [Ci_rhs_ins, Q_rhs_ins], call=__name__)
     ### Add Modules to the Director:
     Dir.AddModule( "Plant", Plant(beta, Q_rhs_ins, Dt_f=minute2seconds(30), Dt_g=minute2seconds(30)))
-    Dir.AddModule( "Photosynt", PhotoModule(Ci_rhs_ins, Dt=60))
+    Dir.AddModule( "Photosynt", PhotoModule(Ci_rhs_ins, modelo = MODELO_FOTOSINTESIS, Dt=60))
     ## Scheduler for the modules
     Dir.sch = ["Photosynt","Plant"] # 
 
@@ -155,7 +159,7 @@ PATH = create_path('simulation_results')
 #set_simulation(director)
 Keeper = keeper()
 
-episodes = 2
+episodes = 1
 for i in range(episodes):
     index1 = 0#np.random.choice(INDEXES,size=1)[0]
     print('Indice = ', index1)

@@ -16,7 +16,7 @@ from .ci_rhs import Ci_rhs
 ##### Módulo de fotosíntesis ########
 #####################################
 class PhotoModule(Module):
-    def __init__( self, Ci_rhs_ins, Dt=60): 
+    def __init__( self, Ci_rhs_ins, modelo, Dt=60): 
         """Models one part of the process, uses the shared variables
            from Director.
            Dt=0.1, default Time steping of module
@@ -31,6 +31,7 @@ class PhotoModule(Module):
         
         ### Module specific constructors, add RHS's
         self.AddStateRHS( 'Ci', Ci_rhs_ins)
+        self.Modelo = modelo
 
     def Advance( self, t1):
         ## Actualización de la tasa de asimilación
@@ -39,7 +40,7 @@ class PhotoModule(Module):
         for i in range( 1, n): 
             #ind_pho = self.V('ind_pho')
             T1 = self.V_GetRec('T1', ind_get=-n+i)
-            I2 = self.V_GetRec('I2', ind_get=-n+i)
+            I2 = self.V_GetRec('I2T', ind_get=-n+i) # Este es el I2 = sol + lamparas
             C1 = self.V_GetRec('C1', ind_get=-n+i)
             V1 = self.V_GetRec('V1', ind_get=-n+i)
             #self.V_Set('Ci',(C1*0.554)*0.67) #67%  ppm and mg/m**-3 = 0.556 ppm
@@ -102,17 +103,11 @@ class PhotoModule(Module):
             #               2) En este modelo no se toman en cuenta la conductancia de Ci a través 
             #                  de la membrana mesofilica. 
 
-            ModeloFotosintesis = {
-                                'Surrogate':    False,
-                                'Simplificado': False,
-                                'EstomataVar':  True
-                                }
-
             # Trasform C1 from mg * m*-3 to ppm  
             # (Conversion factor 0.556 ppm / (mg * m*-3)  
             C1ppm = (C1*0.554)
             
-            if ModeloFotosintesis['Simplificado'] == True :
+            if self.Modelo['Simplificado']:
                 # 68 % para modelar la conductancia por estomas (Vanthoor)
                 C1ppm =  0.67 * C1ppm 
                 # Conductancia del mesofilo se usa consisntente con Patric2009
@@ -120,7 +115,7 @@ class PhotoModule(Module):
                 g_m = self.V('g_m25')
                 g_t = g_m
  
-            if ModeloFotosintesis['EstomataVar'] == True:
+            if self.Modelo['EstomataVar']:
                 # Factor de resistencia debida a la radiación global
                 f_R1 = f_R( I=I_21, C_ev1=self.V('C_ev1'), C_ev2=self.V('C_ev2'), LAI = self.V('I1') )
                 Sr1 = Sr( I=I2, S=self.V('S'), Rs=self.V('Rs') )
