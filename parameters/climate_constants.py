@@ -351,7 +351,7 @@ FUNCTIONS = {
     'h1': Struct(typ='State', varid='h1', prn=r'$h_1$', desc="Intercambio de calor desde el dosel (T1-, T2+)", units=1, val=0, ok=ok),
     'l1': Struct(typ='State', varid='l1', prn=r'$l_1$', desc="Flujo de calor latente causado por transpiracion (T1-)", units=1, val=0, ok=ok),
     'r7': Struct(typ='State', varid='r7', prn=r'$r_7$', desc="Radiacion FIR que el dosel le transmite al cielo (T1-)", units=1, val=0, ok=ok),
-    'I2T': Struct(typ='State', varid='I2T', prn=r'$I_{2T}$', desc="Radiacion PAR total (sol + lamparas)", units=1, val=0, ok=ok),
+    'I2T': Struct(typ='State', varid='I2T', prn=r'$I_{2T}$', desc="Radiacion PAR total (sol + lamparas)", units=1, rec=nrec, val=0, ok=ok),
     
     ######## Funciones Auxiliares para T2 (Temperatura del aire) ########
     'h2': Struct(typ='State', varid='h2', prn=r'$h_2$', desc="Intercambio de calor desde el dosel hacia la almohadilla de enfriamiento (T2+)", units=1, val=0, ok=ok),
