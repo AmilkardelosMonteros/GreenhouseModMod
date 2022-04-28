@@ -35,7 +35,7 @@ OTHER_CONSTANTS = {
                     desc="Missing", units=1, val=30, ok='falta descripción y unidades'),
     'model_noise': Struct(val = MODEL_NOISE,ok = 'Controla si se agrega o no aleatoriedad al modelo'),
     'A_Mean': Struct( typ='State', varid='A_Mean', prn=r'$E[A]$',desc="Total mean assimilation rate", units= g * (m**-2), val=0,rec = 1440), ##Revisar
-    'reward': Struct( typ='State', varid='reward', prn=r'$r_{t}$',desc="Reward inmediato", units=  (m**-2), val=0,rec = 1440)
+    'reward': Struct( typ='State', varid='reward', prn=r'$r_{t}$',desc="Reward inmediato", units=  (m**-2), val=0,rec = 45*24*60)
 
 }
 
