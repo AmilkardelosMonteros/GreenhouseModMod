@@ -167,12 +167,10 @@ for i in range(episodes):
     print('Indice = ', index1)
     director.reset()
     set_index(director,index1)
-    breakpoint()
-    director.Run(director.Dt, director.n, director.sch,active=active)
+    director.Run(director.Dt, director.n, director.sch,active=True)
     save_nets(director,PATH=PATH,i=i)
     Keeper.add(director)
     Keeper.reset_noise(director)
-breakpoint()
 date = create_date(index1)
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en min
 
