@@ -14,8 +14,8 @@ class Qco2_rhs(StateRHS):
     def __init__(self, parameters):
         # uses the super class __init__
         super().__init__()
-        self.SetSymbTimeUnits(mt)  # minutes
-        self.SetSymbTimeUnits(parameters['dt'])  # minutes
+        #self.SetSymbTimeUnits(mt)  # minutes
+        #self.SetSymbTimeUnits(parameters['dt'])  # minutes
         for name in all_parameters:
             parameters[name].addvar_rhs(self)
 

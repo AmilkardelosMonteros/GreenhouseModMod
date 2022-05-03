@@ -29,7 +29,7 @@ class T1_rhs(StateRHS):
         """Define a RHS, ***this an assigment RHS***, V1 = h2(...), NO ODE."""
         # uses the super class __init__
         super().__init__()
-        self.SetSymbTimeUnits(parameters['dt'])  # minuts   
+        #self.SetSymbTimeUnits(parameters['dt'])  # minuts   
         for name in all_parameters:
             parameters[name].addvar_rhs(self)
 
