@@ -15,7 +15,7 @@ class Qh2o_rhs(StateRHS):
     def __init__(self, parameters):
         # uses the super class __init__
         super().__init__()
-        self.SetSymbTimeUnits(parameters['dt'])  # minuts
+        #self.SetSymbTimeUnits(parameters['dt'])  # minuts
         for name in all_parameters:
             parameters[name].addvar_rhs(self)
         

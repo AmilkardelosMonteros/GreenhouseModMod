@@ -25,7 +25,7 @@ class C1_rhs(StateRHS):
         # uses the super class __init__
         super().__init__()
         self.modelo_foto = modelo_foto
-        self.SetSymbTimeUnits(parameters['dt'])  # minuts
+        #self.SetSymbTimeUnits(parameters['dt'])  # minuts
         for name in all_parameters:
             parameters[name].addvar_rhs(self)
                         

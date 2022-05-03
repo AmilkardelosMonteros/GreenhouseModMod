@@ -22,7 +22,7 @@ all_parameters = states + constants
 ############ RHS del CO2 intracelular ###########################
 #################################################################    
 # number of register to save 
-nrec = 10*24*60
+nrec = 90*24*60
 
 class Ci_rhs(StateRHS):
     """
