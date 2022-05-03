@@ -1,6 +1,3 @@
-from ast import Name
-from pickle import TRUE
-from re import S
 from greenhouse.climate.module_climate import Module1
 #from greenhouse.climate.qelec_rhs import Qelec_rhs
 from parameters.climate_constants import CONSTANTS as constant_climate
@@ -167,12 +164,10 @@ for i in range(episodes):
     print('Indice = ', index1)
     director.reset()
     set_index(director,index1)
-    breakpoint()
     director.Run(director.Dt, director.n, director.sch,active=active)
     save_nets(director,PATH=PATH,i=i)
     Keeper.add(director)
     Keeper.reset_noise(director)
-breakpoint()
 date = create_date(index1)
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en min
 
