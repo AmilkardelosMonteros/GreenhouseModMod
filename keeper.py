@@ -117,8 +117,9 @@ class keeper:
         Qco2 = t(self.Qco2)
         Qh2o = t(self.Qh2o)
         Qelec = t(self.Qelec)
-        G = t(self.G)
+        G = 0 #t(self.G)
         rewards = t(self.rewards)
+        #breakpoint()
         test = (G - (Qgas + Qco2 + Qh2o + Qelec))  - rewards
         self.test = {}
         for i in range(self.i):
