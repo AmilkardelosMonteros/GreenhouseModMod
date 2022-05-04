@@ -143,7 +143,9 @@ from read_dates import  create_date,compute_indexes,get_indexes
 director.Dt = Dt
 director.n = n 
 SEASON = PARAMS_DIR['season']
-INDEXES = get_indexes()[SEASON]
+INDEXES = get_indexes()
+limit = INDEXES['limit']
+INDEXES = INDEXES[SEASON]
 
 
 from keeper import keeper
@@ -160,13 +162,17 @@ Keeper = keeper()
 episodes = PARAMS_TRAIN['EPISODES']
 active = not(PARAMS_TRAIN['SERVER'])
 for i in range(episodes):
-    index1 = np.random.choice(INDEXES,size=1)[0]
+    while True:
+        index1 = np.random.choice(INDEXES,size=1)[0]
+        if index1 < limit:
+            break
     print('Indice = ', index1)
     director.reset()
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     save_nets(director,PATH=PATH,i=i)
     Keeper.add(director)
+    Keeper.save(PATH)
     Keeper.reset_noise(director)
 date = create_date(index1)
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en min
@@ -204,13 +210,13 @@ for v in variables:
 
 #Keeper.plot_cost(PATH)
 #Keeper.plot_rewards(PATH)
-Keeper.save(PATH)
+
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
-create_images(director,'Climate',dates,PATH = PATH)
-create_images_per_module(director, 'Plant0' ,PATH=PATH)
-create_images_per_module(director, 'Plant1' ,PATH=PATH)
+#create_images(director,'Climate',dates,PATH = PATH)
+#create_images_per_module(director, 'Plant0' ,PATH=PATH)
+#create_images_per_module(director, 'Plant1' ,PATH=PATH)
 from save_parameters import save
 save(PATH)
 print(PATH)
