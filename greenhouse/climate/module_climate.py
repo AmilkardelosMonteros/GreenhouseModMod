@@ -15,7 +15,8 @@ class Module1(Module):
         self.i = 0
         self.agent = agent
         self.noise = noise
-        self.train = True        
+        self.train = True
+        self.foo = 0.0        
         for key, value in kwargs.items():
             self.AddStateRHS(key, value)
         # print("State Variables for this module:", self.S_RHS_ids)
@@ -77,13 +78,27 @@ class Module1(Module):
         deltaQh2o  = Qh2o[-1] - Qh2o[-index_back-1] 
         deltaQelec = Qlec[-1] - Qlec[-index_back-1] 
         G = 0.0
-        if t1 % 86400 == 0:
-            H_     = self.D.master_dir.Vars['H'].GetRecord()
-            deltaH = H_[-1] - H_[-1439]
-            h_     = self.D.master_dir.Vars['h'].GetRecord()
-            G      = self.G(h_[-1]) # self.G(deltaH) #Ganancia
+        var = 0.0
+        H_     = self.D.master_dir.Vars['H'].GetRecord()
+        deltaH  = H_[-1] - H_[-6]
+        #deltaH1 = H_[-1] - H_[-1439]
+        #deltaH2 = H_[-1] - H_[-1440]
+        #deltaH3 = H_[-1] - H_[-1441]
+        h_     = self.D.master_dir.Vars['h'].GetRecord()
+        #if t1 % (86400 + 600) == 0:
+        #    G      = self.G(h_[-1]) # self.G(deltaH) #Ganancia
+        #    self.foo += h_[-1]
+        G = self.G(deltaH) 
+        if t1 % (86400 + 300) == 0:
+            var += self.G(h_[-1])
+        #if (deltaH1 > 0) or (deltaH2 > 0) or (deltaH3 > 0):
+        #    breakpoint()
+        var -= (Qco2[-1] + Qgas[-1] +Qh2o[-1] + Qlec[-1])
         reward_ =  G - (deltaQco2 + deltaQgas + deltaQh2o + deltaQelec)
         self.V_Set('reward',reward_) 
+        #if abs(var - self.D.master_dir.Vars['reward'].GetRecord().sum()) > 1e-1:
+        #    print(abs(var - self.D.master_dir.Vars['reward'].GetRecord().sum()))
+        print(deltaH)
         if reward_ > 0 :
             print(reward_)
         return reward_
