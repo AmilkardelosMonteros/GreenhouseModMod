@@ -21,7 +21,7 @@ def get_indexes():
     SEASON2_indexes = list(SEASON2_1.index) + list(SEASON2_2.index)
     SEASON2_indexes = list(filter(lambda x: x < limit, SEASON2_indexes))
 
-    return {'1':SEASON1_indexes,'2':SEASON2_indexes}
+    return {'1':SEASON1_indexes,'2':SEASON2_indexes, 'limit':limit}
 
 def get_index(year,month,day,hour = 12):
     data_copy = data.copy()
