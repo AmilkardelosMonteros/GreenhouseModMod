@@ -1,7 +1,5 @@
 import json
 
-from sqlalchemy import all_
-
 from parameters.parameters_ddpg     import PARAMS_DDPG 
 from parameters.parameters_env      import PARAMS_TRAIN
 from parameters.parameters_dir      import PARAMS_DIR
