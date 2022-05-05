@@ -1,3 +1,3 @@
 PARAMS_DIR = {'minutes': 5,
-              'days':30,
+              'days':90,
               'season':'1'}
