@@ -50,7 +50,7 @@ class keeper:
         self.H[str(self.i)]       = H_
         self.G[str(self.i)]       = 0.015341*H_
         self.NF[str(self.i)]      = dir.Vars['NF'].GetRecord()[-1]
-        self.rewards[str(self.i)] = sum(dir.Modules['Climate'].Vars['reward'].GetRecord())
+        self.rewards[str(self.i)] = sum(dir.Vars['reward'].GetRecord())
 
     def add(self,dir):
         self.add_actions(dir)
@@ -59,7 +59,8 @@ class keeper:
         self.i += 1
     
     def reset_noise(self,dir):
-        dir.Modules['Climate'].Modules['ModuleClimate'].noise.reset()
+        # dir.Modules['Climate'].Modules['ModuleClimate'].noise.reset()
+        dir.noise.reset()
 
     def plot_actions(self,actions,PATH=None):
         _, axis= plt.subplots(sharex=True, figsize=(10,5))
@@ -117,7 +118,7 @@ class keeper:
         Qco2 = t(self.Qco2)
         Qh2o = t(self.Qh2o)
         Qelec = t(self.Qelec)
-        G = 0 #t(self.G)
+        G = t(self.G)
         rewards = t(self.rewards)
         #breakpoint()
         test = (G - (Qgas + Qco2 + Qh2o + Qelec))  - rewards
