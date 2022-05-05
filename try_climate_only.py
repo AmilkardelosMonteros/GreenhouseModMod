@@ -54,7 +54,7 @@ Qelec_rhs_ins = Qelec_rhs(constant_climate)
 RHS_list  = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins]
 RHS_list += [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins, Qelec_rhs_ins]
 dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-dir_climate.AddModule('ModuleClimate', Module1(agent,noise,Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins))
+dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins))
 
 mensaje = "Leyendo datos"
 loader = Loader(mensaje).start()
@@ -69,7 +69,7 @@ loader.stop()
 #dir_climate.MergeVarsFromRHSs(cost_list, call=__name__)
 #dir_climate.AddModule('ModuleCosts', ModuleCosts(Dt=3600, Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
 dir_climate.sch = list(dir_climate.Modules.keys()) 
-director = Greenhouse()
+director = Greenhouse(agent, noise)
 director.MergeVarsFromRHSs(RHS_list, call=__name__)
 director.MergeVars(dir_climate, all_vars=True)
 director.AddDirectorAsModule('Climate', dir_climate)
@@ -163,7 +163,7 @@ episodes = PARAMS_TRAIN['EPISODES']
 active = not(PARAMS_TRAIN['SERVER'])
 for i in range(episodes):
     while True:
-        index1 = np.random.choice(INDEXES,size=1)[0]
+        index1 = 0 # np.random.choice(INDEXES,size=1)[0]
         if index1 < limit:
             break
     print('Indice = ', index1)
@@ -214,7 +214,7 @@ for v in variables:
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
-#create_images(director,'Climate',dates,PATH = PATH)
+create_images(director,'Climate',dates,PATH = PATH)
 #create_images_per_module(director, 'Plant0' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
 from save_parameters import save
