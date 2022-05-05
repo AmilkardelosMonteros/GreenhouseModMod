@@ -169,6 +169,7 @@ for i in range(episodes):
     print('Indice = ', index1)
     director.reset()
     set_index(director,index1)
+    breakpoint()
     director.Run(director.Dt, director.n, director.sch,active=active)
     save_nets(director,PATH=PATH,i=i)
     Keeper.add(director)
