@@ -12,18 +12,18 @@ def set_axis_style(ax, labels):
 
 class keeper:
     def __init__(self):
-        self.actions = {} 
+        self.actions = {}
         self.rewards = {} #reward acumulado al final del episodio
         self.H       = {}
         self.NF      = {}
-        self.Qgas    = {} #Gasto por gas al final del episodio 
+        self.Qgas    = {} #Gasto por gas al final del episodio
         self.Qco2    = {}
-        self.Qh2o    = {} 
-        self.Qelec   = {} #Gasto por electricidad al final del episodio 
-        self.G       = {} #Ganacia al final del episodio 
+        self.Qh2o    = {}
+        self.Qelec   = {} #Gasto por electricidad al final del episodio
+        self.G       = {} #Ganacia al final del episodio
         self.porc    = 0.5
 
-        self.i       = 0 
+        self.i       = 0
 
     def add_actions(self,dir):
         #try:
@@ -33,9 +33,9 @@ class keeper:
             sample = list(np.random.choice(sample, size = int(len(sample)*self.porc)))
             dir_actions[key] = sample
         self.actions[str(self.i)] = dir_actions
-        return 1 
+        return 1
         #except:
-        #    return 0 
+        #    return 0
 
     def add_costs(self,dir):
         self.Qgas[str(self.i)]    = dir.Modules['Climate'].Vars['Qgas'].GetRecord()[-1]
@@ -57,19 +57,19 @@ class keeper:
         self.add_costs(dir)
         self.add_reward(dir)
         self.i += 1
-    
+
     def reset_noise(self,dir):
         # dir.Modules['Climate'].Modules['ModuleClimate'].noise.reset()
         dir.noise.reset()
 
-    def plot_actions(self,actions,PATH=None):
+    def plot_actions(self,actions,flag='train',PATH=None):
         _, axis= plt.subplots(sharex=True, figsize=(10,5))
         for a in actions:
             new_data = list()
             for name in range(self.i):
-                new_data.append(self.actions[str(name)][a])   
+                new_data.append(self.actions[str(name)][a])
             axis.violinplot(new_data, showmeans=True)
-            axis.set_title('Distribucion de ' + a)
+            axis.set_title('Distribucion de ' + a + ' en ' + flag)
             labels = [str(i) for i in self.actions.keys()]
             set_axis_style(axis, labels)
             if PATH != None:
@@ -108,10 +108,35 @@ class keeper:
     def plot_rewards(self,PATH = None):
         self.plot_dir(self.rewards,'Reward acumulado',PATH)
 
+
+    def plot_violin(self,dic,titulo,PATH):
+        t = lambda x: np.array(list(x.values()))
+        x = t(dic)
+        _, axis= plt.subplots(sharex=True, figsize=(10,5))
+        axis.violinplot(x, showmeans=True)
+        axis.set_title('Distribucion de ' + titulo)
+        if PATH != None:
+            plt.savefig(PATH + '/output/' + titulo.replace(' ','_') + '.png')
+            plt.cla()
+            plt.clf()
+            plt.close('all')
+        else:
+            plt.show()
+            plt.cla()
+            plt.clf()
+            plt.close('all')
+
+
+    def plot_test(self, PATH = None):
+        self.plot_violin(self.rewards,'Reward Acumulado',PATH)
+        #self.plot_violin(self.NF,'Numero de frutos',PATH)
+        #self.plot_violin(self.H,'Peso de los frutos',PATH)
+
+
     def save_(self,path,dic,name):
         with open(path + '/output/' +name + '.json', 'w') as outfile:
             json.dump(dic, outfile,indent = 4)
-    
+
     def stress_test(self,path):
         t = lambda x: np.array(list(x.values()))
         Qgas = t(self.Qgas)
@@ -140,4 +165,4 @@ class keeper:
         self.save_(path, self.H,'H')
         self.save_(path, self.G,'G')
 
-        
+
