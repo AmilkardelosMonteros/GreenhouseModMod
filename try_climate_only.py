@@ -157,8 +157,9 @@ for k,v in CONTROLS.items():
 
 PATH = create_path('simulation_results')
 #set_simulation(director)
+###############################################
+#TRAIN
 Keeper = keeper()
-
 episodes = PARAMS_TRAIN['EPISODES']
 active = not(PARAMS_TRAIN['SERVER'])
 for i in range(episodes):
@@ -177,48 +178,31 @@ for i in range(episodes):
     Keeper.reset_noise(director)
 date = create_date(index1)
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en min
-
 dates = compute_indexes(date,n,frec)
 
 
+from save_parameters import save
+save(PATH)
+print(PATH)
+###############################################
 
-#set_simulation(director)
-#director.Run(director.Dt, director.n, director.sch,active=True)
-#Keeper.add(director)
-#Keeper.reset_noise(director)
-
-
-#Keeper.plot_actions(ACTIVE_CONTROLS)
-
-#Dt de Director = 1440 (numero de minutos en un dia)
-#Dt de Director clima = 60, 1440/60 = 24 numero de registros de clima * n
-variables = list(director.Vars.keys())
-Data = pd.DataFrame(columns=variables)
-for v in variables:
-    try:
-        Data[v] = director.OutVar(v)
-    except:
-        pass
-
-variables = list(director.Vars.keys())
-Data1 = pd.DataFrame(columns=variables)
-for v in variables:
-    try:
-        Data1[v] = director.OutVar(v)
-    except:
-        pass
-
-
+###############################################
+#TEST
+Keeper_for_test = Keeper()
+set_simulation(director)
+for _ in range(PARAMS_TRAIN['N_TEST']):
+    director.reset()
+    director.Run(director.Dt, director.n, director.sch,active=active)
+    Keeper_for_test.add(director)
+Keeper_for_test.plot_test(PATH)
+Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
+create_images(director,'Climate',dates,PATH = PATH)
 #Keeper.plot_cost(PATH)
 #Keeper.plot_rewards(PATH)
 
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
-create_images(director,'Climate',dates,PATH = PATH)
 #create_images_per_module(director, 'Plant0' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
-from save_parameters import save
-save(PATH)
-print(PATH)
 #Keeper.plot_actions(ACTIVE_CONTROLS)
