@@ -191,7 +191,13 @@ print(PATH)
 Keeper_for_test = Keeper()
 set_simulation(director)
 for _ in range(PARAMS_TRAIN['N_TEST']):
+    while True:
+        index1 = 0 # np.random.choice(INDEXES,size=1)[0]
+        if index1 < limit:
+            break
+    print('Indice = ', index1)
     director.reset()
+    set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     Keeper_for_test.add(director)
 Keeper_for_test.plot_test(PATH)
