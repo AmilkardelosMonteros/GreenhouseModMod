@@ -15,16 +15,16 @@ n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 
 s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
 
-nrec  = 90*24*60
+nrec  = 7*24*60
 class Greenhouse(Director):
     def __init__(self, agent, noise):
         super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
         self.Dt = None
         self.n = None
         self.i = 0
-        self.agent = agent
-        self.noise = noise
-        self.train = True
+        self.agent    = agent
+        self.noise    = noise
+        self.train    = True
         self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g, val=0.0,rec = nrec)
         self.AddVar( typ='State', varid='NF', prn=r'$N_k$', desc="Accumulated  number of fruits harvested", units= n_f, val=0.0,rec = nrec)
         self.AddVar( typ='State', varid='h', prn=r'$h_k$', desc="Weight of all harvested fruits.", units= g, val=0.0,rec = nrec)
@@ -33,8 +33,9 @@ class Greenhouse(Director):
         self.AddVar( typ='State', varid='A_Mean', prn=r'$E[A]$',desc="Total mean assimilation rate", units= g * (m**-2), val=0,rec=nrec) ##Revisar
 
     def get_controls(self, state):
+         #No hace nada si noise.on = False
         action   = self.agent.get_action(state)
-        action   = self.noise.get_action(action) #No hace nada si noise.on = False
+        action   = self.noise.get_action(action)
         j        = 0
         controls = {}
         for k,v in self.agent.controls.items():
@@ -127,8 +128,11 @@ class Greenhouse(Director):
         state = self.get_state()
         controls = self.get_controls(state) #Forward
         action = list(controls.values())
-        if self.train == False:pass
-            #breakpoint()
+        #print('state')
+        #print(state)
+        #print('action')
+        #print(action)
+        #input()
         self.update_controls(controls)
         for mod in sch:
             if self.Modules[mod].Advance(t1) != 1:
