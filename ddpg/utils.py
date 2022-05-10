@@ -40,24 +40,21 @@ class OUNoise(object):
         self.state = np.ones(self.action_dim) * self.mu
         
     def evolve_state(self):
-        #breakpoint()
         x  = self.state
         dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(self.action_dim)
-        state =  new_clip(x + dx)#np.clip(x + dx,self.low, self.high)
+        state =  x + dx #np.clip(x + dx,self.low, self.high)
         self.state = state
         return self.state
     
     def get_action(self, action):
-        if self.on == True:
-            ou_state = self.evolve_state()
-            self.sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period)
-            self.t += 1
-            #print(ou_state,ou_state)
-            #print(self.sigma)
-            #input()
-            return ou_state #np.clip(action + ou_state, self.low, self.high)
+        ou_state = self.evolve_state()
+        self.sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period)
+        self.t += 1
+        if self.on:
+            return np.clip(action + ou_state, self.low, self.high)
         else:
-            return action
+            return np.clip(action, self.low, self.high)
+
 
 
 # https://github.com/openai/gym/blob/master/gym/core.py
