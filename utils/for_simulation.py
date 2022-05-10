@@ -1,3 +1,4 @@
+
 from importlib.resources import path
 
 
@@ -11,7 +12,7 @@ def set_simulation(dir):
     #dir.Modules['Climate'].Modules['ModuleClimate'].train    = False
     #dir.Modules['Climate'].Modules['ModuleClimate'].noise.on = False
     dir.train     = False
-    dir.noise.on = False
+    dir.noise.on  = False
 
 def save_nets(dir,PATH,i):
     print('Guardando red' + str(i))

@@ -169,8 +169,8 @@ for i in range(episodes):
             break
     print('Indice = ', index1)
     director.reset()
+    #breakpoint()
     set_index(director,index1)
-    breakpoint()
     director.Run(director.Dt, director.n, director.sch,active=active)
     save_nets(director,PATH=PATH,i=i)
     Keeper.add(director)
@@ -188,7 +188,7 @@ print(PATH)
 
 ###############################################
 #TEST
-Keeper_for_test = Keeper()
+Keeper_for_test = keeper()
 set_simulation(director)
 for _ in range(PARAMS_TRAIN['N_TEST']):
     while True:
