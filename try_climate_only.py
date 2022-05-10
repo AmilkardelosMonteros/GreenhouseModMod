@@ -186,7 +186,7 @@ save(PATH)
 print(PATH)
 ###############################################
 
-###############################################
+################################################
 #TEST
 Keeper_for_test = keeper()
 set_simulation(director)
@@ -203,8 +203,8 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
 Keeper_for_test.plot_test(PATH)
 Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
 create_images(director,'Climate',dates,PATH = PATH)
-#Keeper.plot_cost(PATH)
-#Keeper.plot_rewards(PATH)
+##Keeper.plot_cost(PATH)
+##Keeper.plot_rewards(PATH)
 
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
