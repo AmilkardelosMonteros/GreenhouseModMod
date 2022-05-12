@@ -57,11 +57,11 @@ class keeper:
         self.add_costs(dir)
         self.add_reward(dir)
         self.i += 1
- 
+
 
     def plot_actions(self,actions,flag='train',PATH=None):
-        _, axis= plt.subplots(sharex=True, figsize=(10,5))
         for a in actions:
+            _, axis= plt.subplots(sharex=True, figsize=(10,5))
             new_data = list()
             for name in range(self.i):
                 new_data.append(self.actions[str(name)][a])
@@ -70,7 +70,7 @@ class keeper:
             labels = [str(i) for i in self.actions.keys()]
             set_axis_style(axis, labels)
             if PATH != None:
-                plt.savefig(PATH + '/output')
+                plt.savefig(PATH + '/output/' + a + flag)
                 plt.cla()
                 plt.clf()
                 plt.close('all')
@@ -103,7 +103,7 @@ class keeper:
 
 
     def plot_rewards(self,PATH = None):
-        self.plot_dir(self.rewards,'Reward acumulado',PATH)
+        self.plot_dir(self.rewards,'Reward acumulado train',PATH)
 
 
     def plot_violin(self,dic,titulo,PATH):
@@ -125,7 +125,7 @@ class keeper:
 
 
     def plot_test(self, PATH = None):
-        self.plot_violin(self.rewards,'Reward Acumulado',PATH)
+        self.plot_violin(self.rewards,'Reward Acumulado test',PATH)
         self.plot_violin(self.NF,'Numero de frutos',PATH)
         self.plot_violin(self.H,'Peso de los frutos',PATH)
 
