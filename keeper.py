@@ -57,10 +57,7 @@ class keeper:
         self.add_costs(dir)
         self.add_reward(dir)
         self.i += 1
-
-    def reset_noise(self,dir):
-        # dir.Modules['Climate'].Modules['ModuleClimate'].noise.reset()
-        dir.noise.reset()
+ 
 
     def plot_actions(self,actions,flag='train',PATH=None):
         _, axis= plt.subplots(sharex=True, figsize=(10,5))
@@ -129,8 +126,8 @@ class keeper:
 
     def plot_test(self, PATH = None):
         self.plot_violin(self.rewards,'Reward Acumulado',PATH)
-        #self.plot_violin(self.NF,'Numero de frutos',PATH)
-        #self.plot_violin(self.H,'Peso de los frutos',PATH)
+        self.plot_violin(self.NF,'Numero de frutos',PATH)
+        self.plot_violin(self.H,'Peso de los frutos',PATH)
 
 
     def save_(self,path,dic,name):
