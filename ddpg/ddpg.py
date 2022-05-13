@@ -38,11 +38,15 @@ class DDPGagent:
         sizes_actor.insert(0, self.num_states)
         sizes_critic = self.hidden_sizes.copy()
         sizes_critic.insert(0, self.num_states + self.num_actions)
-
+        seed = 45
         # Networks
+        torch.manual_seed(seed)
         self.actor = Actor(sizes_actor, self.num_actions)
+        torch.manual_seed(seed)
         self.actor_target = Actor(sizes_actor, self.num_actions)
+        torch.manual_seed(seed)
         self.critic = Critic(sizes_critic)
+        torch.manual_seed(seed)
         self.critic_target = Critic(sizes_critic)
         #breakpoint()
         if torch.cuda.is_available():

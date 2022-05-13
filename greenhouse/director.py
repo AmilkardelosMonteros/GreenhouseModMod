@@ -22,9 +22,11 @@ class Greenhouse(Director):
         self.Dt = None
         self.n = None
         self.i = 0
-        self.agent = agent
-        self.noise = noise
-        self.train = True
+        self.agent    = agent
+        self.noise    = noise
+        self.train    = True
+        self.sound = 0
+        #self.control = 0
         self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g, val=0.0,rec = nrec)
         self.AddVar( typ='State', varid='NF', prn=r'$N_k$', desc="Accumulated  number of fruits harvested", units= n_f, val=0.0,rec = nrec)
         self.AddVar( typ='State', varid='h', prn=r'$h_k$', desc="Weight of all harvested fruits.", units= g, val=0.0,rec = nrec)
@@ -33,8 +35,9 @@ class Greenhouse(Director):
         self.AddVar( typ='State', varid='A_Mean', prn=r'$E[A]$',desc="Total mean assimilation rate", units= g * (m**-2), val=0,rec=nrec) ##Revisar
 
     def get_controls(self, state):
+         #No hace nada si noise.on = False
         action   = self.agent.get_action(state)
-        action   = self.noise.get_action(action) #No hace nada si noise.on = False
+        action   = self.noise.get_action(action)
         j        = 0
         controls = {}
         for k,v in self.agent.controls.items():
@@ -116,7 +119,20 @@ class Greenhouse(Director):
     def update(self):
         if len(self.agent.memory) >= self.agent.batch_size:
             self.agent.update(self.agent.batch_size)
-            #print('Actulizando redes ...')e
+            #print('Actulizando redes ...')
+
+    def check_controls(self):
+        from termcolor import colored
+        booleans = list()
+        for i in range(1,13):
+            tem = self.Vars['U'+str(i)].GetRecord()
+            test1 = tem >= 0
+            test2 = tem <= 1
+            test3 = np.logical_and(test1,test2)
+            booleans.append(test3.all())
+        answer = 'Si' if sum(booleans) == 12 else 'No'
+        print(colored('Acciones en [0,1]? ' + answer,'red'))
+        #breakpoint()
 
     def Scheduler(self, t1, sch):
         """Advance the modules to time t1. sch is a list of modules id's to run
@@ -125,13 +141,22 @@ class Greenhouse(Director):
            Advance is the same interface, either if single module or list of modules.
         """
         state = self.get_state()
+        if np.isnan(state).any():
+            import chime
+            self.sound += 1
+            self.check_controls()
+            if self.sound == 1:
+                chime.success()   
+            #breakpoint()
         controls = self.get_controls(state) #Forward
         action = list(controls.values())
-        if np.linalg.norm(np.array(action))>1:
-            breakpoint()
-        if self.train == False:pass
-            #breakpoint()
         self.update_controls(controls)
+        #if t1%86400 == 0:
+        #    controles = np.random.randint(1,12,2)
+        #    controles = [1,6]
+        #    print(controles)
+        #    for control in range(1,13):
+        #        self.V_Set('U'+str(control),1) 
         for mod in sch:
             if self.Modules[mod].Advance(t1) != 1:
                 print("Director: Error in Advancing Module '%s' from time %f to time %f" % ( mod, self.t, t1))
@@ -186,7 +211,8 @@ class Greenhouse(Director):
             self.update()
         
 
-    def reset(self):
-        for var in self.Vars.values():
-            if var.typ == 'State':
-                self.V_Set(var.varid, var.init_val) # -> cualquier variable que no sea constante
+#    def reset(self):
+#        self.Reset()
+#        for var in self.Vars.values():
+#            if var.typ == 'State':
+#                self.V_Set(var.varid, var.init_val) # -> cualquier variable que no sea constante

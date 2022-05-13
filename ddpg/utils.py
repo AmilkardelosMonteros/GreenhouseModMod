@@ -11,12 +11,12 @@ from torch import zeros_like
 def new_clip(array):
     new_array = list()
     for x in array:
-        if x<0:
-            new_array.append(-x)
-        elif x>1:
-            new_array.append(x-1)
-        else:
-            new_array.append(x)
+        while x > 1 or x < 0:
+            if x<0:
+                x = -x
+            elif x>1:
+                x = x-1
+        new_array.append(x)
     return np.array(new_array)
 # Ornstein-Ulhenbeck Process
 # Taken from #https://github.com/vitchyr/rlkit/blob/master/rlkit/exploration_strategies/ou_strategy.py
@@ -40,22 +40,19 @@ class OUNoise(object):
         self.state = np.ones(self.action_dim) * self.mu
         
     def evolve_state(self):
-        x  = self.state
-        dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(self.action_dim)
-        state =  x + dx #np.clip(x + dx,self.low, self.high)
-        self.state = state
+        x          = self.state
+        dx         = self.theta * (self.mu - x) + self.sigma * np.random.randn(self.action_dim)
+        self.state = new_clip(x + dx)
         return self.state
     
     def get_action(self, action):
-        ou_state = self.evolve_state()
+        ou_state   = self.evolve_state()
         self.sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period)
-        self.t += 1
+        self.t    += 1
         if self.on:
-            return np.clip(action + ou_state, self.low, self.high)
+            return np.clip(action + ou_state,0,1)
         else:
-            return np.clip(action, self.low, self.high)
-
-
+            return np.clip(action,0,1)
 
 # https://github.com/openai/gym/blob/master/gym/core.py
 class NormalizedEnv(gym.ActionWrapper):

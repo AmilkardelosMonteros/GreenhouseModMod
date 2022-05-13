@@ -12,7 +12,7 @@ from greenhouse.director import Greenhouse
 from factory_of_rhs import*
 from ModMod import Director
 from ModMod import ReadModule
-import pandas as pd 
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from util import Loader
@@ -24,7 +24,7 @@ from utils.images_to_pdf import create_pdf_images
 from reports.report_constants import Constants
 from parameters.climate_constants import INPUTS, CONTROLS, OTHER_CONSTANTS, STATE_VARS
 from parameters.modelo_fotosintesis import MODELO_FOTOSINTESIS
-from parameters.parameters_env import PARAMS_TRAIN 
+from parameters.parameters_env import PARAMS_TRAIN
 #Para el entrenamiento
 from try_ddpg import agent
 from try_noise import noise
@@ -58,7 +58,7 @@ dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_i
 
 mensaje = "Leyendo datos"
 loader = Loader(mensaje).start()
-meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) 
+meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0)
 dir_climate.AddModule('ModuleMeteo', meteo)
 loader.stop()
 #dir_climate.AddModule('Control', Random(constant_control))
@@ -68,7 +68,7 @@ loader.stop()
 
 #dir_climate.MergeVarsFromRHSs(cost_list, call=__name__)
 #dir_climate.AddModule('ModuleCosts', ModuleCosts(Dt=3600, Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins))
-dir_climate.sch = list(dir_climate.Modules.keys()) 
+dir_climate.sch = list(dir_climate.Modules.keys())
 director = Greenhouse(agent, noise)
 director.MergeVarsFromRHSs(RHS_list, call=__name__)
 director.MergeVars(dir_climate, all_vars=True)
@@ -108,7 +108,7 @@ def PlantDirector( beta, return_Q_rhs_ins=False):
     Dir.AddModule( "Plant", Plant(beta, Q_rhs_ins, Dt_f=minute2seconds(30), Dt_g=minute2seconds(30)))
     Dir.AddModule( "Photosynt", PhotoModule(Ci_rhs_ins, modelo = MODELO_FOTOSINTESIS, Dt=60))
     ## Scheduler for the modules
-    Dir.sch = ["Photosynt","Plant"] # 
+    Dir.sch = ["Photosynt","Plant"] #
 
     if return_Q_rhs_ins:
         return Dir, Q_rhs_ins
@@ -120,13 +120,13 @@ director.PlantList = []
 for p, beta in enumerate(beta_list):
     ### Make and instance of a Plant
     Dir = PlantDirector(beta=beta)
-    
+
     ### Merge all ***global*** vars from plant
     director.MergeVars( [ Dir ], call=__name__)
 
     ### Add the corresponding time unit, most be the same in both
     director.AddTimeUnit(Dir.symb_time_unit)
-    #Model.CheckSymbTimeUnits, all repeated instances of the Plant Director-Module 
+    #Model.CheckSymbTimeUnits, all repeated instances of the Plant Director-Module
 
     ### Add Plant directly, Dir.sch has been already defined
     director.AddDirectorAsModule( "Plant%d" % p, Dir)
@@ -141,7 +141,7 @@ Dt, n = get_dt_and_n(minute=PARAMS_DIR['minutes'], days=PARAMS_DIR['days'])
 
 from read_dates import  create_date,compute_indexes,get_indexes
 director.Dt = Dt
-director.n = n 
+director.n = n
 SEASON = PARAMS_DIR['season']
 INDEXES = get_indexes()
 limit = INDEXES['limit']
@@ -150,13 +150,8 @@ INDEXES = INDEXES[SEASON]
 
 from keeper import keeper
 from parameters.parameters_ddpg import CONTROLS
-ACTIVE_CONTROLS = list()
-for k,v in CONTROLS.items(): 
-    if v:
-        ACTIVE_CONTROLS.append(k)
-
+ACTIVE_CONTROLS = [k for k,v in CONTROLS.items() if v]
 PATH = create_path('simulation_results')
-#set_simulation(director)
 ###############################################
 #TRAIN
 Keeper = keeper()
@@ -164,18 +159,17 @@ episodes = PARAMS_TRAIN['EPISODES']
 active = not(PARAMS_TRAIN['SERVER'])
 for i in range(episodes):
     while True:
-        index1 = 0 # np.random.choice(INDEXES,size=1)[0]
+        index1 = np.random.choice(INDEXES,size=1)[0]
         if index1 < limit:
             break
     print('Indice = ', index1)
-    director.reset()
-    #breakpoint()
+    director.Reset()
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     save_nets(director,PATH=PATH,i=i)
     Keeper.add(director)
     Keeper.save(PATH)
-    Keeper.reset_noise(director)
+    director.noise.reset()
 date = create_date(index1)
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
 dates = compute_indexes(date,n,frec)
@@ -183,32 +177,32 @@ dates = compute_indexes(date,n,frec)
 
 from save_parameters import save
 save(PATH)
-print(PATH)
-###############################################
+Keeper.plot_cost(PATH)
+Keeper.plot_rewards(PATH)
 
-###############################################
-#TEST
+###TEST
 Keeper_for_test = keeper()
 set_simulation(director)
 for _ in range(PARAMS_TRAIN['N_TEST']):
     while True:
-        index1 = 0 # np.random.choice(INDEXES,size=1)[0]
+        index1 = np.random.choice(INDEXES,size=1)[0]
         if index1 < limit:
             break
     print('Indice = ', index1)
-    director.reset()
+    director.Reset()
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     Keeper_for_test.add(director)
+    director.noise.reset()
 Keeper_for_test.plot_test(PATH)
 Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
-create_images(director,'Climate',dates,PATH = PATH)
-#Keeper.plot_cost(PATH)
-#Keeper.plot_rewards(PATH)
-
+create_images(director,'Climate',dates, PATH = PATH)
+#
+#
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
 #create_images_per_module(director, 'Plant0' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
-#Keeper.plot_actions(ACTIVE_CONTROLS)
+Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
+print(PATH)
