@@ -44,7 +44,7 @@ def create_inputs_table():
     columns = ['Var', 'Description','Units','Sheet'	,'Column','Column_units','Column_conv_shift','Column_conv',	'Time_column',	'Time_column_units','Time_conv_shift','Time_conv']
     data    = pd.DataFrame(columns = columns)
     for i,var in enumerate(active_vars):
-        list_tem    = [Vars[var].new_name,Vars[var].new_name + Vars[var].obs,Vars[var].units,'Meteo',var,Vars[var].units,0,1,'Time_Stamp',pd.NA,2667452400,1]
+        list_tem    = [Vars[var].new_name,Vars[var].new_name + Vars[var].obs,Vars[var].units,'Meteo',var,Vars[var].units,0,Vars[var].column_conv,'Time_Stamp',pd.NA,2667452400,1]
         data.loc[i] = list_tem
     for j,var in enumerate(New_vars.keys()):
          list_tem    = [New_vars[var].new_name,New_vars[var].new_name + New_vars[var].obs,New_vars[var].units,'Meteo',var,New_vars[var].units,0,1,'Time_Stamp',pd.NA,2667452400,1]

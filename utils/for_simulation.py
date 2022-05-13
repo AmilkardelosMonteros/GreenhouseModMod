@@ -5,12 +5,14 @@ from importlib.resources import path
 def set_train(dir):
     #dir.Modules['Climate'].Modules['ModuleClimate'].train    = True
     #dir.Modules['Climate'].Modules['ModuleClimate'].noise.on = True
+    print('Los parametros cambiaron a modo entrenamiento')
     dir.train    = True
     dir.noise.on = True
 
 def set_simulation(dir):
     #dir.Modules['Climate'].Modules['ModuleClimate'].train    = False
     #dir.Modules['Climate'].Modules['ModuleClimate'].noise.on = False
+    print('Los parametros cambiaron a modo simulacion')
     dir.train     = False
     dir.noise.on  = False
 
