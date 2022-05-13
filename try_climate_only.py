@@ -177,7 +177,7 @@ for i in range(episodes):
     Keeper.save(PATH)
     Keeper.reset_noise(director)
 date = create_date(index1)
-frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en min
+frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
 dates = compute_indexes(date,n,frec)
 
 

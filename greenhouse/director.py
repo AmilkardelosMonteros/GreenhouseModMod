@@ -127,6 +127,8 @@ class Greenhouse(Director):
         state = self.get_state()
         controls = self.get_controls(state) #Forward
         action = list(controls.values())
+        if np.linalg.norm(np.array(action))>1:
+            breakpoint()
         if self.train == False:pass
             #breakpoint()
         self.update_controls(controls)
