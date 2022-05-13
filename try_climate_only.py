@@ -164,7 +164,7 @@ for i in range(episodes):
         if index1 < limit:
             break
     print('Indice = ', index1)
-    director.reset()
+    director.Reset()
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     save_nets(director,PATH=PATH,i=i)
@@ -193,7 +193,7 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
         if index1 < limit:
             break
     print('Indice = ', index1)
-    director.reset()
+    director.Reset()
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     Keeper_for_test.add(director)
