@@ -164,6 +164,9 @@ for i in range(episodes):
             break
     print('Indice = ', index1)
     director.Reset()
+    director.t = 0
+    RHSs_ids = director.Modules['Climate'].Modules['ModuleMeteo'].Assigm_S_RHS_ids
+    director.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     save_nets(director,PATH=PATH,i=i)
