@@ -216,8 +216,8 @@ class Greenhouse(Director):
             self.update()
         
 
-    def reset(self):
-        self.Reset()
-        for var in self.Vars.values():
-            if var.typ == 'State':
-                self.V_Set(var.varid, var.init_val) # -> cualquier variable que no sea constante
+#    def reset(self):
+#        self.Reset()
+#        for var in self.Vars.values():
+#            if var.typ == 'State':
+#                self.V_Set(var.varid, var.init_val) # -> cualquier variable que no sea constante
