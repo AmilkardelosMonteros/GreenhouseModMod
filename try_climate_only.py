@@ -194,6 +194,9 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
             break
     print('Indice = ', index1)
     director.Reset()
+    director.t = 0
+    RHSs_ids = director.Modules['Climate'].Modules['ModuleMeteo'].Assigm_S_RHS_ids
+    director.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     Keeper_for_test.add(director)
