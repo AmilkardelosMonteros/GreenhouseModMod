@@ -179,6 +179,7 @@ from save_parameters import save
 save(PATH)
 Keeper.plot_cost(PATH)
 Keeper.plot_rewards(PATH)
+Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
 
 ###TEST
 Keeper_for_test = keeper()
@@ -204,5 +205,4 @@ create_images(director,'Climate',dates, PATH = PATH)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
 #create_images_per_module(director, 'Plant0' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
-Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
 print(PATH)
