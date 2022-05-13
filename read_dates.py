@@ -5,7 +5,7 @@ data.columns    = ['Year','Month','Day','Hour']
 
 
 def get_indexes():
-    limit = data.shape[0] - 91*24 ## Vamos a quitar 90 dias
+    limit = data.shape[0] - 365*24 ## Vamos a quitar 90 dias
 
     #Primera semana de enero a primera de abril
     SEASON1         = data.copy()
