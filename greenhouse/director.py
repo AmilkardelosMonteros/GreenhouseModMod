@@ -15,7 +15,7 @@ n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 
 s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
 
-nrec  = 7*24*60
+nrec  = 90*24*60
 class Greenhouse(Director):
     def __init__(self, agent, noise):
         super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
@@ -25,7 +25,7 @@ class Greenhouse(Director):
         self.agent    = agent
         self.noise    = noise
         self.train    = True
-        #self.sound = 0
+        self.sound = 0
         #self.control = 0
         self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g, val=0.0,rec = nrec)
         self.AddVar( typ='State', varid='NF', prn=r'$N_k$', desc="Accumulated  number of fruits harvested", units= n_f, val=0.0,rec = nrec)
@@ -155,7 +155,7 @@ class Greenhouse(Director):
         #print('action')
         #print(action)
         #input()
-        #self.update_controls(controls)
+        self.update_controls(controls)
         #if t1%86400 == 0:
         #    controles = np.random.randint(1,12,2)
         #    controles = [1,6]

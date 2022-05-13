@@ -19,7 +19,7 @@ local_parameters = local_states + local_constants
 global_parameters = states + global_constants
 
 # number of register to save 
-nrec = 7*24*60
+nrec = 90*24*60
 
 #################################################################
 ############ RHS modelo de crecimiento ##########################
