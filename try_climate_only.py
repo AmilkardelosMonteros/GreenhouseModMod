@@ -152,7 +152,6 @@ from keeper import keeper
 from parameters.parameters_ddpg import CONTROLS
 ACTIVE_CONTROLS = [k for k,v in CONTROLS.items() if v]
 PATH = create_path('simulation_results')
-#set_simulation(director)
 ###############################################
 #TRAIN
 Keeper = keeper()
@@ -180,11 +179,8 @@ from save_parameters import save
 save(PATH)
 Keeper.plot_cost(PATH)
 Keeper.plot_rewards(PATH)
-print(PATH)
-################################################
-#
-#################################################
-##TEST
+
+###TEST
 Keeper_for_test = keeper()
 set_simulation(director)
 for _ in range(PARAMS_TRAIN['N_TEST']):
@@ -201,11 +197,12 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
 Keeper_for_test.plot_test(PATH)
 Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
 create_images(director,'Climate',dates, PATH = PATH)
-
-
+#
+#
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
 #create_images_per_module(director, 'Plant0' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
-#Keeper.plot_actions(ACTIVE_CONTROLS)
+Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
+print(PATH)
