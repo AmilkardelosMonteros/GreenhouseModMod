@@ -53,8 +53,7 @@ class Greenhouse(Director):
         '''
         Sirve para obtener todas las variables y las guarda en un diccionario
         '''
-        Vars = {id:Obj.val for id,Obj in self.Vars.items()}
-        return Vars
+        return {id:Obj.val for id,Obj in self.Vars.items()}
 
     
     def update_controls(self,controls):
