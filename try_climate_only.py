@@ -213,5 +213,5 @@ create_images(director,'Climate',dates, PATH = PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
 create_pdf_images('final_report', PATH, 'output')
 print(PATH)
-send = PARAMS_ENV['SEND_MAIL']
-#if send: send_correo(PATH + '/reports/Reporte.pdf')
+from correo import send_correo
+if PARAMS_TRAIN['SEND_MAIL']: send_correo(PATH + '/reports/final_report.pdf')

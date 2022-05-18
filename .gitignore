@@ -15,3 +15,4 @@ simulation_results
 greenhouse/__pycache__/
 control_function.py
 parameters/credentials.py
+test_mail.py
