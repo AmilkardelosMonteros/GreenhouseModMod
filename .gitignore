@@ -15,3 +15,5 @@ simulation_results
 greenhouse/__pycache__/
 control_function.py
 SALIDA
+parameters/credentials.py
+test_mail.py

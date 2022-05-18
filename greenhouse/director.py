@@ -10,12 +10,13 @@ from ModMod import Director
 from .climate. functions import Aclima
 from sympy import symbols
 from numpy import arange
+import chime
 
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 
 s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
 
-nrec  = 90*24*60
+nrec  = 7*24*60
 class Greenhouse(Director):
     def __init__(self, agent, noise):
         super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
@@ -142,12 +143,11 @@ class Greenhouse(Director):
         """
         state = self.get_state()
         if np.isnan(state).any():
-            import chime
             self.sound += 1
             self.check_controls()
             if self.sound == 1:
-                chime.success()   
-            #breakpoint()
+                chime.error()  
+                raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
         controls = self.get_controls(state) #Forward
         action = list(controls.values())
         self.update_controls(controls)
