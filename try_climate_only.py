@@ -24,7 +24,7 @@ from utils.images_to_pdf import create_pdf_images
 from reports.report_constants import Constants
 from parameters.climate_constants import INPUTS, CONTROLS, OTHER_CONSTANTS, STATE_VARS
 from parameters.modelo_fotosintesis import MODELO_FOTOSINTESIS
-from parameters.parameters_env import PARAMS_TRAIN
+from parameters.parameters_env import PARAMS_ENV, PARAMS_TRAIN
 #Para el entrenamiento
 from try_ddpg import agent
 from try_noise import noise
@@ -211,4 +211,7 @@ create_images(director,'Climate',dates, PATH = PATH)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
 #create_images_per_module(director, 'Plant0' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
+create_pdf_images('final_report', PATH, 'output')
 print(PATH)
+send = PARAMS_ENV['SEND_MAIL']
+#if send: send_correo(PATH + '/reports/Reporte.pdf')

@@ -14,3 +14,4 @@ __pycache__
 simulation_results
 greenhouse/__pycache__/
 control_function.py
+parameters/credentials.py
