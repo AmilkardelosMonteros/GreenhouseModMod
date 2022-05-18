@@ -23,22 +23,21 @@ def send_correo(path):
     message['Subject'] = "Reporte"
     text = MIMEText("Este es un reporte del Invernadero")
     message.attach(text)
-
     directory = path
-    with open(directory, 'rb') as opened:
-        openedfile = opened.read()
+    with open(directory, 'rb') as opened: openedfile = opened.read()
     attachedfile = MIMEApplication(openedfile, _subtype = "pdf")
     attachedfile.add_header('content-disposition', 'attachment', filename = path)
     message.attach(attachedfile)
-    smtp = SMTP("smtp.live.com",587)
+    smtp = smtplib.SMTP("smtp.gmail.com", 587)
     i = 0
-    while i<=3:
-        if not test_conn_open(smtp):
-            smtp = SMTP("smtp.live.com",587)
-            i+=1
-        else:
-            break
+    while not test_conn_open(smtp):
+        print('Conectando')
+        smtp = smtplib.SMTP("smtp.gmail.com", 587)
+        i+=1
+        if i>5:
+            raise SystemExit('Imposible conectarse')      
     smtp.starttls()
     smtp.login(CREDENTIALS['from_address'],CREDENTIALS['password'])
+    print('Enviando ...')
     smtp.sendmail(from_address, to_address, message.as_string())
     smtp.quit()
