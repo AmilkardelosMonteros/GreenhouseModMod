@@ -1,6 +1,7 @@
 STATE_VARIABLES = ['T1','T2','C1','V1']
 INPUTS          = ['I2','I5','I8','I11']
-VARS_OF_DIR     = STATE_VARIABLES + INPUTS
+CROP_VARIABLES  = ['h'] 
+VARS_OF_DIR     = STATE_VARIABLES + INPUTS + CROP_VARIABLES
 
 CONTROLS = {'U1':  True, # Pantalla térmica
             'U2':  True, # Ventilador almoadilla
