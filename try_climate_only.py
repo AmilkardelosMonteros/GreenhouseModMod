@@ -169,7 +169,7 @@ for i in range(episodes):
     director.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
-    save_nets(director,PATH=PATH,i=i)
+    if i%PARAMS_TRAIN['SAVE_FREQ'] == 0: save_nets(director,PATH=PATH,i=i)
     Keeper.add(director)
     Keeper.save(PATH)
     director.noise.reset()
