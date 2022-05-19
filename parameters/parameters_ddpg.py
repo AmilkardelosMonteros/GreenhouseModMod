@@ -22,6 +22,6 @@ PARAMS_DDPG = {'hidden_sizes': [64,64,64],
                 'critic_learning_rate': 1e-3, 
                 'gamma':0.98, 'tau':0.125, 
                 'max_memory_size':int(1e5),
-                'batch_size': 32,
+                'batch_size': 124,
                 'vars':VARS_OF_DIR,
                 'controls':CONTROLS}
