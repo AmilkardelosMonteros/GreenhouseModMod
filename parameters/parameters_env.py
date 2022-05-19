@@ -42,7 +42,7 @@ PARAMS_TRAIN = {'EPISODES': 300, \
                 'SHOW': False, \
                 'SERVER':False, \
                 'INDICE': 0, # Se usa en la simulacion al terminar el entrenamiento
-                'SAVE_FREQ': 200,
+                'SAVE_FREQ': 60,
                 'SEND_MAIL':True
                 } 
 
