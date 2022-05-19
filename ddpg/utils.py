@@ -42,7 +42,7 @@ class OUNoise(object):
     def evolve_state(self):
         x          = self.state
         dx         = self.theta * (self.mu - x) + self.sigma * np.random.randn(self.action_dim)
-        self.state = new_clip(x + dx)
+        self.state = x + dx # new_clip(x + dx)
         return self.state
     
     def get_action(self, action):
@@ -111,10 +111,12 @@ def test_noise(parameters,n):
     noise = OUNoise(parameters)
     A = list()
     for _ in range(n):
-        A.append(noise.get_action(np.zeros_like(range(noise.action_dim))))
+        A.append(noise.get_action(0.5 + np.zeros_like(range(noise.action_dim))))
     A = np.array(A)
     #A = A.reshape((noise.action_dim,n))
     A = pd.DataFrame(A,columns=['A'+ str(i) for i in range(noise.action_dim)])
-    ax = A.plot(subplots=True, layout=(int(np.ceil(noise.action_dim/2)), 2), figsize=(10, 7),title = 'Ruido') 
+    ax = A.plot(subplots=True, layout=(int(np.ceil(noise.action_dim/2)), 2), figsize=(10, 7),title = 'Ruido')
+    for a in ax.flatten():
+        a.set_ylim([-0.1, 1.1])
     plt.show()
     
