@@ -21,7 +21,7 @@ class keeper:
         self.Qh2o    = {}
         self.Qelec   = {} #Gasto por electricidad al final del episodio
         self.G       = {} #Ganacia al final del episodio
-        self.porc    = 0.5
+        self.porc    = 0.1
 
         self.i       = 0
 
@@ -63,7 +63,8 @@ class keeper:
         for a in actions:
             _, axis= plt.subplots(sharex=True, figsize=(10,5))
             new_data = list()
-            for name in range(self.i):
+            inicio = self.i-15 if self.i > 15 else 0
+            for name in range(inicio,self.i):
                 new_data.append(self.actions[str(name)][a])
             axis.violinplot(new_data, showmeans=True)
             axis.set_title('Distribucion de ' + a + ' en ' + flag)
