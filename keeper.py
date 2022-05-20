@@ -21,7 +21,7 @@ class keeper:
         self.Qh2o    = {}
         self.Qelec   = {} #Gasto por electricidad al final del episodio
         self.G       = {} #Ganacia al final del episodio
-        self.porc    = 0.1
+        self.porc    = 0.01
 
         self.i       = 0
 
