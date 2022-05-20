@@ -43,7 +43,7 @@ PARAMS_TRAIN = {'EPISODES': 300, \
                 'SERVER':False, \
                 'INDICE': 0, # Se usa en la simulacion al terminar el entrenamiento
                 'SAVE_FREQ': 2,
-                'SEND_MAIL':False
+                'SEND_MAIL':True
                 } 
 
 PARAMS_SIM = {'anio':2017,\
