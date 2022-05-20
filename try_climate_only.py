@@ -159,7 +159,7 @@ episodes = PARAMS_TRAIN['EPISODES']
 active = not(PARAMS_TRAIN['SERVER'])
 for i in range(episodes):
     while True:
-        index1 = 242077 if i == 0 else np.random.choice(INDEXES,size=1)[0]
+        index1 = np.random.choice(INDEXES,size=1)[0]
         if index1 < limit:
             break
     print('Indice = ', index1)
