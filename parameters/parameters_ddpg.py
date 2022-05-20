@@ -8,7 +8,7 @@ CONTROLS = {'U1':  True, # Pantalla térmica
             'U3':  True, # Enfriamiento mecanico
             'U4':  True, # Calentador de aire  
             'U5':  True, # Sombreado externo (No hace nada por los parametros)
-            'U6':  True, # Respiraderos laterales
+            'U6':  False, # Respiraderos laterales
             'U7':  True, # Ventilación forzada
             'U8':  True, # Respiraderos del techo 
             'U9':  True, # Control sistema de niebla
