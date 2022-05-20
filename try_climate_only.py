@@ -159,7 +159,7 @@ episodes = PARAMS_TRAIN['EPISODES']
 active = not(PARAMS_TRAIN['SERVER'])
 for i in range(episodes):
     while True:
-        index1 = np.random.choice(INDEXES,size=1)[0]
+        index1 = 242077 if i == 0 else np.random.choice(INDEXES,size=1)[0]
         if index1 < limit:
             break
     print('Indice = ', index1)
@@ -201,9 +201,11 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
     director.Run(director.Dt, director.n, director.sch,active=active)
     Keeper_for_test.add(director)
     director.noise.reset()
-Keeper_for_test.plot_test(PATH)
-Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
-create_images(director,'Climate',dates, PATH = PATH)
+#Keeper_for_test.plot_test(PATH)
+#Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
+vars_to_plot  = ['T1','T2','V1','C1','H','NF']
+vars_to_plot += ['U' + str(i) for i in range(1,13)]
+create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
 #
 #
 
@@ -211,7 +213,7 @@ create_images(director,'Climate',dates, PATH = PATH)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
 #create_images_per_module(director, 'Plant0' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
-create_pdf_images('final_report', PATH, 'output')
+#create_pdf_images('final_report', PATH, 'output')
 print(PATH)
 from correo import send_correo
 if PARAMS_TRAIN['SEND_MAIL']: send_correo(PATH + '/reports/final_report.pdf')
