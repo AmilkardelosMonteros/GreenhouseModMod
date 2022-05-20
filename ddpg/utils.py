@@ -45,14 +45,17 @@ class OUNoise(object):
         self.state = x + dx # new_clip(x + dx)
         return self.state
     
-    def get_action(self, action):
+    def get_action(self, action,test = False):
         ou_state   = self.evolve_state()
         self.sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period)
         self.t    += 1
-        if self.on:
-            return np.clip(action + ou_state,0,1)
+        if test:
+            return action + ou_state
         else:
-            return np.clip(action,0,1)
+            if self.on:
+                return np.clip(action + ou_state,0.0,1.0)
+            else:
+                return np.clip(action,0,1)
 
 # https://github.com/openai/gym/blob/master/gym/core.py
 class NormalizedEnv(gym.ActionWrapper):
@@ -111,12 +114,13 @@ def test_noise(parameters,n):
     noise = OUNoise(parameters)
     A = list()
     for _ in range(n):
-        A.append(noise.get_action(0.5 + np.zeros_like(range(noise.action_dim))))
+        A.append(noise.get_action(np.zeros_like(range(noise.action_dim)),test = True) )
     A = np.array(A)
     #A = A.reshape((noise.action_dim,n))
-    A = pd.DataFrame(A,columns=['A'+ str(i) for i in range(noise.action_dim)])
-    ax = A.plot(subplots=True, layout=(int(np.ceil(noise.action_dim/2)), 2), figsize=(10, 7),title = 'Ruido')
+    A_df = pd.DataFrame(A,columns=['A'+ str(i) for i in range(noise.action_dim)])
+    ax = A_df.plot(subplots=True, layout=(int(np.ceil(noise.action_dim/2)), 2), figsize=(10, 7),title = 'Ruido')
+    A_flat = A.flatten()
     for a in ax.flatten():
-        a.set_ylim([-0.1, 1.1])
+        a.set_ylim([min(A_flat) - 0.1,  max(A_flat) + 0.1])
     plt.show()
     
