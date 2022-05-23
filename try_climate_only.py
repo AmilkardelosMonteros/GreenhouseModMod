@@ -170,7 +170,7 @@ for i in range(episodes):
     director.Modules['Plant0'].Modules['Plant'].fruits = list()
     director.Modules['Plant1'].Modules['Plant'].new_fruit = 0
     director.Modules['Plant1'].Modules['Plant'].fruits = list()
-    breakpoint()
+    #breakpoint()
     director.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
