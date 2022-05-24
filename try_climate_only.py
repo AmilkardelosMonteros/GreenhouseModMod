@@ -165,15 +165,10 @@ for i in range(episodes):
     print('Indice = ', index1)
     director.Modules['Plant0'].Modules['Plant'].new_fruit = 1000
     director.Reset()
-    breakpoint()
-    director.t = 0
-    RHSs_ids = director.Modules['Climate'].Modules['ModuleMeteo'].Assigm_S_RHS_ids
-    #director.Modules['Plant0'].Modules['Plant'].new_fruit = 0
-    #director.Modules['Plant0'].Modules['Plant'].fruits = list()
-    #director.Modules['Plant1'].Modules['Plant'].new_fruit = 0
-    #director.Modules['Plant1'].Modules['Plant'].fruits = list()
-    breakpoint()
-    director.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
+    #director.t = 0
+    #RHSs_ids = director.Modules['Climate'].Modules['ModuleMeteo'].Assigm_S_RHS_ids
+    #breakpoint()
+    #director.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     if i%PARAMS_TRAIN['SAVE_FREQ'] == 0: save_nets(director,PATH=PATH,i=i)
