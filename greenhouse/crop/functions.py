@@ -211,8 +211,9 @@ def TF( PA_mean, T_mean, time, Dt):
     D = 2 # days 
     if time <= D*24*60*60:
         return 0
-    else:     
-        return (-0.75+ 0.09*T_mean)*(1-exp(-(1+PA_mean/kc)/2)) * Dt
+    else:  
+        output = (-0.75+ 0.09*T_mean)*(1-exp(-(1+PA_mean/kc)/2)) * Dt
+        return max([output,0])
 
 def Y_pot(k2_TF, C_t, B, D, M, X, T_mean):
     """Growth potential of each fruit."""
