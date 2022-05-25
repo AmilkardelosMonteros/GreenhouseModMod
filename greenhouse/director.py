@@ -1,4 +1,5 @@
 import numpy as np
+import pathlib
 import pandas as pd
 import numpy as np
 from time import time
@@ -143,10 +144,12 @@ class Greenhouse(Director):
         state = self.get_state()
         if np.isnan(state).any():
             self.sound += 1
-            self.check_controls()
+            # self.check_controls()
             if self.sound == 1:
+                print('Algo se fue a Nan')
+                self.check_controls()
                 chime.error()  
-                raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
+                # raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
         controls = self.get_controls(state) #Forward
         action = list(controls.values())
         self.update_controls(controls)
@@ -206,12 +209,26 @@ class Greenhouse(Director):
         reward = self.get_reward(t1)
 
         if self.train:
-            self.agent.memory.push(state, action, reward, new_state, done)
-            self.update()
+            if self.sound < 1:
+                self.agent.memory.push(state, action, reward, new_state, done)
+                self.update()
+            elif self.sound == 1:
+                data = {}
+                for key, val in self.Vars.items():
+                    rec = val.GetRecord()
+                    if len(rec) == len(self.Vars['T1'].GetRecord()):
+                        data[key] = rec
+                pathlib.Path('errors/').mkdir(parents=True, exist_ok=True)
+                breakpoint()
+                data = pd.DataFrame.from_dict(data)
+                data.to_csv('errors/variables.csv')
+
+                
         
     def Reset(self):
         super().Reset()
         self.t = 0
+        self.sound = 0 
         RHSs_ids = self.Modules['Climate'].Modules['ModuleMeteo'].Assigm_S_RHS_ids
         self.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
 
