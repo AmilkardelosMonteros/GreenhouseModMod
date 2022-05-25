@@ -143,11 +143,10 @@ class Greenhouse(Director):
         state = self.get_state()
         if np.isnan(state).any():
             self.sound += 1
-            self.check_controls()
+            # self.check_controls()
             if self.sound == 1:
                 chime.error()  
-                print('Nans!! Este episodio no voy a entrenar')
-                #raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
+                # raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
         controls = self.get_controls(state) #Forward
         action = list(controls.values())
         self.update_controls(controls)
@@ -207,10 +206,22 @@ class Greenhouse(Director):
         reward = self.get_reward(t1)
 
         if self.train:
-            if not self.sound > 0: 
+            if self.sound < 1:
                 self.agent.memory.push(state, action, reward, new_state, done)
                 self.update()
+            elif self.sound == 1:
+                data = dict()
+                for key, val in self.Vars.items():
+                    data[key] = val.GetRecord()
+
+                
         
+    def Reset(self):
+        super().Reset()
+        self.t = 0
+        self.sound = 0 
+        RHSs_ids = self.Modules['Climate'].Modules['ModuleMeteo'].Assigm_S_RHS_ids
+        self.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
 
 #    def reset(self):
 #        self.Reset()
