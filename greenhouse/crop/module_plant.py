@@ -63,13 +63,9 @@ class Plant(Module):
             PAR_mean = self.V_Mean('I2', ni=-md ) # Se saca el promedio sobre los registros del último día
             ## Asimilados acumulados (integrados) en el último día
             acrop = lambda x: Acrop(x, I1=2) #### Cambiar valor de I1
-            try:
-                A_int = self.V_Int('A', ni=-md,t=arange(0, 86400, Dt_c), g=acrop) # Se integra sobre los registros del último día 
-                #if t1 > 86400*22:
-
-                   #breakpoint()
-            except:
-                breakpoint()
+            A_int = self.V_Int('A', ni=-md,t=arange(0, 86400, Dt_c), g=acrop) # Se integra sobre los registros del último día 
+            if abs(A_int) < 1e-8:
+                print('Problema!! A_int es muy pequeño')
             #print(tt)
             #steps = len(1)
             #for i in range( 1, steps):      ####<---------------- corregir este for no va 
@@ -100,7 +96,7 @@ class Plant(Module):
             ### Update Growth potential and Michaelis-Menten constants of all fruits
             # Start with the growth potencial of vegetative part
             tmp = 0.0                            # sum of growth potentials
-            tmp1 = self.veget[1] / A_int   # denominator of f_wg estimates
+            tmp1 = self.veget[1] / A_int   # denominator of f_wg estimates # puede ser 0
 
             for fruit in self.fruits:
                 x = fruit[0] ## Thermic age
