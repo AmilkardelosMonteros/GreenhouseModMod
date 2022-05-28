@@ -1,4 +1,5 @@
 import numpy as np
+import pathlib
 import pandas as pd
 import numpy as np
 from time import time
@@ -146,6 +147,8 @@ class Greenhouse(Director):
             self.sound += 1
             # self.check_controls()
             if self.sound == 1:
+                print('Algo se fue a Nan')
+                self.check_controls()
                 chime.error()  
                 # raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
         controls = self.get_controls(state) #Forward
@@ -211,9 +214,15 @@ class Greenhouse(Director):
                 self.agent.memory.push(state, action, reward, new_state, done)
                 self.update()
             elif self.sound == 1:
-                data = dict()
+                data = {}
                 for key, val in self.Vars.items():
-                    data[key] = val.GetRecord()
+                    rec = val.GetRecord()
+                    if len(rec) == len(self.Vars['T1'].GetRecord()):
+                        data[key] = rec
+                pathlib.Path('errors/').mkdir(parents=True, exist_ok=True)
+                breakpoint()
+                data = pd.DataFrame.from_dict(data)
+                data.to_csv('errors/variables.csv')
 
                 
         
