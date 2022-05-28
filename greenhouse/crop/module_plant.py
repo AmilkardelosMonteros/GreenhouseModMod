@@ -133,8 +133,12 @@ class Plant(Module):
                     self.n_fruits -= 1 # number fruits in crop
                     wk += fruit[1] # weight of harvested fruits in this moment
                     nfk += 1       # number fruits harvested in this moment
-                    fruits.remove(fruit) # Harvested fruits are removed from the list
-            self.fruits = fruits
+                    try:
+                        fruits.remove(fruit) # Harvested fruits are removed from the list
+                    except:
+                        print('No puede hacer remove')
+
+            self.fruits = fruits.copy()
                
 
 
