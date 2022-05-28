@@ -150,43 +150,39 @@ INDEXES = INDEXES[SEASON]
 
 from keeper import keeper
 from parameters.parameters_ddpg import CONTROLS
+from save_parameters import save
 ACTIVE_CONTROLS = [k for k,v in CONTROLS.items() if v]
 PATH = create_path('simulation_results')
+save(PATH) #Save all parameters of the enviroment
 ###############################################
 #TRAIN
 Keeper = keeper()
 episodes = PARAMS_TRAIN['EPISODES']
 active = not(PARAMS_TRAIN['SERVER'])
-for i in range(episodes):
-    while True:
-        index1 = np.random.choice(INDEXES,size=1)[0]
-        if index1 < limit:
-            break
-    print('Indice = ', index1)
-    director.Reset()
-    set_index(director,index1)
-    director.Run(director.Dt, director.n, director.sch,active=active)
-    if i%PARAMS_TRAIN['SAVE_FREQ'] == 0: save_nets(director,PATH=PATH,i=i)
-    Keeper.add(director)
-    Keeper.save(PATH)
-    director.noise.reset()
-date = create_date(index1)
-frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
-dates = compute_indexes(date,n,frec)
-
-
-from save_parameters import save
-save(PATH)
-Keeper.plot_cost(PATH)
-Keeper.plot_rewards(PATH)
-Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
+if episodes > 0:
+    for i in range(episodes):
+        while True:
+            index1 = np.random.choice(INDEXES,size=1)[0]
+            if index1 < limit:
+                break
+        print('Indice = ', index1)
+        director.Reset()
+        set_index(director,index1)
+        director.Run(director.Dt, director.n, director.sch,active=active)
+        if i%PARAMS_TRAIN['SAVE_FREQ'] == 0: save_nets(director,PATH=PATH,i=i)
+        Keeper.add(director)
+        Keeper.save(PATH)
+        director.noise.reset()
+    Keeper.plot_cost(PATH)
+    Keeper.plot_rewards(PATH)
+    Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
 
 ###TEST
 Keeper_for_test = keeper()
 set_simulation(director)
 for _ in range(PARAMS_TRAIN['N_TEST']):
     while True:
-        index1 = np.random.choice(INDEXES,size=1)[0]
+        index1 = 0 #np.random.choice(INDEXES,size=1)[0]
         if index1 < limit:
             break
     print('Indice = ', index1)
@@ -198,13 +194,15 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
     director.Run(director.Dt, director.n, director.sch,active=active)
     Keeper_for_test.add(director)
     director.noise.reset()
+
+date = create_date(index1)
+frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
+dates = compute_indexes(date,n,frec)
 Keeper_for_test.plot_test(PATH)
 Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
 vars_to_plot  = ['T1','T2','V1','C1','H','NF']
 vars_to_plot += ['U' + str(i) for i in range(1,13)]
 create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
-#
-#
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
@@ -212,5 +210,6 @@ create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
 create_pdf_images('final_report', PATH, 'output')
 print(PATH)
-from correo import send_correo
-if PARAMS_TRAIN['SEND_MAIL']: send_correo(PATH + '/reports/final_report.pdf')
+
+if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
+ 

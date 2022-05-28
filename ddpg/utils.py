@@ -34,6 +34,8 @@ class OUNoise(object):
         self.decay_period   = parameters['decay_period']
         self.reset()
         self.on = True
+        self.seed = 3000
+        np.random.seed(self.seed)
         
     def reset(self):
         self.t = 0
