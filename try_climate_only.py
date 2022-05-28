@@ -153,6 +153,12 @@ from parameters.parameters_ddpg import CONTROLS
 ACTIVE_CONTROLS = [k for k,v in CONTROLS.items() if v]
 PATH = create_path('simulation_results')
 ###############################################
+path_net = PARAMS_TRAIN['PATH_NET']
+if path_net is not None:
+    name_net = '162'
+    print('Cargando red '+ name_net + ' del folder '+ path_net)
+    director.agent.load('simulation_results/'+path_net, name=name_net)
+
 #TRAIN
 Keeper = keeper()
 episodes = PARAMS_TRAIN['EPISODES']
