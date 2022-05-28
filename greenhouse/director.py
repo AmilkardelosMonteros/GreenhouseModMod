@@ -16,7 +16,7 @@ n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 
 s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
 
-nrec  = 90*24*60
+nrec  = 60*24*60
 class Greenhouse(Director):
     def __init__(self, agent, noise):
         super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
@@ -47,6 +47,7 @@ class Greenhouse(Director):
             else:
                 controls[k] = action[j]
                 j+= 1
+        controls['U3'] = 1
         return controls
 
     def get_vars(self):
