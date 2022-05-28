@@ -48,7 +48,6 @@ class Greenhouse(Director):
             else:
                 controls[k] = action[j]
                 j+= 1
-        controls['U3'] = 1
         return controls
 
     def get_vars(self):
@@ -193,6 +192,7 @@ class Greenhouse(Director):
                     A_Mean += aclima(self.Modules[plant].Modules['Photosynt'].V_Int('A', ni=-idx,t=arange(0, 60*idx, 60))/(60*idx))
                     
                 except:
+                    print('Algo mal con Aclima')
                     breakpoint() 
         
         
