@@ -169,6 +169,8 @@ if episodes > 0:
         director.Reset()
         set_index(director,index1)
         director.Run(director.Dt, director.n, director.sch,active=active)
+        director.reduce_noise(episodes)
+        print('max sigma = ',director.noise.max_sigma)
         if i%PARAMS_TRAIN['SAVE_FREQ'] == 0: save_nets(director,PATH=PATH,i=i)
         Keeper.add(director)
         Keeper.save(PATH)

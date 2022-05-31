@@ -232,7 +232,10 @@ class Greenhouse(Director):
         self.sound = 0 
         RHSs_ids = self.Modules['Climate'].Modules['ModuleMeteo'].Assigm_S_RHS_ids
         self.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
-
+    
+    def reduce_noise(self,c):
+        self.noise.max_sigma -= (self.noise.max_sigma)/(c*0.5)
+        self.noise.max_sigma = max([self.noise.max_sigma,0])
 #    def reset(self):
 #        self.Reset()
 #        for var in self.Vars.values():

@@ -108,12 +108,11 @@ class Memory:
     def __len__(self):
         return len(self.buffer)
 
-def test_noise(parameters,n):
+def test_noise(noise,n):
     #breakpoint()
     '''
     Grafica n acciones
     '''
-    noise = OUNoise(parameters)
     A = list()
     for _ in range(n):
         A.append(noise.get_action(np.zeros_like(range(noise.action_dim)),test = True) )
