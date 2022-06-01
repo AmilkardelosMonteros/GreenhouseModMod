@@ -151,16 +151,16 @@ class keeper:
         self.save_(path, self.test,'test')
 
 
-    def save(self,path):
+    def save(self, path, flag = 'train'):
         self.stress_test(path)
-        self.save_(path, self.rewards,'rewards')
-        self.save_(path, self.Qco2,'Qco2')
-        self.save_(path, self.Qelec,'Qele')
-        self.save_(path, self.Qgas,'Qgas')
-        self.save_(path, self.Qh2o,'Qh2o')
-        self.save_(path, self.actions,'actions')
-        self.save_(path, self.NF,'NF')
-        self.save_(path, self.H,'H')
-        self.save_(path, self.G,'G')
+        self.save_(path, self.rewards,'rewards' + flag)
+        self.save_(path, self.Qco2,'Qco2'+ flag)
+        self.save_(path, self.Qelec,'Qele'+ flag)
+        self.save_(path, self.Qgas,'Qgas'+ flag)
+        self.save_(path, self.Qh2o,'Qh2o'+ flag)
+        self.save_(path, self.actions,'actions'+ flag)
+        self.save_(path, self.NF,'NF'+ flag)
+        self.save_(path, self.H,'H'+ flag)
+        self.save_(path, self.G,'G'+ flag)
 
 
