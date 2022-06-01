@@ -87,7 +87,7 @@ mt, mg, m, C, s, W, mg_CO2, Joule, g, mol_CH2O = symbols('mt mg m C s W mg_CO2 J
 # V1
 mt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm, kmol, kg_air, kg_vapour = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm kmol kg_air kg_vapour')
 # T1
-mt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm')
+Bmt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm')
 # T2
 mt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm, m_cover, kg_air = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm m_cover kg_air')
 
@@ -188,7 +188,7 @@ Keeper_for_test = keeper()
 set_simulation(director)
 for _ in range(PARAMS_TRAIN['N_TEST']):
     while True:
-        index1 = 0 #np.random.choice(INDEXES,size=1)[0]
+        index1 = np.random.choice(INDEXES,size=1)[0]
         if index1 < limit:
             break
     print('Indice = ', index1)
