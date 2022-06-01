@@ -169,12 +169,12 @@ if episodes > 0:
         director.Reset()
         set_index(director,index1)
         director.Run(director.Dt, director.n, director.sch,active=active)
-        director.reduce_noise(episodes)
-        print('max sigma = ',director.noise.max_sigma)
         if i%PARAMS_TRAIN['SAVE_FREQ'] == 0: save_nets(director,PATH=PATH,i=i)
         Keeper.add(director)
         Keeper.save(PATH)
         director.noise.reset()
+        print('max sigma = ',director.noise.max_sigma)
+        print('sigma = ',director.noise.sigma)
     Keeper.plot_cost(PATH)
     Keeper.plot_rewards(PATH)
     Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
@@ -184,7 +184,7 @@ Keeper_for_test = keeper()
 set_simulation(director)
 for _ in range(PARAMS_TRAIN['N_TEST']):
     while True:
-        index1 = 0 #np.random.choice(INDEXES,size=1)[0]
+        index1 = np.random.choice(INDEXES,size=1)[0]
         if index1 < limit:
             break
     print('Indice = ', index1)
@@ -195,6 +195,7 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     Keeper_for_test.add(director)
+    Keeper_for_test.save(PATH,flag = 'test')
     director.noise.reset()
 
 date = create_date(index1)
