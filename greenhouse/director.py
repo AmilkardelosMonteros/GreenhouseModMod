@@ -232,7 +232,7 @@ class Greenhouse(Director):
         self.sound = 0 
         RHSs_ids = self.Modules['Climate'].Modules['ModuleMeteo'].Assigm_S_RHS_ids
         self.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
-
+    
 #    def reset(self):
 #        self.Reset()
 #        for var in self.Vars.values():

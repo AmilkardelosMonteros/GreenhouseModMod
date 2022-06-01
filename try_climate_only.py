@@ -179,6 +179,8 @@ if episodes > 0:
         Keeper.add(director)
         Keeper.save(PATH)
         director.noise.reset()
+        print('max sigma = ',director.noise.max_sigma)
+        print('sigma = ',director.noise.sigma)
     Keeper.plot_cost(PATH)
     Keeper.plot_rewards(PATH)
     Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
@@ -199,6 +201,7 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     Keeper_for_test.add(director)
+    Keeper_for_test.save(PATH,flag = 'test')
     director.noise.reset()
 
 date = create_date(index1)
