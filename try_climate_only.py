@@ -29,6 +29,17 @@ from parameters.parameters_env import PARAMS_ENV, PARAMS_TRAIN
 from try_ddpg import agent
 from try_noise import noise
 from utils.for_simulation import set_simulation,save_nets,set_index
+from read_dates import  create_date,compute_indexes,get_indexes
+
+from sympy import symbols
+from ModMod import StateRHS
+from parameters.parameters_dir import PARAMS_DIR
+
+from keeper import keeper
+from parameters.parameters_ddpg import CONTROLS
+from save_parameters import save
+ACTIVE_CONTROLS = [k for k,v in CONTROLS.items() if v]
+
 beta_list = [0.99, 0.95] # Only 2 plants are simulated, assuming this is approximately one m**2
 theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
 theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
@@ -73,8 +84,6 @@ director = Greenhouse(agent, noise)
 director.MergeVarsFromRHSs(RHS_list, call=__name__)
 director.MergeVars(dir_climate, all_vars=True)
 director.AddDirectorAsModule('Climate', dir_climate)
-from sympy import symbols
-from ModMod import StateRHS
 s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
 mu_mol_CO2 = 1e-6 * mol_CO2
 mu_mol_phot = 1e-6 * mol_phot
@@ -135,11 +144,11 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-from parameters.parameters_dir import PARAMS_DIR
+
 
 Dt, n = get_dt_and_n(minute=PARAMS_DIR['minutes'], days=PARAMS_DIR['days'])
 
-from read_dates import  create_date,compute_indexes,get_indexes
+
 director.Dt = Dt
 director.n = n
 SEASON = PARAMS_DIR['season']
@@ -148,10 +157,7 @@ limit = INDEXES['limit']
 INDEXES = INDEXES[SEASON]
 
 
-from keeper import keeper
-from parameters.parameters_ddpg import CONTROLS
-from save_parameters import save
-ACTIVE_CONTROLS = [k for k,v in CONTROLS.items() if v]
+
 PATH = create_path('simulation_results')
 save(PATH) #Save all parameters of the enviroment
 ###############################################
