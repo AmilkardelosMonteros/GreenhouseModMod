@@ -174,6 +174,7 @@ if episodes > 0:
         print('Indice = ', index1)
         director.Reset()
         set_index(director,index1)
+        print('sigma = ', director.noise.sigma)
         director.Run(director.Dt, director.n, director.sch,active=active)
         if i%PARAMS_TRAIN['SAVE_FREQ'] == 0: save_nets(director,PATH=PATH,i=i)
         Keeper.add(director)
@@ -207,11 +208,12 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
 date = create_date(index1)
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
 dates = compute_indexes(date,n,frec)
-Keeper_for_test.plot_test(PATH)
-Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
 vars_to_plot  = ['T1','T2','V1','C1','H','NF']
 vars_to_plot += ['U' + str(i) for i in range(1,13)]
 create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
+Keeper_for_test.plot_test(PATH)
+Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
+
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)

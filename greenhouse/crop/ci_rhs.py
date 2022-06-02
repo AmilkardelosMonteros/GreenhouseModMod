@@ -22,7 +22,8 @@ all_parameters = states + constants
 ############ RHS del CO2 intracelular ###########################
 #################################################################    
 # number of register to save 
-nrec = 60*24*60
+from .params_dias_tem import DIAS
+nrec = DIAS*24*60
 
 class Ci_rhs(StateRHS):
     """

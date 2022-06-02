@@ -19,3 +19,5 @@ parameters/credentials.py
 test_mail.py
 errors/
 extra_graphic.py
+errors/*
+

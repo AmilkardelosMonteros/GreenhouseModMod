@@ -16,8 +16,8 @@ import chime
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 
 s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
-
-nrec  = 60*24*60
+from .crop.params_dias_tem import DIAS
+nrec  = DIAS*24*60
 class Greenhouse(Director):
     def __init__(self, agent, noise):
         super().__init__(t0=0.0, time_unit="", Vars={}, Modules={})
@@ -220,7 +220,6 @@ class Greenhouse(Director):
                     if len(rec) == len(self.Vars['T1'].GetRecord()):
                         data[key] = rec
                 pathlib.Path('errors/').mkdir(parents=True, exist_ok=True)
-                #breakpoint()
                 data = pd.DataFrame.from_dict(data)
                 data.to_csv('errors/variables.csv')
 
