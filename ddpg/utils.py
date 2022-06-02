@@ -30,6 +30,8 @@ class OUNoise(object):
         self.low          = parameters['low']
         self.high         = parameters['high']
         self.action_dim   = parameters['dim']
+        self.episodes     = parameters['episodes']
+        self.episode      = 0
         #breakpoint()
         self.decay_period   = parameters['decay_period']
         self.reset()
@@ -38,6 +40,9 @@ class OUNoise(object):
         np.random.seed(self.seed)
         
     def reset(self):
+        self.max_sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.episode / self.episodes)
+        self.sigma = self.max_sigma
+        self.episode += 1
         self.t = 0
         self.state = np.ones(self.action_dim) * self.mu
         
@@ -108,12 +113,11 @@ class Memory:
     def __len__(self):
         return len(self.buffer)
 
-def test_noise(parameters,n):
+def test_noise(noise,n):
     #breakpoint()
     '''
     Grafica n acciones
     '''
-    noise = OUNoise(parameters)
     A = list()
     for _ in range(n):
         A.append(noise.get_action(np.zeros_like(range(noise.action_dim)),test = True) )

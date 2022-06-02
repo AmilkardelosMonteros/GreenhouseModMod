@@ -3,6 +3,10 @@ from ddpg.utils import test_noise
 from parameters.parameters_utils import PARAMS_UTILS
 
 noise = OUNoise(PARAMS_UTILS)
-
+n=PARAMS_UTILS['decay_period']
 if __name__ == '__main__':
-    test_noise(PARAMS_UTILS,n=PARAMS_UTILS['decay_period'])
+    N_TEST = 5
+    for _ in range(N_TEST):
+        test_noise(noise,n)
+        noise.reset()
+        print(noise.sigma)

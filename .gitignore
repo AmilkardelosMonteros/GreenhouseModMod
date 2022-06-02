@@ -17,4 +17,5 @@ control_function.py
 SALIDA*
 parameters/credentials.py
 test_mail.py
+extra_graphic.py
 errrors/
