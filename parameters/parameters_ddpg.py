@@ -8,16 +8,16 @@ CONTROLS = {'U1':  False, # Pantalla térmica
             'U3':  True, # Enfriamiento mecanico
             'U4':  False, # Calentador de aire  
             'U5':  False, # Sombreado externo (No hace nada por los parametros)
-            'U6':  False, # Respiraderos laterales
+            'U6':  True, # Respiraderos laterales
             'U7':  True, # Ventilación forzada
             'U8':  True, # Respiraderos del techo 
             'U9':  False, # Control sistema de niebla
-            'U10': True, # Fuente externa de C02
+            'U10': False, # Fuente externa de C02
             'U11': True, # Tuberia de calentamiento
             'U12': False  # Lamparas 
             }
 
-PARAMS_DDPG = {'hidden_sizes': [64,64,64], 
+PARAMS_DDPG = {'hidden_sizes': [64,64], 
                 'actor_learning_rate': 1e-4, 
                 'critic_learning_rate': 1e-3, 
                 'gamma':0.98, 'tau':0.125, 
