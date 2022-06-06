@@ -17,6 +17,7 @@ class OUNoise(object):
         self.theta        = parameters['theta']
         self.sigma        = parameters['max_sigma']
         self.max_sigma    = parameters['max_sigma']
+        self.max_sigma_init = parameters['max_sigma']
         self.min_sigma    = parameters['min_sigma']
         self.low          = parameters['low']
         self.high         = parameters['high']
@@ -31,7 +32,7 @@ class OUNoise(object):
         np.random.seed(self.seed)
         
     def reset(self):
-        self.max_sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.episode / self.episodes)
+        self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
         self.sigma = self.max_sigma
         self.episode += 1
         self.t = 0
@@ -119,5 +120,18 @@ def test_noise(noise,n):
     A_flat = A.flatten()
     for a in ax.flatten():
         a.set_ylim([min(A_flat) - 0.1,  max(A_flat) + 0.1])
+    plt.show()
+    
+
+def test_reset(noise):
+    #breakpoint()
+    '''
+    Grafica sigma a lo largo de los episodios
+    '''
+    sigmas = list()
+    for _ in range(noise.episodes + int(noise.episodes*0.1)):
+        sigmas.append(noise.sigma)
+        noise.reset()
+    plt.plot(sigmas)
     plt.show()
     
