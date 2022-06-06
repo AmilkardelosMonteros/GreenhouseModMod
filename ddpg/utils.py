@@ -6,18 +6,9 @@ import random
 import matplotlib.pyplot as plt
 from gym import spaces
 import pandas as pd
-from torch import zeros_like 
+from torch import zeros_like
+from scipy.stats import truncnorm 
 
-def new_clip(array):
-    new_array = list()
-    for x in array:
-        while x > 1 or x < 0:
-            if x<0:
-                x = -x
-            elif x>1:
-                x = x-1
-        new_array.append(x)
-    return np.array(new_array)
 # Ornstein-Ulhenbeck Process
 # Taken from #https://github.com/vitchyr/rlkit/blob/master/rlkit/exploration_strategies/ou_strategy.py
 class OUNoise(object):
