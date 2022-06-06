@@ -53,7 +53,8 @@ class keeper:
         self.rewards[str(self.i)] = sum(dir.Vars['reward'].GetRecord())
 
     def add(self,dir):
-        self.add_actions(dir)
+        if self.i%50 == 0: ###Las acciones solo se guardan cada 50 eps
+            self.add_actions(dir)
         self.add_costs(dir)
         self.add_reward(dir)
         self.i += 1
@@ -63,8 +64,7 @@ class keeper:
         for a in actions:
             _, axis= plt.subplots(sharex=True, figsize=(10,5))
             new_data = list()
-            inicio = self.i-15 if self.i > 15 else 0
-            for name in range(inicio,self.i):
+            for name in range(self.i):
                 new_data.append(self.actions[str(name)][a])
             axis.violinplot(new_data, showmeans=True)
             axis.set_title('Distribucion de ' + a + ' en ' + flag)
@@ -153,14 +153,14 @@ class keeper:
 
     def save(self, path, flag = 'train'):
         self.stress_test(path)
-        self.save_(path, self.rewards,'rewards' + flag)
-        self.save_(path, self.Qco2,'Qco2'+ flag)
-        self.save_(path, self.Qelec,'Qele'+ flag)
-        self.save_(path, self.Qgas,'Qgas'+ flag)
-        self.save_(path, self.Qh2o,'Qh2o'+ flag)
-        self.save_(path, self.actions,'actions'+ flag)
-        self.save_(path, self.NF,'NF'+ flag)
-        self.save_(path, self.H,'H'+ flag)
-        self.save_(path, self.G,'G'+ flag)
+        self.save_(path, self.rewards,'rewards_' + flag)
+        self.save_(path, self.Qco2,'Qco2_'+ flag)
+        self.save_(path, self.Qelec,'Qele_'+ flag)
+        self.save_(path, self.Qgas,'Qgas_'+ flag)
+        self.save_(path, self.Qh2o,'Qh2o_'+ flag)
+        self.save_(path, self.actions,'actions_'+ flag)
+        self.save_(path, self.NF,'NF_'+ flag)
+        self.save_(path, self.H,'H_'+ flag)
+        self.save_(path, self.G,'G_'+ flag)
 
 
