@@ -64,8 +64,9 @@ class keeper:
         for a in actions:
             _, axis= plt.subplots(sharex=True, figsize=(10,5))
             new_data = list()
-            for name in range(self.i):
-                new_data.append(self.actions[str(name)][a])
+            names = self.actions.names()
+            for name in names:
+                new_data.append(self.actions[name][a])
             axis.violinplot(new_data, showmeans=True)
             axis.set_title('Distribucion de ' + a + ' en ' + flag)
             labels = [str(i) for i in self.actions.keys()]
