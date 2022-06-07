@@ -64,7 +64,7 @@ class keeper:
         for a in actions:
             _, axis= plt.subplots(sharex=True, figsize=(10,5))
             new_data = list()
-            names = self.actions.names()
+            names = self.actions.keys()
             for name in names:
                 new_data.append(self.actions[name][a])
             axis.violinplot(new_data, showmeans=True)
