@@ -11,6 +11,7 @@ from numpy import arange, append
 from .functions import V_cmax, R_d, tau, K_C, K_O, Gamma_st, I_2, J, A_R, A_f, A_acum, A # importar funciones fotosíntesis
 from .functions import f_R, V_sa, fRH, Sr, C_ev3, f_C, C_ev4, VPD, f_V, r_s, gsf # importar funciones fotosíntesis
 from .ci_rhs import Ci_rhs
+import numpy as np
 
 #####################################
 ##### Módulo de fotosíntesis ########
@@ -49,6 +50,10 @@ class PhotoModule(Module):
             Vsat = V_sa( T1)
             # Calculo de la Humedad Relativa 
             RH = fRH( V1, Vsat)
+            state_photo = np.array([T1,I2,C1,V1,RH])
+            if np.isnan(state_photo).any():
+                print('Algo es Nan es module Photo')
+                print(state_photo)
             
             # Calculo de las constantes para las formulas de fotosintesis 
             V_cmax1 = V_cmax( T_f=T1, V_cmax25=self.V('V_cmax25'), Q10_Vcmax=self.V('Q10_Vcmax'), k_T=self.V('k_T') )
