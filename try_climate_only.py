@@ -185,6 +185,7 @@ if episodes > 0:
         if i%PARAMS_TRAIN['SAVE_FREQ'] == 0: save_nets(director,PATH=PATH,i=i)
         Keeper.add(director)
         Keeper.save(PATH)
+        director.agent.save_losses(PATH)
         director.noise.reset()
         print('max sigma = ',director.noise.max_sigma)
         print('sigma = ',director.noise.sigma)
