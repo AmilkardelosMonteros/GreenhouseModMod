@@ -5,6 +5,7 @@ import glob
 import torch
 import copy
 import numpy as np
+import json
 import torch.autograd
 import torch.optim as optim
 import torch.nn as nn
@@ -32,12 +33,15 @@ class DDPGagent:
         self.batch_size       = parameters['batch_size']
         self.vars             = vars
         self.num_states       = len(vars)
-        self.num_actions      = len(self.controls.keys())
-
+        self.num_actions      = self.num_actions_()
         sizes_actor = self.hidden_sizes.copy()
         sizes_actor.insert(0, self.num_states)
         sizes_critic = self.hidden_sizes.copy()
         sizes_critic.insert(0, self.num_states + self.num_actions)
+        self.limit = 3000
+        self.critic_loss_ = np.zeros(self.limit)
+        self.policy_loss_ = np.zeros(self.limit)
+        self.i = 0 
         seed = 45
         # Networks
         torch.manual_seed(seed)
@@ -69,6 +73,13 @@ class DDPGagent:
         self.actor_optimizer  = optim.Adam(self.actor.parameters(), lr=actor_learning_rate)
         self.critic_optimizer = optim.Adam(self.critic.parameters(), lr=critic_learning_rate)
     
+    def num_actions_(self):
+        s = 0
+        for _,v in self.controls.items():
+            if v == True:
+                s+=1
+        return s
+
     def get_action(self, state):
         state = Variable(torch.from_numpy(state).float().unsqueeze(0))
         action = self.actor.forward(state.to(device))
@@ -85,12 +96,14 @@ class DDPGagent:
         next_states = torch.FloatTensor(next_states).to(device)
     
         # Critic loss        
-        #breakpoint()
+        
+
         Qvals = self.critic.forward(states, actions)
         next_actions = self.actor_target.forward(next_states)
         next_Q = self.critic_target.forward(next_states, next_actions).detach()
         Qprime = rewards + self.gamma * next_Q
         critic_loss = self.critic_criterion(Qvals, Qprime)
+
 
         # Actor loss
         policy_loss = -self.critic.forward(states, self.actor.forward(states)).mean()
@@ -110,6 +123,26 @@ class DDPGagent:
        
         for target_param, param in zip(self.critic_target.parameters(), self.critic.parameters()):
             target_param.data.copy_(param.data * self.tau + target_param.data * (1.0 - self.tau))
+
+        self.critic_loss_[self.i%self.limit] = critic_loss
+        self.policy_loss_[self.i%self.limit] = policy_loss
+        self.i += 1
+
+    def save_losses(self,path):
+        critic_loss_ = {}
+        policy_loss_ = {}
+        i = 0
+        for x,y in zip(self.critic_loss_,self.policy_loss_): 
+            critic_loss_[str(i)] = float(x)
+            policy_loss_[str(i)] = float(y)
+            i+=1
+        with open(path + '/output/critic_loss.json', 'w') as outfile:
+            json.dump(critic_loss_, outfile,indent = 4)
+        with open(path + '/output/policy_loss.json', 'w') as outfile:
+            json.dump(policy_loss_, outfile,indent = 4)
+
+
+
 
     def save(self, path, name=""): 
         pathlib.Path(path+'/nets/'+name).mkdir(parents=True, exist_ok=True)

@@ -20,7 +20,14 @@ def get_indexes():
     SEASON2_indexes = list(SEASON2_1.index) + list(SEASON2_2.index)
     SEASON2_indexes = list(filter(lambda x: x < limit, SEASON2_indexes))
 
-    return {'1':SEASON1_indexes,'2':SEASON2_indexes, 'limit':limit}
+    #Solo 15 dias de agosto de 2017
+    SEASON3         = data.copy() 
+    SEASON3         = SEASON3[(SEASON3.Month == 8) & (SEASON2.Day.isin(range(15)))]
+    SEASON3         = SEASON3[(SEASON3.Year == 2017)] 
+    SEASON3_indexes = list(SEASON3.index)
+    SEASON3_indexes = list(filter(lambda x: x < limit, SEASON3_indexes))
+
+    return {'1':SEASON1_indexes,'2':SEASON2_indexes, '3':SEASON3_indexes, 'limit':limit}
 
 def get_index(year,month,day,hour = 12):
     data_copy = data.copy()

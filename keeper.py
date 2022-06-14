@@ -21,8 +21,9 @@ class keeper:
         self.Qh2o    = {}
         self.Qelec   = {} #Gasto por electricidad al final del episodio
         self.G       = {} #Ganacia al final del episodio
+        self.state   = {} #Estado promedio
         self.porc    = 0.01
-
+        self.VARS = ['T1','T2','C1','V1','I2','I5','I8','I11']
         self.i       = 0
 
     def add_actions(self,dir):
@@ -57,7 +58,16 @@ class keeper:
             self.add_actions(dir)
         self.add_costs(dir)
         self.add_reward(dir)
+        self.add_state(dir)
         self.i += 1
+
+    def add_state(self,dir):
+        state_dic = {}
+        for v in self.VARS:
+            state_dic[v] = dir.Vars[v].GetRecord().mean()
+        self.state[str(self.i)] = state_dic
+        
+
 
 
     def plot_actions(self,actions,flag='train',PATH=None):
@@ -163,5 +173,6 @@ class keeper:
         self.save_(path, self.NF,'NF_'+ flag)
         self.save_(path, self.H,'H_'+ flag)
         self.save_(path, self.G,'G_'+ flag)
+        self.save_(path, self.state,'states_'+ flag)
 
 
