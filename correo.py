@@ -28,11 +28,12 @@ def send_correo(path):
     attachedfile = MIMEApplication(openedfile, _subtype = "pdf")
     attachedfile.add_header('content-disposition', 'attachment', filename = path)
     message.attach(attachedfile)
-    smtp = smtplib.SMTP("smtp.gmail.com", 587)
+    print('Conectando...')
+    smtp = smtplib.SMTP("smtp.live.com", 587)
     i = 0
     while not test_conn_open(smtp):
         print('Conectando')
-        smtp = smtplib.SMTP("smtp.gmail.com", 587)
+        smtp = smtplib.SMTP("smtp.live.com", 587)
         i+=1
         if i>5:
             raise SystemExit('Imposible conectarse')      
