@@ -37,18 +37,23 @@ class Greenhouse(Director):
         self.AddVar( typ='State', varid='A_Mean', prn=r'$E[A]$',desc="Total mean assimilation rate", units= g * (m**-2), val=0,rec=nrec) ##Revisar
 
     def get_controls(self, state):
-         #No hace nada si noise.on = False
+        #No hace nada si noise.on = False
         action   = self.agent.get_action(state)
         action   = self.noise.get_action(action)
         j        = 0
         controls = {}
+        CONTROLS = list()
         for k,v in self.agent.controls.items():
-            if v == False:
-                controls[k] = 0
-            else:
+            if v == True:
+                CONTROLS.append(k) #Encuentro los que si quiero usar
+            controls[k] = v
+        for k,v in self.agent.controls.items():
+            if k in CONTROLS:
                 controls[k] = action[j]
                 j+= 1
-        return controls
+            elif v == False:
+                controls[k] = 0
+        return controls,action
 
     def get_vars(self):
         '''
@@ -150,8 +155,9 @@ class Greenhouse(Director):
                 self.check_controls()
                 chime.error()  
                 # raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
-        controls = self.get_controls(state) #Forward
-        action = list(controls.values())
+        controls,action = self.get_controls(state) #Forward
+        #controls es un diccionario que se necesita internamente (director), accion es lo que necesita la red 
+        #action = list(controls.values())
         self.update_controls(controls)
         #if t1%86400 == 0:
         #    controles = np.random.randint(1,12,2)
