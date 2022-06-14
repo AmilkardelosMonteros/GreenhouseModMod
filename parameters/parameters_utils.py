@@ -1,7 +1,11 @@
 from .parameters_env import PARAMS_ENV,PARAMS_TRAIN
 from .parameters_ddpg import CONTROLS
 
-
+def num_actions_(controls):
+    s = 0
+    for _,v in controls.items():
+        if v == True:s+=1
+    return s
 
 PARAMS_UTILS = {'mu':0.0, 
                 'theta': 0.00, 
@@ -11,6 +15,6 @@ PARAMS_UTILS = {'mu':0.0,
                 'episodes': PARAMS_TRAIN['EPISODES'],
                 'low':-1,
                 'high':1,
-                'dim':len(CONTROLS.values())
+                'dim':num_actions_(CONTROLS)
                 }
 
