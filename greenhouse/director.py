@@ -11,6 +11,8 @@ from .climate. functions import Aclima
 from sympy import symbols
 from numpy import arange
 import chime
+import pathlib 
+
 
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 
@@ -214,7 +216,8 @@ class Greenhouse(Director):
                 for key, val in self.Vars.items():
                     data[key] = val.GetRecord()
 
-                
+                pathlib.Path('errors/').mkdir(parents=True, exist_ok=True)
+                pd.DataFrame(data).to_csv('errors/variables.csv')
         
     def Reset(self):
         super().Reset()
