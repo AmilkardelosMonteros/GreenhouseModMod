@@ -163,11 +163,11 @@ class Plant(Module):
 
     def ResetVars(self):
         super().ResetVars()
-        self.veget = [0.0 , 0.0] ## characteristics for vegetative part: Weight and growth potential 
-        self.fruits = [] # No fruits
-        self.n_fruits = 0 ## Current number of fruits
-        self.n_fruits_h = 0 ## total number of fruits harvested
-        self.new_fruit = 0  ## Cummulative number of fruits
-        self.m = 4 ## Number of characteristics for each fruit: thermic age, weight, growth potential and Michaelis-Menten constant
+        self.veget      = [0.0 , 0.0] # characteristics for vegetative part: Weight and growth potential 
+        self.fruits     = []          # No fruits
+        self.n_fruits   = 0           # Current number of fruits
+        self.n_fruits_h = 0           # total number of fruits harvested
+        self.new_fruit  = 0           # Cummulative number of fruits
+        self.m          = 4           # Number of characteristics for each fruit: thermic age, weight, growth potential and Michaelis-Menten constant
 
     

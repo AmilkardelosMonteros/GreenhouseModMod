@@ -23,7 +23,7 @@ def get_indexes():
     #Solo 15 dias de agosto de 2017
     SEASON3         = data.copy() 
     SEASON3         = SEASON3[(SEASON3.Month == 8) & (SEASON2.Day.isin(range(15)))]
-    SEASON3         = SEASON3[(SEASON3.Year == 2017)] 
+    SEASON3         = SEASON3[(SEASON3.Year.isin([2013,2014,2015,2016,2017] ))] 
     SEASON3_indexes = list(SEASON3.index)
     SEASON3_indexes = list(filter(lambda x: x < limit, SEASON3_indexes))
 
