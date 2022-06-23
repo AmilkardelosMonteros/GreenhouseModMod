@@ -45,7 +45,7 @@ PARAMS_TRAIN = {'EPISODES': 2500,
                 'SAVE_FREQ': 2,
                 'SEND_MAIL':True,
                 'PATH_NET':'2022_6_13_2240',
-                'NET':498 
+                'NET':'498' 
                 } 
 
 PARAMS_SIM = {'anio':2017,\
