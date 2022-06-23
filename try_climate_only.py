@@ -162,17 +162,18 @@ PATH = create_path('simulation_results')
 save(PATH) #Save all parameters of the enviroment
 ###############################################
 path_net = PARAMS_TRAIN['PATH_NET']
+name_net      = PARAMS_TRAIN['NET']
 if path_net is not None:
-    name_net = '162'
     print('Cargando red '+ name_net + ' del folder '+ path_net)
     director.agent.load('simulation_results/'+path_net, name=name_net)
 
 #TRAIN
-Keeper = keeper()
-episodes = PARAMS_TRAIN['EPISODES']
-active = not(PARAMS_TRAIN['SERVER'])
+Keeper         = keeper()
+episodes       = PARAMS_TRAIN['EPISODES']
+specialization = PARAMS_TRAIN['SPECIALIZATION_PERIOD']
+active         = not(PARAMS_TRAIN['SERVER'])
 if episodes > 0:
-    for i in range(episodes):
+    for i in range(episodes + specialization):
         while True:
             index1 = np.random.choice(INDEXES,size=1)[0]
             if index1 < limit:
