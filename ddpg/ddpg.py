@@ -160,4 +160,8 @@ class DDPGagent:
         self.actor.load_state_dict(torch.load(path + "/nets/"+ name +"/actor",  map_location=device))
         self.actor_optimizer.load_state_dict(torch.load(path + "/nets/"+ name +"/actor_optimizer",  map_location=device))
         self.actor_target = copy.deepcopy(self.actor)
+        file = open(path + '/output/memory.pickle', 'rb')
+        self.memory = pickle.load(file)
+        file.close()
+
 
