@@ -37,7 +37,7 @@ PARAMS_ENV = {'n': n}
 #El min de STEP  no es 1/24, pero el min de FRECUENCY SÍ es 60
 PARAMS_TRAIN = {'EPISODES': 2500, 
                 'SPECIALIZATION_PERIOD': 500, 
-                'N_TEST': 30, \
+                'N_TEST': 50, \
                 'STEPS':PARAMS_ENV['n'], \
                 'SHOW': False, \
                 'SERVER':False, \
