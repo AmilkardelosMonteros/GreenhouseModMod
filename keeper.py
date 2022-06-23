@@ -31,6 +31,7 @@ class keeper:
         dir_actions = {}
         for key in ['U' + str(i) for i in range(1,13)]:
             sample = dir.Modules['Climate'].Vars[key].GetRecord()
+            sample = sample[int(len(sample)/2):len(sample)]
             sample = list(np.random.choice(sample, size = int(len(sample)*self.porc)))
             dir_actions[key] = sample
         self.actions[str(self.i)] = dir_actions
