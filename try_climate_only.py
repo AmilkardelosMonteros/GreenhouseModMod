@@ -172,7 +172,7 @@ Keeper         = keeper()
 episodes       = PARAMS_TRAIN['EPISODES']
 specialization = PARAMS_TRAIN['SPECIALIZATION_PERIOD']
 active         = not(PARAMS_TRAIN['SERVER'])
-if episodes > 0:
+if episodes + specialization > 0:
     for i in range(episodes + specialization):
         while True:
             index1 = np.random.choice(INDEXES,size=1)[0]
