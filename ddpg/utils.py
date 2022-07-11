@@ -1,10 +1,8 @@
 #from pickle import TRUE
 import numpy as np
-import gym
 from collections import deque
 import random
 import matplotlib.pyplot as plt
-from gym import spaces
 import pandas as pd
 from torch import zeros_like
 from scipy.stats import truncnorm 
@@ -57,21 +55,21 @@ class OUNoise(object):
                 return np.clip(action,0,1)
 
 # https://github.com/openai/gym/blob/master/gym/core.py
-class NormalizedEnv(gym.ActionWrapper):
-    """ Wrap action """
-
-    def __init__(self, env):
-        super().__init__(env)
-
-    def action(self, action):
-        act_k = (self.action_space.high - self.action_space.low)/ 2.
-        act_b = (self.action_space.high + self.action_space.low)/ 2.
-        return act_k * action + act_b
-
-    def reverse_action(self, action):
-        act_k_inv = 2./(self.action_space.high - self.action_space.low)
-        act_b = (self.action_space.high + self.action_space.low)/ 2.
-        return act_k_inv * (action - act_b)
+#class NormalizedEnv(gym.ActionWrapper):
+#    """ Wrap action """
+#
+#    def __init__(self, env):
+#        super().__init__(env)
+#
+#    def action(self, action):
+#        act_k = (self.action_space.high - self.action_space.low)/ 2.
+#        act_b = (self.action_space.high + self.action_space.low)/ 2.
+#        return act_k * action + act_b
+#
+#    def reverse_action(self, action):
+#        act_k_inv = 2./(self.action_space.high - self.action_space.low)
+#        act_b = (self.action_space.high + self.action_space.low)/ 2.
+#        return act_k_inv * (action - act_b)
         
 
 class Memory:
