@@ -32,7 +32,10 @@ class OUNoise(object):
         np.random.seed(self.seed)
         
     def reset(self):
-        self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
+        if self.episodes == 0:
+            self.max_sigma = 0
+        else:
+            self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
         self.sigma = self.max_sigma
         self.episode += 1
         self.t = 0
