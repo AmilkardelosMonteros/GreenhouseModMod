@@ -22,7 +22,7 @@ constant_names = ['tau3', 'phi7', 'alpha6', 'eta6', 'eta7', 'eta8', 'phi8', 'nu4
                     'alpha9', 'eta2', 'eta3', 'sigma', 'epsil3', 'epsil4', 'epsil5', 'epsil6', 
                     'phi2', 'alpha4', 'gamma2', 'eta5', 'phi5', 'phi6', 'lamb1', 'lamb2', 
                     'lamb3', 'lamb4', 'alpha2', 'alpha7', 'eta1', 'phi9', 'nu7', 'nu8', 'lamb6', 
-                    'eta14', 'eta15', 'eta16', 'eta17','alpha12']
+                    'eta14', 'eta15', 'eta16', 'eta17','alpha12','HEAT_PIPE','n_pipes']
   
 all_parameters = state_names + control_names + input_names + function_names + constant_names
 
@@ -48,7 +48,7 @@ class T2_rhs(StateRHS):
         # Once defined h1 in your terminal run TranslateArgNames(h1)
         # and follow the instrucions
         # control de la tuberia de calentamiento
-        I3control = self.V('T1')+self.V('U11')*(95-self.V('T1'))
+        I3control = self.V('T1')+self.V('U11')*(self.V('HEAT_PIPE')-self.V('T1'))
         self.mod.V_Set('I3',I3control)
         # añado luz solar a lus de las lamparas
         I_2T = I2T(I2 = self.V('I2'), U12 = self.V('U12'),eta17=self.V('eta17'), alpha12=self.V('alpha12'))
@@ -81,7 +81,7 @@ class T2_rhs(StateRHS):
         h_1 = h1(T1=self.Vk('T1'), T2=self.Vk('T2'),I1=self.V('I1'), alpha4=self.V('alpha4'))
         h_2 = h2(I5=self.V('I5'), alpha5=self.V('alpha5'), gamma2=self.V('gamma2'), eta5=self.V('eta5'), rho3=self.V('rho3'), phi5=self.V('phi5'), phi6=self.V('phi6'), f1=f_1)
         h_3 = h3(T2=self.Vk('T2'), V1=self.Vk('V1'), U3=self.V('U3'), I6=self.V('I6'), lamb1=self.V('lamb1'), lamb2=self.V('lamb2'), alpha6=self.V('alpha6'), gamma2=self.V('gamma2'), q6=q_6)
-        h_4 = h4(T2=self.Vk('T2'), I3=self.V('I3'),gamma1=self.V('gamma1'), phi1=self.V('phi1'))
+        h_4 = self.V('n_pipes')*h4(T2=self.Vk('T2'), I3=self.V('I3'),gamma1=self.V('gamma1'), phi1=self.V('phi1'))
         h_5 = h5(T2=self.Vk('T2'), I7=self.V('I7'), lamb3=self.V('lamb3'))
         h_6 = h6(U4=self.V('U4'), lamb4=self.V('lamb4'), alpha6=self.V('alpha6')) #H blow air 
         r_8 = r8(I2=self.V('I2T'), alpha2=self.V('alpha2'), alpha7=self.V('alpha7'), eta1=self.V('eta1'), eta2=self.V('eta2'), eta3=self.V('eta3'), tau1=self.V('tau1'), r9=r_9)

@@ -12,7 +12,7 @@ from .climate. functions import Aclima
 from sympy import symbols
 from numpy import arange
 import chime
-
+from .crop.functions import V_sa,VPD
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 
 s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
@@ -54,6 +54,86 @@ class Greenhouse(Director):
             elif v == False:
                 controls[k] = 0
         return controls,action
+
+    def heat_pid(self,goal=20):
+        '''Controller PID for temperature T1'''
+        KP11 = 3.672*0.03125
+        KI11 = 188.659*0.03125
+        KD11 = 0.00
+        T1_rec = self.Modules['Climate'].Vars['T2'].GetRecord()
+        P =  goal- T1_rec[-1]
+        I = self.Modules['Climate'].Vars['T1'].Integral(ni=-6,g = lambda x: goal-x)
+        D = (goal-T1_rec[-1]) - (goal-T1_rec[-2])
+        U = KP11*P + KI11*I + KD11*D
+        return np.clip(U,0,100)*0.01
+
+    def CO2_pid(self,goal=600):
+        '''Controller PID of CO2'''
+        KP10 = 0.019
+        KI10 = 6033.599
+        KD10 = 65.103
+        T1_rec = self.Modules['Climate'].Vars['C1'].GetRecord()
+        P =  goal- T1_rec[-1]
+        I = self.Modules['Climate'].Vars['C1'].Integral(ni=-6,g = lambda x: goal-x)
+        D = (goal-T1_rec[-1]) - (goal-T1_rec[-2])
+        U = KP10*P + KI10*I + KD10*D
+        return np.clip(U,0,100)*0.01
+    
+    def fog_pid(self):
+        '''Controller PID of the fogging system'''
+        KP10 = 0.019
+        KI10 = 6033.599
+        KD10 = 65.103
+        goal = 600
+        T1_rec = self.Modules['Climate'].Vars['C1'].GetRecord()
+        P =  goal- T1_rec[-1]
+        I = self.Modules['Climate'].Vars['C1'].Integral(ni=-6,g = lambda x: goal-x)
+        D = (goal-T1_rec[-1]) - (goal-T1_rec[-2])
+        U = KP10*P + KI10*I + KD10*D
+        return np.clip(U,0,100)*0.01
+
+    def expert_control(self):
+        controls = {}
+        Iglob = self.V('I2') 
+        for k,_ in self.agent.controls.items():
+            controls[k] = 0.0
+
+        if Iglob < 5:
+            heat_set = 16
+            vent_set = 26
+            vpd_set  = 1.05
+
+        else:
+            heat_set = 26
+            vent_set = 26
+            vpd_set  = 1.13
+
+        if Iglob < 700:
+            controls['U12'] = 1.0
+        
+        else:
+            controls['U12'] = 0.0
+            
+        if Iglob > 5 or controls['U12'] > 0:
+            CO2_set = 1000
+
+        else:
+            CO2_set = 650
+
+        if Iglob > 5 and Iglob < 100 and self.V('I5') < 12:
+            controls['U1'] = 0.3
+        
+        elif Iglob < 5:
+            controls['U1'] = 1.0
+
+        else:
+            controls['U1'] = 0.0 
+
+        controls['U11'] = self.heat_pid(heat_set)
+        controls['U10'] = 0.01*self.CO2_pid(CO2_set)
+        return controls
+        
+
 
     def get_vars(self):
         '''
@@ -146,6 +226,9 @@ class Greenhouse(Director):
            
            Advance is the same interface, either if single module or list of modules.
         """
+        V_sa1 = V_sa( T = self.V('T1'))
+        VPD1  = VPD( V_sa=V_sa1, RH = self.V('RH'))
+        self.V_Set('VPD',VPD1)
         state = self.get_state()
         if np.isnan(state).any():
             self.sound += 1
@@ -156,9 +239,11 @@ class Greenhouse(Director):
                 chime.error()  
                 # raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
         controls,action = self.get_controls(state) #Forward
+
+        #controls = self.expert_control()
         #controls es un diccionario que se necesita internamente (director), accion es lo que necesita la red 
-        #action = list(controls.values())
         self.update_controls(controls)
+        #breakpoint()
         #if t1%86400 == 0:
         #    controles = np.random.randint(1,12,2)
         #    controles = [1,6]

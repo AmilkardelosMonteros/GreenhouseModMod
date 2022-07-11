@@ -149,14 +149,18 @@ director.sch += director.PlantList.copy()
 Dt, n = get_dt_and_n(minute=PARAMS_DIR['minutes'], days=PARAMS_DIR['days'])
 
 
-director.Dt = Dt
-director.n = n
-SEASON = PARAMS_DIR['season']
-INDEXES = get_indexes()
-limit = INDEXES['limit']
-INDEXES = INDEXES[SEASON]
+director.Dt      = Dt
+director.n       = n
+SEASON           = PARAMS_DIR['season']
+INDEXES          = get_indexes()
+limit            = INDEXES['limit']
+INDEXES_FOR_TEST = INDEXES['TEST']
+INDEXES          = INDEXES[SEASON]
+if max(INDEXES) < limit:
+    print('Los indices estan bien calculados')
 
-
+vars_to_plot  = ['T1','T2','V1','C1','I5','H','NF']
+vars_to_plot += ['U' + str(i) for i in range(1,13)]
 
 PATH = create_path('simulation_results')
 save(PATH) #Save all parameters of the enviroment
@@ -174,10 +178,7 @@ specialization = PARAMS_TRAIN['SPECIALIZATION_PERIOD']
 active         = not(PARAMS_TRAIN['SERVER'])
 if episodes + specialization > 0:
     for i in range(episodes + specialization):
-        while True:
-            index1 = np.random.choice(INDEXES,size=1)[0]
-            if index1 < limit:
-                break
+        index1 = np.random.choice(INDEXES,size=1)[0] 
         print('Indice = ', index1)
         director.Reset()
         set_index(director,index1)
@@ -194,14 +195,12 @@ if episodes + specialization > 0:
     Keeper.plot_rewards(PATH)
     Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
 
+
 ###TEST
 Keeper_for_test = keeper()
 set_simulation(director)
 for _ in range(PARAMS_TRAIN['N_TEST']):
-    while True:
-        index1 = np.random.choice(INDEXES,size=1)[0]
-        if index1 < limit:
-            break
+    index1 = INDEXES_FOR_TEST[_]
     print('Indice = ', index1)
     director.Reset()
     director.t = 0
@@ -228,7 +227,8 @@ Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
 #create_images_per_module(director, 'Plant0' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
 create_pdf_images('final_report', PATH, 'output')
+
 print(PATH)
 
-if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
+#if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
  

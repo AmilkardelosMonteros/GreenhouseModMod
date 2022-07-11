@@ -10,7 +10,8 @@ from .functions import p1
 from .functions import l1
 from .functions import h1
 
-state_names = ['T1', 'V1', 'T2', 'C1']
+
+state_names = ['T1', 'V1', 'T2', 'C1','RH','VPD']
 control_names = ['U1', 'U11','U12']
 input_names = ['I1', 'I2', 'I3', 'I4','I9']
 #function_names = ['a1', 'r6', 'p1', 'q1', 'q2', 'q3', 'q4', 'q5', 'q7', 'q8', 'q9', 'q10', 'g1']
@@ -19,7 +20,7 @@ constant_names = ['beta3', 'tau3', 'beta1', 'rho1', 'beta2', 'rho2', 'eta1', 'et
                     'tau2', 'rho3', 'alpha5', 'gamma', 'gamma3', 'delta1', 'delta2', 'delta3',
                     'gamma4', 'gamma5', 'delta4', 'delta5', 'delta6', 'delta7', 'eta4', 'alpha1',
                     'alpha2', 'eta3', 'alpha3', 'epsil1', 'epsil2', 'sigma', 'alpha4', 'epsil3', 
-                    'eta14', 'eta15', 'eta16', 'eta17', 'alpha12']
+                    'eta14', 'eta15', 'eta16', 'eta17', 'alpha12','n_pipes']
 
 all_parameters = state_names + control_names + input_names + function_names + constant_names
 
@@ -45,8 +46,7 @@ class T1_rhs(StateRHS):
         # Once defined h1 in your terminal run TranslateArgNames(h1)
         # and follow the instrucions
         #### Sub-functions ####
-        HEAT_PIPE = 95 
-        I3control = self.V('T1')+self.V('U11')*(HEAT_PIPE-self.V('T1'))
+        I3control = self.V('T1')+self.V('U11')*(self.V('HEAT_PIPE')-self.V('T1'))
         self.mod.V_Set('I3',I3control)
         I_2T = I2T(I2 = self.V('I2'), U12 = self.V('U12'),eta17=self.V('eta17'), alpha12=self.V('alpha12'))
         self.mod.V_Set('I2T', I_2T)
@@ -72,13 +72,14 @@ class T1_rhs(StateRHS):
         kappa_1 = kappa1(I1=self.V('I1'), alpha1=self.V('alpha1'))
         r_1 = r1(r2=r_2, r3=r_3)
         r_5 = r5(I2=self.V('I2'), U12=self.V('U12'), alpha2=self.V('alpha2'),eta1=self.V('eta1'), eta3=self.V('eta3'),eta14=self.V('eta14'),alpha12=self.V('alpha12'))
-        r_6 = r6(T1=self.Vk('T1'), I3=self.V('I3'), alpha3=self.V('alpha3'), epsil1=self.V('epsil1'), epsil2=self.V('epsil2'), lamb=self.V('sigma'), g1=g_1)
+        r_6 = self.V('n_pipes')*r6(T1=self.Vk('T1'), I3=self.V('I3'), alpha3=self.V('alpha3'), epsil1=self.V('epsil1'), epsil2=self.V('epsil2'), lamb=self.V('sigma'), g1=g_1)
         h_1 = h1(T1=self.Vk('T1'), T2=self.Vk('T2'),I1=self.V('I1'), alpha4=self.V('alpha4'))
         l_1 = l1(gamma2=self.V('gamma2'), p1=p_1)
         r_7 = r7(T1=self.Vk('T1'), I4=self.V('I4'), epsil2=self.V('epsil2'), epsil3=self.V('epsil3'), lamb=self.V('sigma'), a1=a_1, g2=g_2)
         #Save
         to_save = {'r1':r_1,'r5':r_5,'r6':r_6,'h1':h_1,'l1':l_1,'r7':r_7}
         [self.mod.D.Vars[k].Set(v) for k,v in to_save.items()]
+        #breakpoint()
         return (kappa_1**-1)*(r_1 + r_5 + r_6 - h_1 - l_1 - r_7)
 
 

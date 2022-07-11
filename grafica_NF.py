@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import json
 
-path = 'simulation_results/2022_6_13_2240'
-f = open(path + '/NF_train.json')
+path = 'simulation_results/2022_7_4_123'
+f = open(path + '/NF_test.json')
 data = json.load(f)
 f.close()
 data = list(data.values())
