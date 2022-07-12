@@ -28,6 +28,7 @@ class Greenhouse(Director):
         self.noise    = noise
         self.train    = True
         self.sound = 0
+        self.type = 'net'
         #self.control = 0
         self.AddVar( typ='State', varid='H', prn=r'$H_k$', desc="Accumulated weight of all harvested fruits.", units= g, val=0.0,rec = nrec)
         self.AddVar( typ='State', varid='NF', prn=r'$N_k$', desc="Accumulated  number of fruits harvested", units= n_f, val=0.0,rec = nrec)
@@ -36,7 +37,7 @@ class Greenhouse(Director):
         self.AddVar( typ='State', varid='m', prn=r'$m_k$', desc="Simulation of the total  number of fruits harvested", units= n_f, val=0.0,rec=nrec)
         self.AddVar( typ='State', varid='A_Mean', prn=r'$E[A]$',desc="Total mean assimilation rate", units= g * (m**-2), val=0,rec=nrec) ##Revisar
 
-    def get_controls(self, state):
+    def get_controls_net(self, state):
         #No hace nada si noise.on = False
         action   = self.agent.get_action(state)
         action   = self.noise.get_action(action)
@@ -55,6 +56,58 @@ class Greenhouse(Director):
                 controls[k] = 0
         return controls,action
 
+    def get_controls_browniano(self,state):
+        #No hace nada si noise.on = False
+        self.noise.on = True
+        self.noise.max_sigma = self.noise.max_sigma_init
+        action   = self.agent.get_action(state)
+        action   = 0.5 + np.zeros_like(action) 
+        action   = self.noise.get_action(action) 
+        j        = 0
+        controls = {}
+        CONTROLS = list()
+        
+        for k,v in self.agent.controls.items():
+            if v == True:
+                CONTROLS.append(k) #Encuentro los que si quiero usar
+            controls[k] = v
+        for k,v in self.agent.controls.items():
+            if k in CONTROLS:
+                controls[k] = action[j]
+                j+= 1
+            elif v == False:
+                controls[k] = 0
+        return controls,action
+
+    def get_controls_uniform(self,state):
+        action   = self.agent.get_action(state)
+        action   = np.zeros_like(action) 
+        action   = action + np.random.uniform(0,1,len(action))
+        j        = 0
+        controls = {}
+        CONTROLS = list()
+        for k,v in self.agent.controls.items():
+            if v == True:
+                CONTROLS.append(k) #Encuentro los que si quiero usar
+            controls[k] = v
+        for k,v in self.agent.controls.items():
+            if k in CONTROLS:
+                controls[k] = action[j]
+                j+= 1
+            elif v == False:
+                controls[k] = 0
+        return controls,action
+
+    def get_controls(self,state):
+        if self.type == 'net':
+            return self.get_controls_net(state)
+        if self.type == 'bwn':
+            return self.get_controls_browniano(state)
+        if self.type == 'unif':
+            return self.get_controls_uniform(state)
+        else:
+            print('No conozco ese controlador')
+        
     def heat_pid(self,goal=20):
         '''Controller PID for temperature T1'''
         KP11 = 3.672*0.03125

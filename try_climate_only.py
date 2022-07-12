@@ -151,6 +151,7 @@ Dt, n = get_dt_and_n(minute=PARAMS_DIR['minutes'], days=PARAMS_DIR['days'])
 
 director.Dt      = Dt
 director.n       = n
+director.type    = PARAMS_TRAIN['TYPE']
 SEASON           = PARAMS_DIR['season']
 INDEXES          = get_indexes()
 limit            = INDEXES['limit']

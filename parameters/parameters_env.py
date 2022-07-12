@@ -38,6 +38,7 @@ PARAMS_ENV = {'n': n}
 PARAMS_TRAIN = {'EPISODES': 0, 
                 'SPECIALIZATION_PERIOD': 0, 
                 'N_TEST': 52, \
+                'TYPE':'unif', #puede ser net, bwn, unif
                 'STEPS':PARAMS_ENV['n'], \
                 'SHOW': False, \
                 'SERVER':True, \
