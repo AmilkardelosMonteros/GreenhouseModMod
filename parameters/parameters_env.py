@@ -44,8 +44,8 @@ PARAMS_TRAIN = {'EPISODES': 0,
                 'INDICE': 0, # Se usa en la simulacion al terminar el entrenamiento
                 'SAVE_FREQ': 2,
                 'SEND_MAIL':True,
-                'PATH_NET':None,
-                'NET':'498' 
+                'PATH_NET':'2022_7_7_138',
+                'NET':'508' 
                 } 
 
 PARAMS_SIM = {'anio':2017,\

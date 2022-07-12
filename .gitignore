@@ -22,3 +22,4 @@ extra_graphic.py
 errors/*
 *.pdf
 graficas_tesis
+*.out
