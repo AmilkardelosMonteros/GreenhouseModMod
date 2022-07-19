@@ -35,18 +35,18 @@ PARAMS_ENV = {'n': n}
 #Para benchmark y tournament es recomendable que sea 'RANDOM', pero no absolutamente necesario.
 
 #El min de STEP  no es 1/24, pero el min de FRECUENCY SÍ es 60
-PARAMS_TRAIN = {'EPISODES': 0, 
+PARAMS_TRAIN = {'EPISODES': 60, 
                 'SPECIALIZATION_PERIOD': 0, 
-                'N_TEST': 52, \
-                'TYPE':'unif', #puede ser net, bwn, unif
+                'N_TEST': 1, \
+                'TYPE':'net', #puede ser net, bwn, unif
                 'STEPS':PARAMS_ENV['n'], \
                 'SHOW': False, \
                 'SERVER':False, \
                 'INDICE': 0, # Se usa en la simulacion al terminar el entrenamiento
-                'SAVE_FREQ': 2,
+                'SAVE_FREQ': 1,
                 'SEND_MAIL':True,
-                'PATH_NET':None,
-                'NET':'498' 
+                'PATH_NET':'2022_7_18_1540', #Must be None or a path(str)
+                'NET':'0' 
                 } 
 
 PARAMS_SIM = {'anio':2017,\
