@@ -45,7 +45,7 @@ PARAMS_TRAIN = {'EPISODES': 60,
                 'INDICE': 0, # Se usa en la simulacion al terminar el entrenamiento
                 'SAVE_FREQ': 1,
                 'SEND_MAIL':True,
-                'PATH_NET':'2022_7_18_1540', #Must be None or a path(str)
+                'PATH_NET':'2022_7_18_1614', #Must be None or a path(str)
                 'NET':'0' 
                 } 
 
