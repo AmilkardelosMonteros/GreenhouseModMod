@@ -7,10 +7,10 @@ def num_actions_(controls):
         if v == True:s+=1
     return s
 
-PARAMS_UTILS = {'mu':0.0, 
+PARAMS_UTILS = {'mu':0., 
                 'theta': 0.00, 
-                'max_sigma':0.005, 
-                'min_sigma':0,
+                'max_sigma':0.09, 
+                'min_sigma':0.009,
                 'decay_period':PARAMS_ENV['n'],
                 'episodes': PARAMS_TRAIN['EPISODES'],
                 'low':-1,
