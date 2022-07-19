@@ -1,0 +1,75 @@
+{
+    "DDPG": {
+        "hidden_sizes": [
+            64,
+            64,
+            64
+        ],
+        "actor_learning_rate": 1e-06,
+        "critic_learning_rate": 1e-06,
+        "gamma": 0.8,
+        "tau": 0.1,
+        "max_memory_size": 100000,
+        "batch_size": 128,
+        "vars": [
+            "T1",
+            "T2",
+            "C1",
+            "V1",
+            "I2",
+            "I5",
+            "I8",
+            "I11",
+            "h"
+        ],
+        "controls": {
+            "U1": false,
+            "U2": false,
+            "U3": false,
+            "U4": false,
+            "U5": false,
+            "U6": true,
+            "U7": false,
+            "U8": 0.1,
+            "U9": false,
+            "U10": false,
+            "U11": true,
+            "U12": true
+        }
+    },
+    "FOTOSINTESIS": {
+        "Surrogate": false,
+        "Simplificado": false,
+        "EstomataVar": true
+    },
+    "TRAIN": {
+        "EPISODES": 6,
+        "SPECIALIZATION_PERIOD": 0,
+        "N_TEST": 1,
+        "TYPE": "net",
+        "STEPS": 576,
+        "SHOW": false,
+        "SERVER": false,
+        "INDICE": 0,
+        "SAVE_FREQ": 1,
+        "SEND_MAIL": true,
+        "PATH_NET": null,
+        "NET": "5"
+    },
+    "DIRECTOR": {
+        "minutes": 5,
+        "days": 2,
+        "season": "3"
+    },
+    "NOISE": {
+        "mu": 0.0,
+        "theta": 0.0,
+        "max_sigma": 0.09,
+        "min_sigma": 0.009,
+        "decay_period": 576,
+        "episodes": 6,
+        "low": -1,
+        "high": 1,
+        "dim": 3
+    }
+}
