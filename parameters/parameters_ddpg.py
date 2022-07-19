@@ -17,12 +17,13 @@ CONTROLS = {'U1':  False, # Pantalla térmica
             'U12': True  # Lamparas 
             }
 
-PARAMS_DDPG = {'hidden_sizes': [32,32,32], 
-                'actor_learning_rate': 1e-4, 
-                'critic_learning_rate': 1e-3, 
-                'gamma':0.98, 'tau':0.125, 
+PARAMS_DDPG = {'hidden_sizes': [64,64,64], 
+                'actor_learning_rate': 1e-6, 
+                'critic_learning_rate': 1e-6, 
+                'gamma':0.8,
+                'tau':0.1,#0.125
                 'max_memory_size':int(1e5),
-                'batch_size': 32,
+                'batch_size': 128,
                 'vars':VARS_OF_DIR,
                 'controls':CONTROLS
                 }
