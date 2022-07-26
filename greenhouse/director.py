@@ -82,7 +82,7 @@ class Greenhouse(Director):
     def get_controls_uniform(self,state):
         action   = self.agent.get_action(state)
         action   = np.zeros_like(action) 
-        action   = action + 1 #+ np.random.uniform(0,1,len(action))
+        action   = action + np.random.uniform(0,1,len(action))
         j        = 0
         controls = {}
         CONTROLS = list()
