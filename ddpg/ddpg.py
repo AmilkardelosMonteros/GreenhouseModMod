@@ -1,7 +1,7 @@
 import pathlib
 import os
 import pickle
-import pickle5 as p
+#import pickle5 as p
 import glob
 import torch
 import copy
@@ -212,7 +212,7 @@ class DDPGagent:
 
         #Memory
         file = open(path + '/output/memory.pickle', 'rb')
-        self.memory = p.load(file)
+        self.memory = pickle.load(file)
         file.close()
 
 
