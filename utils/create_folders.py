@@ -10,7 +10,11 @@ def date():
     day = mexico_now.day
     hour = mexico_now.hour
     minute = mexico_now.minute
-    return str(year) +'_'+ str(month) + '_'+ str(day) +'_'+ str(hour) + str(minute)
+    minute_str = str(minute)
+    if len(minute_str) == 1:
+        minute_str = '0'+minute_str
+    return str(year) +'_'+ str(month) + '_'+ str(day) +'_'+ str(hour) + minute_str
+
 
 def create_path(path):
     PATH = path + '/'+ date()
