@@ -121,7 +121,6 @@ class DDPGagent:
         self.actor_optimizer.zero_grad()
         policy_loss.backward()
         self.actor_optimizer.step()
-        x = torch.ones(1,9)
         y1 = self.actor.forward(x)
         if torch.norm(y-y1) > 0:
             self.real_changes+= 1
