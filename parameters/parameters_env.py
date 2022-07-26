@@ -38,15 +38,15 @@ PARAMS_ENV = {'n': n}
 PARAMS_TRAIN = {'EPISODES': 0, 
                 'SPECIALIZATION_PERIOD': 0, 
                 'N_TEST': 52, \
-                'TYPE':'unif', #puede ser net, bwn, unif
+                'TYPE':'net', #puede ser net, bwn, unif
                 'STEPS':PARAMS_ENV['n'], \
                 'SHOW': False, \
                 'SERVER':True, \
                 'INDICE': 0, # Se usa en la simulacion al terminar el entrenamiento
                 'SAVE_FREQ': 2,
                 'SEND_MAIL':True,
-                'PATH_NET':'2022_7_7_138',
-                'NET':'508' 
+                'PATH_NET':None,
+                'NET':'0' 
                 } 
 
 PARAMS_SIM = {'anio':2017,\
