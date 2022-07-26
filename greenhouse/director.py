@@ -97,16 +97,6 @@ class Greenhouse(Director):
             elif v == False:
                 controls[k] = 0
         return controls,action
-
-    def get_controls(self,state):
-        if self.type == 'net':
-            return self.get_controls_net(state)
-        if self.type == 'bwn':
-            return self.get_controls_browniano(state)
-        if self.type == 'unif':
-            return self.get_controls_uniform(state)
-        else:
-            print('No conozco ese controlador')
         
     def heat_pid(self,goal=20):
         '''Controller PID for temperature T1'''
@@ -122,14 +112,16 @@ class Greenhouse(Director):
 
     def CO2_pid(self,goal=600):
         '''Controller PID of CO2'''
-        KP10 = 0.019
-        KI10 = 6033.599
-        KD10 = 65.103
+        K_cu = 0
+        P_u = 0#155minutos en segundos9300 
+        K_c = 0.5
+        tau_i = 0.5
+        tau_d = 0
         T1_rec = self.Modules['Climate'].Vars['C1'].GetRecord()
         P =  goal- T1_rec[-1]
         I = self.Modules['Climate'].Vars['C1'].Integral(ni=-6,g = lambda x: goal-x)
         D = (goal-T1_rec[-1]) - (goal-T1_rec[-2])
-        U = KP10*P + KI10*I + KD10*D
+        U =  K_c*(P + tau_i*I + tau_d*D)
         return np.clip(U,0,100)*0.01
     
     def fog_pid(self):
@@ -145,7 +137,9 @@ class Greenhouse(Director):
         U = KP10*P + KI10*I + KD10*D
         return np.clip(U,0,100)*0.01
 
-    def expert_control(self):
+    def expert_control(self,state):
+        action   = self.agent.get_action(state)
+        action   = np.zeros_like(action) 
         controls = {}
         Iglob = self.V('I2') 
         for k,_ in self.agent.controls.items():
@@ -183,8 +177,20 @@ class Greenhouse(Director):
             controls['U1'] = 0.0 
 
         controls['U11'] = self.heat_pid(heat_set)
-        controls['U10'] = 0.01*self.CO2_pid(CO2_set)
-        return controls
+        controls['U10'] = self.CO2_pid(CO2_set)
+        return controls,action
+    
+    def get_controls(self,state):
+        if self.type == 'net':
+            return self.get_controls_net(state)
+        elif self.type == 'bwn':
+            return self.get_controls_browniano(state)
+        elif self.type == 'unif':
+            return self.get_controls_uniform(state)
+        elif self.type == 'expert':
+            return self.expert_control(state)
+        else:
+            print('No conozco ese controlador')
         
 
 
@@ -292,7 +298,6 @@ class Greenhouse(Director):
                 chime.error()  
                 # raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
         controls,action = self.get_controls(state) #Forward
-
         #controls = self.expert_control()
         #controls es un diccionario que se necesita internamente (director), accion es lo que necesita la red 
         self.update_controls(controls)

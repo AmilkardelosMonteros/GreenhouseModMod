@@ -31,8 +31,12 @@ class keeper:
         dir_actions = {}
         for key in ['U' + str(i) for i in range(1,13)]:
             sample = dir.Modules['Climate'].Vars[key].GetRecord()
-            sample = sample[int(len(sample)/2):len(sample)]
+            sample = sample[-dir.n:] #Para evitar sesgar hacia el cero
+            max_ = max(sample)
+            min_ = min(sample)
             sample = list(np.random.choice(sample, size = int(len(sample)*self.porc)))
+            sample.append(max_)
+            sample.append(min_)
             dir_actions[key] = sample
         self.actions[str(self.i)] = dir_actions
         return 1
@@ -55,7 +59,7 @@ class keeper:
         self.rewards[str(self.i)] = sum(dir.Vars['reward'].GetRecord())
 
     def add(self,dir):
-        if self.i%50 == 0: ###Las acciones solo se guardan cada 50 eps
+        if self.i%1 == 0: ###Las acciones solo se guardan cada 50 eps
             self.add_actions(dir)
         self.add_costs(dir)
         self.add_reward(dir)

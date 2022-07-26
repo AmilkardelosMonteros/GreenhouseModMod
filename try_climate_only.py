@@ -172,6 +172,7 @@ if path_net is not None:
     print('Cargando red '+ name_net + ' del folder '+ path_net)
     director.agent.load('simulation_results/'+path_net, name=name_net)
 
+
 #TRAIN
 Keeper         = keeper()
 episodes       = PARAMS_TRAIN['EPISODES']
@@ -189,6 +190,7 @@ if episodes + specialization > 0:
         Keeper.add(director)
         Keeper.save(PATH)
         director.agent.save_losses(PATH)
+        director.agent.save_real_changes(PATH)
         director.noise.reset()
         print('max sigma = ',director.noise.max_sigma)
         print('sigma = ',director.noise.sigma)
@@ -196,8 +198,16 @@ if episodes + specialization > 0:
     Keeper.plot_rewards(PATH)
     Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
 
+date = create_date(index1)
+frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
+dates = compute_indexes(date,n,frec)
+vars_to_plot  = ['T1','T2','V1','C1','H','NF']
+vars_to_plot += ['U' + str(i) for i in range(1,13)]
+create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
+create_pdf_images('final_report', PATH, 'output')
 
 ###TEST
+
 Keeper_for_test = keeper()
 set_simulation(director)
 for _ in range(PARAMS_TRAIN['N_TEST']):
@@ -213,21 +223,16 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
     Keeper_for_test.save(PATH,flag = 'test')
     director.noise.reset()
 
-date = create_date(index1)
-frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
-dates = compute_indexes(date,n,frec)
-vars_to_plot  = ['T1','T2','V1','C1','H','NF']
-vars_to_plot += ['U' + str(i) for i in range(1,13)]
-create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
-Keeper_for_test.plot_test(PATH)
-Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
+
+#Keeper_for_test.plot_test(PATH)
+#Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
 
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
 #create_images_per_module(director, 'Plant0' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
-create_pdf_images('final_report', PATH, 'output')
+
 
 print(PATH)
 

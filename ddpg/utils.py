@@ -33,7 +33,8 @@ class OUNoise(object):
         if self.episodes == 0:
             self.max_sigma = 0
         else:
-            self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
+            pass
+            #self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
         self.sigma = self.max_sigma
         self.episode += 1
         self.t = 0
@@ -42,7 +43,7 @@ class OUNoise(object):
     def evolve_state(self):
         x          = self.state
         dx         = self.theta * (self.mu - x) + self.sigma * np.random.randn(self.action_dim)
-        self.state = x + dx # new_clip(x + dx)
+        self.state = np.clip(x + dx,-1,1) # new_clip(x + dx)
         return self.state
     
     def get_action(self, action,test = False):
@@ -53,7 +54,7 @@ class OUNoise(object):
             return action + ou_state
         else:
             if self.on:
-                return np.clip(action + ou_state,0.0,1.0)
+                return np.clip(action*0 + ou_state,0.0,1.0)
             else:
                 return np.clip(action,0,1)
 
