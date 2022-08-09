@@ -53,7 +53,6 @@ class OUNoise(object):
             return action + ou_state
         else:
             if self.on:
-                breakpoint()
                 return np.clip(action + ou_state, 0, 1)
             else:
                 return np.clip(action,0,1)
