@@ -34,7 +34,7 @@ class OUNoise(object):
             self.max_sigma = 0
         else:
             pass
-            #self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
+            self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
         self.sigma = self.max_sigma
         self.episode += 1
         self.t = 0
