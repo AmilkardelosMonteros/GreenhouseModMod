@@ -21,6 +21,7 @@ class OUNoise(object):
         self.high           = parameters['high']
         self.action_dim     = parameters['dim']
         self.episodes       = parameters['episodes']
+        self.decay_eps      = parameters['decay_eps']
         self.episode        = 0
         self.decay_period   = parameters['decay_period']
         self.reset()
@@ -32,8 +33,8 @@ class OUNoise(object):
         if self.episodes == 0:
             self.max_sigma = 0
         else:
-            pass
-            #self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
+            if self.decay_eps:
+                self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
         self.sigma    = self.max_sigma
         self.episode += 1
         self.t        = 0
@@ -47,7 +48,7 @@ class OUNoise(object):
     
     def get_action(self, action,test = False):
         ou_state   = self.evolve_state()
-        self.sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period)
+        self.sigma = max([self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period),self.min_sigma])
         self.t    += 1
         if test:
             return action + ou_state
