@@ -11,34 +11,34 @@ from scipy.stats import truncnorm
 # Taken from #https://github.com/vitchyr/rlkit/blob/master/rlkit/exploration_strategies/ou_strategy.py
 class OUNoise(object):
     def __init__(self, parameters):
-        self.mu           = parameters['mu']
-        self.theta        = parameters['theta']
-        self.sigma        = parameters['max_sigma']
-        self.max_sigma    = parameters['max_sigma']
+        self.mu             = parameters['mu']
+        self.theta          = parameters['theta']
+        self.sigma          = parameters['max_sigma']
+        self.max_sigma      = parameters['max_sigma']
         self.max_sigma_init = parameters['max_sigma']
-        self.min_sigma    = parameters['min_sigma']
-        self.low          = parameters['low']
-        self.high         = parameters['high']
-        self.action_dim   = parameters['dim']
-        self.episodes     = parameters['episodes']
-        self.episode      = 0
-        #breakpoint()
+        self.min_sigma      = parameters['min_sigma']
+        self.low            = parameters['low']
+        self.high           = parameters['high']
+        self.action_dim     = parameters['dim']
+        self.episodes       = parameters['episodes']
+        self.decay_eps      = parameters['decay_eps']
+        self.episode        = 0
         self.decay_period   = parameters['decay_period']
         self.reset()
-        self.on = True
-        self.seed = 3000
+        self.on             = True
+        self.seed           = 3000
         np.random.seed(self.seed)
         
     def reset(self):
         if self.episodes == 0:
             self.max_sigma = 0
         else:
-            pass
-            self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
-        self.sigma = self.max_sigma
+            if self.decay_eps:
+                self.max_sigma = max([0,self.max_sigma - self.max_sigma_init/ self.episodes])
+        self.sigma    = self.max_sigma
         self.episode += 1
-        self.t = 0
-        self.state = np.ones(self.action_dim) * self.mu
+        self.t        = 0
+        self.state    = np.ones(self.action_dim) * self.mu
         
     def evolve_state(self):
         x          = self.state
@@ -48,13 +48,13 @@ class OUNoise(object):
     
     def get_action(self, action,test = False):
         ou_state   = self.evolve_state()
-        self.sigma = self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period)
+        self.sigma = max([self.max_sigma - (self.max_sigma - self.min_sigma) * min(1.0, self.t / self.decay_period),self.min_sigma])
         self.t    += 1
         if test:
             return action + ou_state
         else:
             if self.on:
-                return np.clip(action*0 + ou_state,0.0,1.0)
+                return np.clip(action + ou_state, 0, 1)
             else:
                 return np.clip(action,0,1)
 
