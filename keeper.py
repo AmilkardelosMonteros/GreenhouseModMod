@@ -59,7 +59,7 @@ class keeper:
         self.rewards[str(self.i)] = sum(dir.Vars['reward'].GetRecord())
 
     def add(self,dir):
-        if self.i%1 == 0: ###Las acciones solo se guardan cada 50 eps
+        if self.i%1 == 10: ###Las acciones solo se guardan cada 50 eps
             self.add_actions(dir)
         self.add_costs(dir)
         self.add_reward(dir)
