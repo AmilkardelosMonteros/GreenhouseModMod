@@ -224,8 +224,8 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
     director.noise.reset()
 
 
-#Keeper_for_test.plot_test(PATH)
-#Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
+Keeper_for_test.plot_test(PATH)
+Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
 
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
@@ -236,5 +236,5 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
 
 print(PATH)
 
-#if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
+if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
  
