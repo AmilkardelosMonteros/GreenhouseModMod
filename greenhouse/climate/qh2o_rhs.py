@@ -23,4 +23,4 @@ class Qh2o_rhs(StateRHS):
         p_1 = self.V('p1')
         p_2 = self.V('p2')
         p_3 = self.V('p3')
-        return (self.V('qh2o'))(10**-3)*((1+ self.V('etadrain')/100.0)*max(p_1, 0) + p_2 + p_3)  
+        return (self.V('qh2o'))*(10**-3)*((1+ self.V('etadrain')/100.0)*max(p_1, 0) + p_2 + p_3)  
