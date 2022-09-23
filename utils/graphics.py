@@ -64,6 +64,7 @@ def create_images(model, module, indexes,list_var=None,PATH=None):
                     plt.close(fig)
                 else:
                     plt.savefig(PATH + '/images/'+name+'_'+str(j)+'_.png')
+                    plt.savefig(PATH + '/output/'+name+'_'+str(j)+'_.png')
                     plt.cla()
                     plt.clf()
                     plt.close(fig)
