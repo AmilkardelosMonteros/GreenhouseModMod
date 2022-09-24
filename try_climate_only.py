@@ -204,7 +204,7 @@ dates = compute_indexes(date,n,frec)
 vars_to_plot  = ['T1','T2','V1','C1','H','NF']
 vars_to_plot += ['U' + str(i) for i in range(1,13)]
 create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
-create_pdf_images('final_report', PATH, 'output')
+
 
 ###TEST
 
@@ -222,11 +222,12 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
     Keeper_for_test.add(director)
     Keeper_for_test.save(PATH,flag = 'test')
     director.noise.reset()
-
-
+Keeper_for_test.plot_cost(PATH)
+Keeper_for_test.plot_rewards(PATH)
 Keeper_for_test.plot_test(PATH)
 Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
 
+create_pdf_images('final_report', PATH, 'output')
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
@@ -236,5 +237,5 @@ Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
 
 print(PATH)
 
-if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
+#if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
  
