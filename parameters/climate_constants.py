@@ -28,7 +28,7 @@ mt = symbols('mt') #Minutos
 OTHER_CONSTANTS = {     
     ################## other constants ################## 
     'etagas':      Struct(typ='Cnts', varid='etagas', prn=r'$\eta_{gas}$',
-                    desc="Energy efficiency of natural gas", units=1, val=35.26, ok='checar unidades'),  
+                    desc="Energy efficiency of natural gas", units=1, val=3.525e7, ok='Tenia valor de 35.26'),  
     'qh2o':      Struct(typ='Cnts', varid='qh2o', prn=r'$\q_{H_{2}O}$',
                     desc="Costo del agua", units= mxn *m**-3, val=3.5, ok='5.9 en espanna'), 
     'qgas':    Struct(typ='Cnts', varid='qgas', prn=r'$q_{gas}$',
