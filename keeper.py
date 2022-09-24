@@ -76,7 +76,6 @@ class keeper:
 
 
     def plot_actions(self,actions,flag='train',PATH=None):
-        breakpoint()
         for a in actions:
             _, axis= plt.subplots(sharex=True, figsize=(10,5))
             new_data = list()
