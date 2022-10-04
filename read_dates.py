@@ -1,17 +1,13 @@
 import pandas as pd
 import datetime
+import time
+import random
 data            = pd.read_csv('weather_data/dataset.csv',usecols=[1,2,3,4], header=0)
 data.columns    = ['Year','Month','Day','Hour']
 
 limit = data.shape[0] - 91*24 ## Vamos a quitar 90 dias
 
-TEST = [257735, 231480, 240233, 240144, 240291, 240260, 248972, 240327,
-       231447, 231415, 257970, 248992, 240106, 231422, 240331, 222596,
-       240127, 249203, 222826, 240213, 249041, 240126, 231338, 222646,
-       222671, 222596, 240261, 222725, 240184, 240266, 240151, 257934,
-       240388, 240253, 222692, 249122, 248965, 231647, 249105, 240126,
-       257828, 231567, 248913, 257856, 248922, 222777, 222618, 248906,
-       249005, 222758, 248895, 222723] #This indexes was generated randomly with dates of the first 15 days on august 2013,2014,2015,2016,2017
+
 def get_indexes():
     #Primera semana de enero a primera de abril
     SEASON1         = data.copy()
@@ -27,13 +23,22 @@ def get_indexes():
     SEASON2_indexes = list(SEASON2_1.index) + list(SEASON2_2.index)
     SEASON2_indexes = list(filter(lambda x: x < limit, SEASON2_indexes))
 
-    #Solo 15 dias de agosto de 2017
+    #dias de agosto de 2013,2014,2015,2016,2017
     SEASON3         = data.copy() 
-    SEASON3         = SEASON3[(SEASON3.Month == 12) & (SEASON2.Day.isin(range(15))) & (SEASON3.Year.isin([2013,2014,2015,2016,2017] ))]
+    SEASON3         = SEASON3[(SEASON3.Month == 8) & (SEASON3.Day.isin(range(15))) & (SEASON3.Year.isin([2013,2014,2015,2016,2017] ))]
     SEASON3_indexes = list(SEASON3.index)
     SEASON3_indexes = list(filter(lambda x: x < limit, SEASON3_indexes))
 
-    return {'1':SEASON1_indexes,'2':SEASON2_indexes, '3':SEASON3_indexes, 'TEST':TEST,'limit':limit}
+    #Test 
+    TEST         = data.copy() 
+    TEST         = TEST[(TEST.Month == 8) & (TEST.Day.isin(range(15))) & (TEST.Year.isin([2000,2001,2002,2003,2004] ))]
+    TEST_indexes = list(TEST.index)
+    TEST_indexes = list(filter(lambda x: x < limit, TEST_indexes))
+    random.seed(1999)
+    random.shuffle(TEST_indexes) #Inplace
+    t = 1000 * time.time()#Current time in milliseconds
+    random.seed(int(t) % 2**32)
+    return {'1':SEASON1_indexes,'2':SEASON2_indexes, '3':SEASON3_indexes, 'TEST':TEST_indexes,'limit':limit}
 
 def get_index(year,month,day,hour = 12):
     data_copy = data.copy()
