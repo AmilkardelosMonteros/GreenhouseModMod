@@ -11,7 +11,7 @@ from ModMod import Director
 from .climate. functions import Aclima
 from sympy import symbols
 from numpy import arange
-import chime
+#import chime
 from .crop.functions import V_sa,VPD
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 

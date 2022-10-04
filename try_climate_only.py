@@ -237,5 +237,5 @@ create_pdf_images('final_report', PATH, 'output')
 
 print(PATH)
 
-#if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
+if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
  
