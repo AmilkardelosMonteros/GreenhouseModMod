@@ -24,3 +24,4 @@ errors/*
 graficas_tesis
 *.out
 extra_grafic.py
+salida*
