@@ -112,15 +112,15 @@ class keeper:
             plt.show()
             plt.close('all')
 
-    def plot_cost(self,PATH = None):
-        self.plot_dir(self.Qco2,'Costo del Co2',PATH)
-        self.plot_dir(self.Qelec,'Costo de la electricidad',PATH)
-        self.plot_dir(self.Qgas,'Costo del Gas',PATH)
-        self.plot_dir(self.Qh2o,'Costo del agua',PATH)
+    def plot_cost(self,flag = 'train', PATH = None):
+        self.plot_dir(self.Qco2,'Costo del Co2 ' + flag ,PATH)
+        self.plot_dir(self.Qelec,'Costo de la electricidad ' + flag,PATH)
+        self.plot_dir(self.Qgas,'Costo del Gas ' + flag,PATH)
+        self.plot_dir(self.Qh2o,'Costo del agua ' + flag,PATH)
 
 
-    def plot_rewards(self,PATH = None):
-        self.plot_dir(self.rewards,'Reward acumulado train',PATH)
+    def plot_rewards(self,flag = 'train',PATH = None):
+        self.plot_dir(self.rewards,'Reward acumulado ' + flag,PATH)
 
 
     def plot_violin(self,dic,titulo,PATH):
@@ -141,10 +141,10 @@ class keeper:
             plt.close('all')
 
 
-    def plot_test(self, PATH = None):
-        self.plot_violin(self.rewards,'Reward Acumulado test',PATH)
-        self.plot_violin(self.NF,'Numero de frutos',PATH)
-        self.plot_violin(self.H,'Peso de los frutos',PATH)
+    def plot_gains(self, flag = 'train', PATH = None):
+        self.plot_violin(self.rewards,'Reward Acumulado ' + flag ,PATH)
+        self.plot_violin(self.NF,'Numero de frutos ' + flag,PATH)
+        self.plot_violin(self.H,'Peso de los frutos ' + flag ,PATH)
 
 
     def save_(self,path,dic,name):
