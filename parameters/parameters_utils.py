@@ -9,7 +9,7 @@ def num_actions_(controls):
 
 PARAMS_UTILS = {'mu':0., 
                 'theta': 0.00, 
-                'max_sigma':0.9, 
+                'max_sigma':0.5, 
                 'min_sigma':0.009,
                 'decay_period':PARAMS_ENV['n'], #Decaimiento a lo largo de los pasos
                 'episodes': PARAMS_TRAIN['EPISODES'],
