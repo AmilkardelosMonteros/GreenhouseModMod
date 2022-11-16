@@ -1,13 +1,13 @@
 import numpy as np
 
 def check(funtion):
-    def check_nan(*args):
-        if np.nan in args:
+    def check_nan(**kwargs):
+        if np.nan in kwargs.values():
             print('Error en los parametros')
-            print(args)  
+            print(kwargs)  
             return np.nan
         else:
-            result = funtion(*args)
+            result = funtion(*list(kwargs.values()))
             if np.isnan(result):
                 print('La funcion {} tiene algo mal'.format(function))
             else:
@@ -18,7 +18,7 @@ def main():
     @check
     def suma(x,y):
         return x+y
-    print(suma(np.nan,1))
+    print(suma(x=np.nan,y = 1))
 
 if __name__ == '__main__':
     main()
