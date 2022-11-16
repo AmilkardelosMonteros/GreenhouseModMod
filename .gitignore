@@ -24,3 +24,5 @@ errors/*
 graficas_tesis
 *.out
 extra_grafic.py
+diccionario.txt
+simulations_results.py
