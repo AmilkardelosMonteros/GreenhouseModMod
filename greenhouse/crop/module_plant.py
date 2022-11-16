@@ -62,7 +62,7 @@ class Plant(Module):
             T_mean = self.V_Mean('T2', ni=-md ) # Se saca el promedio sobre los registros del último día
             PAR_mean = self.V_Mean('I2', ni=-md ) # Se saca el promedio sobre los registros del último día
             ## Asimilados acumulados (integrados) en el último día
-            acrop = lambda x: Acrop(x, I1=2) #### Cambiar valor de I1
+            acrop = lambda x: Acrop(A = x, I1=2) #### Cambiar valor de I1
             A_int = self.V_Int('A', ni=-md,t=arange(0, 86400, Dt_c), g=acrop) # Se integra sobre los registros del último día 
             if abs(A_int) < 1e-8:
                 print('Problema!! A_int es muy pequeño')
