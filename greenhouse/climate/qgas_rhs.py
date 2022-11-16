@@ -24,5 +24,5 @@ class Qgas_rhs(StateRHS):
         h_6 = self.V('h6')
         r_6 = self.V('r6')
         h_4 = self.V('h4')
-        H_boil_pipe = H_Boil_Pipe(r_6, h_4)
+        H_boil_pipe = H_Boil_Pipe(r6 = r_6, h4 = h_4)
         return (self.V('qgas')/self.V('etagas'))*(H_boil_pipe + h_6)/(10**9)
