@@ -47,9 +47,9 @@ class PhotoModule(Module):
             #self.V_Set('Ci',(C1*0.554)*0.67) #67%  ppm and mg/m**-3 = 0.556 ppm
             
             # Calculo de la presión de vapor de saturación
-            Vsat = V_sa( T1)
+            Vsat = V_sa(T = T1)
             # Calculo de la Humedad Relativa 
-            RH = fRH( V1, Vsat)
+            RH = fRH(V1 = V1, Vsat = Vsat)
             state_photo = np.array([T1,I2,C1,V1,RH])
             if np.isnan(state_photo).any():
                 print('Algo es Nan es module Photo')
