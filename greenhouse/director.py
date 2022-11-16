@@ -322,7 +322,7 @@ class Greenhouse(Director):
         A_Mean = 0
         A_Mean1 = 0
         A_int  = 0
-        aclima = lambda x: Aclima(x, self.V('I1'))
+        aclima = lambda x: Aclima(A = x, I1 = self.V('I1'))
         #breakpoint()
         for plant in self.PlantList:
             t_w_hist += self.Modules[plant].Modules['Plant'].V('Q_h')
