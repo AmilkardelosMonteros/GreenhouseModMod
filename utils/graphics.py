@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import pathlib
 import pandas as pd
 import numpy as np
-from torch import le
+
+
 def create_images_per_module(model, module, list_var=None,PATH=None):
     SHOW = False
     if PATH == None: SHOW = True

@@ -8,7 +8,7 @@ Created on Wed Feb  9 12:55:08 2022
 
 from numpy import exp, floor, clip, arange, append, sqrt
 from sympy import symbols
-from Decorator import check
+from .Decorator import check
 
 ###########################
 ####### Símbolos  #########

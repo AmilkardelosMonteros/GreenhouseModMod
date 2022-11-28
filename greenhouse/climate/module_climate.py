@@ -33,7 +33,7 @@ class Module1(Module):
         #V1 = self.V('V1') / 7  # nuevo 
         #RH = 100 * ( V1 / Vsat ) # nuevo 
         #self.V_Set('RH', RH) # nuevo   # definit RH como variable
-        self.AdvanceRungeKutta(t1)
+        self.AdvanceRungeKutta(t1, Method=4)
         self.AdvanceAssigment(t1)
         #self.i  += 1
         #new_state = self.get_state()
