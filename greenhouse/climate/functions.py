@@ -1,5 +1,5 @@
 from numpy import sqrt, exp, pi
-from Decorador import check
+from .Decorador import check
 
 @check
 def f1(U2, phi7, alpha6):
