@@ -62,7 +62,7 @@ class Plant(Module):
             T_mean = self.V_Mean('T2', ni=-md ) # Se saca el promedio sobre los registros del último día
             PAR_mean = self.V_Mean('I2', ni=-md ) # Se saca el promedio sobre los registros del último día
             ## Asimilados acumulados (integrados) en el último día
-            acrop = lambda x: Acrop(x, I1=2) #### Cambiar valor de I1
+            acrop = lambda x: Acrop(A = x, I1=2) #### Cambiar valor de I1
             A_int = self.V_Int('A', ni=-md,t=arange(0, 86400, Dt_c), g=acrop) # Se integra sobre los registros del último día 
             if abs(A_int) < 1e-8:
                 print('Problema!! A_int es muy pequeño')
@@ -133,8 +133,12 @@ class Plant(Module):
                     self.n_fruits -= 1 # number fruits in crop
                     wk += fruit[1] # weight of harvested fruits in this moment
                     nfk += 1       # number fruits harvested in this moment
-                    fruits.remove(fruit) # Harvested fruits are removed from the list
-            self.fruits = fruits
+                    try:
+                        fruits.remove(fruit) # Harvested fruits are removed from the list
+                    except:
+                        print('No puede hacer remove')
+
+            self.fruits = fruits.copy()
                
 
 
@@ -159,11 +163,11 @@ class Plant(Module):
 
     def ResetVars(self):
         super().ResetVars()
-        self.veget = [0.0 , 0.0] ## characteristics for vegetative part: Weight and growth potential 
-        self.fruits = [] # No fruits
-        self.n_fruits = 0 ## Current number of fruits
-        self.n_fruits_h = 0 ## total number of fruits harvested
-        self.new_fruit = 0  ## Cummulative number of fruits
-        self.m = 4 ## Number of characteristics for each fruit: thermic age, weight, growth potential and Michaelis-Menten constant
+        self.veget      = [0.0 , 0.0] # characteristics for vegetative part: Weight and growth potential 
+        self.fruits     = []          # No fruits
+        self.n_fruits   = 0           # Current number of fruits
+        self.n_fruits_h = 0           # total number of fruits harvested
+        self.new_fruit  = 0           # Cummulative number of fruits
+        self.m          = 4           # Number of characteristics for each fruit: thermic age, weight, growth potential and Michaelis-Menten constant
 
     

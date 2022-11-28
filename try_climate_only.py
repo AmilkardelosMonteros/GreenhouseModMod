@@ -29,6 +29,17 @@ from parameters.parameters_env import PARAMS_ENV, PARAMS_TRAIN
 from try_ddpg import agent
 from try_noise import noise
 from utils.for_simulation import set_simulation,save_nets,set_index
+from read_dates import  create_date,compute_indexes,get_indexes
+
+from sympy import symbols
+from ModMod import StateRHS
+from parameters.parameters_dir import PARAMS_DIR
+
+from keeper import keeper
+from parameters.parameters_ddpg import CONTROLS
+from save_parameters import save
+ACTIVE_CONTROLS = [k for k,v in CONTROLS.items() if v]
+
 beta_list = [0.99, 0.95] # Only 2 plants are simulated, assuming this is approximately one m**2
 theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
 theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
@@ -73,8 +84,6 @@ director = Greenhouse(agent, noise)
 director.MergeVarsFromRHSs(RHS_list, call=__name__)
 director.MergeVars(dir_climate, all_vars=True)
 director.AddDirectorAsModule('Climate', dir_climate)
-from sympy import symbols
-from ModMod import StateRHS
 s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
 mu_mol_CO2 = 1e-6 * mol_CO2
 mu_mol_phot = 1e-6 * mol_phot
@@ -87,7 +96,7 @@ mt, mg, m, C, s, W, mg_CO2, Joule, g, mol_CH2O = symbols('mt mg m C s W mg_CO2 J
 # V1
 mt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm, kmol, kg_air, kg_vapour = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm kmol kg_air kg_vapour')
 # T1
-mt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm')
+Bmt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm')
 # T2
 mt, mg, m, C, s, W, mg_CO2, Joule, Pa, kg_water, kg, K, ppm, m_cover, kg_air = symbols('mt mg m C s W mg_CO2 Joule Pa kg_water kg K ppm m_cover kg_air')
 
@@ -135,65 +144,76 @@ for p, beta in enumerate(beta_list):
 
 director.sch = ['Climate']
 director.sch += director.PlantList.copy()
-from parameters.parameters_dir import PARAMS_DIR
+
 
 Dt, n = get_dt_and_n(minute=PARAMS_DIR['minutes'], days=PARAMS_DIR['days'])
 
-from read_dates import  create_date,compute_indexes,get_indexes
-director.Dt = Dt
-director.n = n
-SEASON = PARAMS_DIR['season']
-INDEXES = get_indexes()
-limit = INDEXES['limit']
-INDEXES = INDEXES[SEASON]
 
+director.Dt      = Dt
+director.n       = n
+director.type    = PARAMS_TRAIN['TYPE']
+SEASON           = PARAMS_DIR['season']
+INDEXES          = get_indexes()
+limit            = INDEXES['limit']
+INDEXES_FOR_TEST = INDEXES['TEST']
+INDEXES          = INDEXES[SEASON]
+if max(INDEXES) < limit:
+    print('Los indices estan bien calculados')
 
-from keeper import keeper
-from parameters.parameters_ddpg import CONTROLS
-ACTIVE_CONTROLS = [k for k,v in CONTROLS.items() if v]
+vars_to_plot  = ['T1','T2','V1','C1','I5','H','NF']
+vars_to_plot += ['U' + str(i) for i in range(1,13)]
+
 PATH = create_path('simulation_results')
+save(PATH) #Save all parameters of the enviroment
 ###############################################
+path_net = PARAMS_TRAIN['PATH_NET']
+name_net      = PARAMS_TRAIN['NET']
+if path_net is not None:
+    print('Cargando red '+ name_net + ' del folder '+ path_net)
+    director.agent.load('simulation_results/'+path_net, name=name_net)
+
+
 #TRAIN
-Keeper = keeper()
-episodes = PARAMS_TRAIN['EPISODES']
-active = not(PARAMS_TRAIN['SERVER'])
-for i in range(episodes):
-    while True:
-        index1 = np.random.choice(INDEXES,size=1)[0]
-        if index1 < limit:
-            break
-    print('Indice = ', index1)
-    director.Modules['Plant0'].Modules['Plant'].new_fruit = 1000
-    director.Reset()
-    #director.t = 0
-    #RHSs_ids = director.Modules['Climate'].Modules['ModuleMeteo'].Assigm_S_RHS_ids
-    #breakpoint()
-    #director.Modules['Climate'].Modules['ModuleMeteo'].input_vars['time_index'] = [0]*len(RHSs_ids)
-    set_index(director,index1)
-    director.Run(director.Dt, director.n, director.sch,active=active)
-    if i%PARAMS_TRAIN['SAVE_FREQ'] == 0: save_nets(director,PATH=PATH,i=i)
-    Keeper.add(director)
-    Keeper.save(PATH)
-    director.noise.reset()
+Keeper         = keeper()
+episodes       = PARAMS_TRAIN['EPISODES']
+specialization = PARAMS_TRAIN['SPECIALIZATION_PERIOD']
+active         = not(PARAMS_TRAIN['SERVER'])
+if episodes + specialization > 0:
+    for i in range(episodes + specialization):
+        index1 = np.random.choice(INDEXES,size=1)[0] 
+        print('Indice = ', index1)
+        director.Reset()
+        set_index(director,index1)
+        print('sigma = ', director.noise.sigma)
+        director.Run(director.Dt, director.n, director.sch,active=active)
+        if i%PARAMS_TRAIN['SAVE_FREQ'] == 0: save_nets(director,PATH=PATH,i=i)
+        Keeper.add(director)
+        Keeper.save(PATH)
+        director.agent.save_losses(PATH)
+        director.agent.save_real_changes(PATH)
+        director.noise.reset()
+        print('max sigma = ',director.noise.max_sigma)
+        print('sigma = ',director.noise.sigma)
+    Keeper.plot_cost(PATH=PATH)
+    Keeper.plot_rewards(PATH=PATH)
+    Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
+    Keeper.plot_rewards(PATH=PATH)
+
 date = create_date(index1)
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
 dates = compute_indexes(date,n,frec)
+vars_to_plot  = ['T1','T2','V1','C1','H','NF']
+vars_to_plot += ['U' + str(i) for i in range(1,13)]
+create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
 
-
-from save_parameters import save
-save(PATH)
-Keeper.plot_cost(PATH)
-Keeper.plot_rewards(PATH)
-Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
 
 ###TEST
+
 Keeper_for_test = keeper()
 set_simulation(director)
+FLAG = 'test'
 for _ in range(PARAMS_TRAIN['N_TEST']):
-    while True:
-        index1 = np.random.choice(INDEXES,size=1)[0]
-        if index1 < limit:
-            break
+    index1 = INDEXES_FOR_TEST[_]
     print('Indice = ', index1)
     director.Reset()
     director.t = 0
@@ -202,20 +222,22 @@ for _ in range(PARAMS_TRAIN['N_TEST']):
     set_index(director,index1)
     director.Run(director.Dt, director.n, director.sch,active=active)
     Keeper_for_test.add(director)
+    Keeper_for_test.save(PATH,flag = 'test')
     director.noise.reset()
-Keeper_for_test.plot_test(PATH)
-Keeper_for_test.plot_actions(ACTIVE_CONTROLS,'test',PATH)
-vars_to_plot  = ['T1','T2','V1','C1','H','NF']
-vars_to_plot += ['U' + str(i) for i in range(1,13)]
-create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
-#
-#
+Keeper_for_test.plot_cost(FLAG,PATH=PATH)
+Keeper_for_test.plot_rewards(FLAG,PATH=PATH)
+Keeper_for_test.plot_gains(FLAG,PATH=PATH)
+Keeper_for_test.plot_actions(ACTIVE_CONTROLS,FLAG,PATH=PATH)
+
+create_pdf_images('final_report', PATH, 'output')
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
 #create_images_per_module(director, 'Plant0' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
-create_pdf_images('final_report', PATH, 'output')
+
+
 print(PATH)
-from correo import send_correo
-if PARAMS_TRAIN['SEND_MAIL']: send_correo(PATH + '/reports/final_report.pdf')
+
+if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
+ 

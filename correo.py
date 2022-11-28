@@ -28,6 +28,7 @@ def send_correo(path):
     attachedfile = MIMEApplication(openedfile, _subtype = "pdf")
     attachedfile.add_header('content-disposition', 'attachment', filename = path)
     message.attach(attachedfile)
+    print('Conectando...')
     smtp = smtplib.SMTP("smtp.gmail.com", 587)
     i = 0
     while not test_conn_open(smtp):

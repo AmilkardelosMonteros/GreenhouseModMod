@@ -21,8 +21,9 @@ class keeper:
         self.Qh2o    = {}
         self.Qelec   = {} #Gasto por electricidad al final del episodio
         self.G       = {} #Ganacia al final del episodio
+        self.state   = {} #Estado promedio
         self.porc    = 0.01
-
+        self.VARS = ['T1','T2','C1','V1','I2','I5','I8','I11']
         self.i       = 0
 
     def add_actions(self,dir):
@@ -30,7 +31,12 @@ class keeper:
         dir_actions = {}
         for key in ['U' + str(i) for i in range(1,13)]:
             sample = dir.Modules['Climate'].Vars[key].GetRecord()
+            sample = sample[-dir.n:] #Para evitar sesgar hacia el cero
+            max_ = max(sample)
+            min_ = min(sample)
             sample = list(np.random.choice(sample, size = int(len(sample)*self.porc)))
+            sample.append(max_)
+            sample.append(min_)
             dir_actions[key] = sample
         self.actions[str(self.i)] = dir_actions
         return 1
@@ -53,19 +59,29 @@ class keeper:
         self.rewards[str(self.i)] = sum(dir.Vars['reward'].GetRecord())
 
     def add(self,dir):
-        self.add_actions(dir)
+        if self.i%1 == 0: ###Las acciones solo se guardan cada 50 eps
+            self.add_actions(dir)
         self.add_costs(dir)
         self.add_reward(dir)
+        self.add_state(dir)
         self.i += 1
+
+    def add_state(self,dir):
+        state_dic = {}
+        for v in self.VARS:
+            state_dic[v] = dir.Vars[v].GetRecord().mean()
+        self.state[str(self.i)] = state_dic
+        
+
 
 
     def plot_actions(self,actions,flag='train',PATH=None):
         for a in actions:
             _, axis= plt.subplots(sharex=True, figsize=(10,5))
             new_data = list()
-            inicio = self.i-15 if self.i > 15 else 0
-            for name in range(inicio,self.i):
-                new_data.append(self.actions[str(name)][a])
+            names = self.actions.keys()
+            for name in names:
+                new_data.append(self.actions[name][a])
             axis.violinplot(new_data, showmeans=True)
             axis.set_title('Distribucion de ' + a + ' en ' + flag)
             labels = [str(i) for i in self.actions.keys()]
@@ -96,15 +112,15 @@ class keeper:
             plt.show()
             plt.close('all')
 
-    def plot_cost(self,PATH = None):
-        self.plot_dir(self.Qco2,'Costo del Co2',PATH)
-        self.plot_dir(self.Qelec,'Costo de la electricidad',PATH)
-        self.plot_dir(self.Qgas,'Costo del Gas',PATH)
-        self.plot_dir(self.Qh2o,'Costo del agua',PATH)
+    def plot_cost(self,flag = 'train', PATH = None):
+        self.plot_dir(self.Qco2,'Costo del Co2 ' + flag ,PATH)
+        self.plot_dir(self.Qelec,'Costo de la electricidad ' + flag,PATH)
+        self.plot_dir(self.Qgas,'Costo del Gas ' + flag,PATH)
+        self.plot_dir(self.Qh2o,'Costo del agua ' + flag,PATH)
 
 
-    def plot_rewards(self,PATH = None):
-        self.plot_dir(self.rewards,'Reward acumulado train',PATH)
+    def plot_rewards(self,flag = 'train',PATH = None):
+        self.plot_dir(self.rewards,'Reward acumulado ' + flag,PATH)
 
 
     def plot_violin(self,dic,titulo,PATH):
@@ -125,10 +141,10 @@ class keeper:
             plt.close('all')
 
 
-    def plot_test(self, PATH = None):
-        self.plot_violin(self.rewards,'Reward Acumulado test',PATH)
-        self.plot_violin(self.NF,'Numero de frutos',PATH)
-        self.plot_violin(self.H,'Peso de los frutos',PATH)
+    def plot_gains(self, flag = 'train', PATH = None):
+        self.plot_violin(self.rewards,'Reward Acumulado ' + flag ,PATH)
+        self.plot_violin(self.NF,'Numero de frutos ' + flag,PATH)
+        self.plot_violin(self.H,'Peso de los frutos ' + flag ,PATH)
 
 
     def save_(self,path,dic,name):
@@ -151,16 +167,17 @@ class keeper:
         self.save_(path, self.test,'test')
 
 
-    def save(self,path):
+    def save(self, path, flag = 'train'):
         self.stress_test(path)
-        self.save_(path, self.rewards,'rewards')
-        self.save_(path, self.Qco2,'Qco2')
-        self.save_(path, self.Qelec,'Qele')
-        self.save_(path, self.Qgas,'Qgas')
-        self.save_(path, self.Qh2o,'Qh2o')
-        self.save_(path, self.actions,'actions')
-        self.save_(path, self.NF,'NF')
-        self.save_(path, self.H,'H')
-        self.save_(path, self.G,'G')
+        self.save_(path, self.rewards,'rewards_' + flag)
+        self.save_(path, self.Qco2,'Qco2_'+ flag)
+        self.save_(path, self.Qelec,'Qele_'+ flag)
+        self.save_(path, self.Qgas,'Qgas_'+ flag)
+        self.save_(path, self.Qh2o,'Qh2o_'+ flag)
+        self.save_(path, self.actions,'actions_'+ flag)
+        self.save_(path, self.NF,'NF_'+ flag)
+        self.save_(path, self.H,'H_'+ flag)
+        self.save_(path, self.G,'G_'+ flag)
+        self.save_(path, self.state,'states_'+ flag)
 
 

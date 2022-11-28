@@ -19,7 +19,8 @@ local_parameters = local_states + local_constants
 global_parameters = states + global_constants
 
 # number of register to save 
-nrec = 90*24*60
+from .params_dias_tem import DIAS
+nrec = DIAS*24*60
 
 #################################################################
 ############ RHS modelo de crecimiento ##########################

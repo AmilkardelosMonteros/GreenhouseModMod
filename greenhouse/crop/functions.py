@@ -8,6 +8,7 @@ Created on Wed Feb  9 12:55:08 2022
 
 from numpy import exp, floor, clip, arange, append, sqrt
 from sympy import symbols
+from Decorator import check
 
 ###########################
 ####### Símbolos  #########
@@ -28,6 +29,7 @@ n_f, n_p, MJ, W, mg, Pa  = symbols('n_f n_p MJ W mg Pa') # number of fruits, num
 
 ##### Fotosíntesis #######
 ## Funciones auxiliares ##
+@check
 def V_cmax (T_f, V_cmax25, Q10_Vcmax, k_T):
     pow1 = (T_f - 25*k_T)/(10*k_T) 
     pow2 =  0.128 * (T_f - 40*k_T) / (1*k_T) 
@@ -38,34 +40,41 @@ def V_cmax (T_f, V_cmax25, Q10_Vcmax, k_T):
 '''
 
 '''Este calculo de gamma_st esta basado en Xin & struick 2009'''
+@check
 def Gamma_st (T_f): # No estoy seguro de los valores que da esta funcion
     R = 8.314
     ESoc = -24460
     return 0.5/(2800*exp((T_f-25)*(ESoc)/(298*R*(T_f+273))))
     
-
+@check
 def tau (T_f, tau_25, Q10_tau, k_T):
     return tau_25 * Q10_tau**( (T_f - 25*k_T)/(10*k_T) )
 
+@check
 def K_C (T_f, K_C25, Q10_KC, k_T):
     return K_C25 * Q10_KC**( (T_f - 25*k_T)/(10*k_T) )
     
+@check    
 def K_O (T_f, K_O25, Q10_KO, k_T):
     return K_O25 * Q10_KO**( (T_f - 25*k_T)/(10*k_T) )
 
+@check
 def I_2 (I, f, ab):
     return  I * ab*(1 - f)  / 2
 
+@check
 def J (I_2, J_max, theta):
     return ( (I_2) + (J_max) - ( ( (I_2 + J_max) )**2 -4*theta*I_2*J_max )**(0.5) ) / (2*theta)
 
-## Factores limitantes en la producción de asimilados ##    
+## Factores limitantes en la producción de asimilados ## 
+@check   
 def A_R (O_a, tau, C_ippm, V_cmax, Gamma_st, K_C, K_O): 
     """
     Asimilación por Rubisco
     """
     return max([( 1 - ( O_a / (2.0*tau*C_ippm) ) ),0]) * V_cmax * max([C_ippm - Gamma_st,0]) / ( K_C *(1 + (O_a/K_O) ) + C_ippm )
 
+@check
 def A_f (C_ippm, Gamma_st, J): 
     """
     Asimilación por radiación PAR
@@ -74,12 +83,14 @@ def A_f (C_ippm, Gamma_st, J):
      # El CO2 está pasando de ppm a (mu_mol_CO2/mol_air)
     return  (max([C_ippm - Gamma_st,0])) * J / ( 4*C_ippm + 8*Gamma_st) 
 
+@check
 def A_acum(V_cmax):
     """
     Asimilación por acumulación de carbohídratos
     """
     return V_cmax/2
 
+@check
 def R_d (V_cmax):
     """
     Asimilados empleados en el mantenimiento de la planta
@@ -87,11 +98,11 @@ def R_d (V_cmax):
     return 0.015*V_cmax
 
 # factores limitantes de la tasa de asimilación
+@check
 def A (A_R, A_f, A_acum):
-
     return  min([A_R, A_f, A_acum]) 
   
-
+@check
 def Acrop(A,I1, CropDensity = 2):
     # A es la tasa de asimilación de CO2 en mumol (de CO2) m**-2(hoja) s**-1
     # esta tasa se calcula para cada planta. 
@@ -104,7 +115,7 @@ def Acrop(A,I1, CropDensity = 2):
     return (30/10**6)*(I1/CropDensity)*A
     
 #### Resistencia Estomática ####
-    
+@check 
 def r_s (r_m, f_R, f_C, f_V):
     """
     En esta función se cálcula la resistencia estomática
@@ -113,7 +124,7 @@ def r_s (r_m, f_R, f_C, f_V):
     la radiación, el CO2 y la presión de vapor respectivamente. 
     """
     return (r_m) * f_R * f_C * f_V  # f_R, f_C y f_V son adimensionales
-
+@check
 def f_R (I, C_ev1, C_ev2, LAI):
     """
     Factor de resistencia debida a la radiación global I
@@ -122,7 +133,7 @@ def f_R (I, C_ev1, C_ev2, LAI):
     """
    
     return (I/LAI + C_ev1) / (I/LAI + C_ev2)
-
+@check
 def f_C (C_ev3, C1):
     """
     Factor de resistencia debida al CO2 
@@ -132,22 +143,24 @@ def f_C (C_ev3, C1):
     """
     C1_ppm = C1 *(0.553)
     return 1 + C_ev3*( (C1_ppm - 200)**2 )
-
+@check
 def C_ev3 (C_ev3n, C_ev3d, Sr):
     return C_ev3n*(1 - Sr) + C_ev3d*Sr
-
+@check
 def Sr (I, S, Rs):
     return 1 / ( 1 + exp( S*(I - Rs) ) )
-
+@check
 def f_V (C_ev4, VPD):
     return 1 + C_ev4*( VPD**2 )
 
+@check
 def C_ev4 (C_ev4n, C_ev4d, Sr):
     return C_ev4n*(1 -Sr) + C_ev4d*Sr
 
+@check
 def VPD(V_sa, RH): # Vapour pressure deficit
     return V_sa*(1 - RH/100)
-
+@check
 def V_sa (T):
     """
     Esta función cálcula la presión de vapor de saturación,
@@ -161,13 +174,14 @@ def V_sa (T):
     else:
         pvsat = 6.1121 * exp( ( 23.678 - (T/333.7) ) * ( T /(279.82 + T) ) )    
     return pvsat*100
-
+@check
 def fRH (V1,Vsat):
     # Calculo del procentaje de humedad relativa en terminos de
     # la presion de vapor real y la presion de vapor de saturación
     return 100*( V1 / Vsat )
 
 #### Cálculo del CO2 intracelular ####
+@check
 def gsf ( Ragua ):
     # toma la conductancia del agua en unidade de  s * m**-1
     # la conductancia del CO2 es (1/1.6) veces la del agua
@@ -177,6 +191,7 @@ def gsf ( Ragua ):
     return (0.553/0.044)*(1.6 * Ragua)**-1
 
 ### Flujo de absorción del CO2 ###
+@check
 def gTC (k, Rb, Rs):
     """
     Esta función calcula la conductancia total de CO2
@@ -187,6 +202,7 @@ def gTC (k, Rb, Rs):
     gtc = ( (1+k)*(1.6/gs) + (1.37/gb) )**-1 + k*( ( (1+k)*(1.6/gs) + k*(1.37/gb) )**-1 )
     return gtc
 
+@check
 def Ca (gtc, C1, Ci):
     """
     Esta función calcula el CO2 absorbido ppm s**-1 
@@ -200,7 +216,7 @@ def Ca (gtc, C1, Ci):
 
 #### Modelo de crecimiento ####
 # Floration rate
-
+@check
 def TF( PA_mean, T_mean, time, Dt):
     # The input PA_Mean is in Watts/m^2 but 
     # the formula needs the PAR radiation in MJ/day 
@@ -214,20 +230,20 @@ def TF( PA_mean, T_mean, time, Dt):
     else:  
         output = (-0.75+ 0.09*T_mean)*(1-exp(-(1+PA_mean/kc)/2)) * Dt
         return max([output,0])
-
+@check
 def Y_pot(k2_TF, C_t, B, D, M, X, T_mean):
     """Growth potential of each fruit."""
     return (T_mean - 10*k2_TF) *\
         B * M * exp(B * ( X - C_t))/(1 + D * exp(B * (X - C_t)))**( 1 + 1/D)
-
+@check
 def Y_pot_veg(k2_TF, a, b, T_mean):
     """Growth potencial of the vegetative part"""
     return a*k2_TF + b*T_mean
-        
+@check       
 def t_wg( dw_ef, A, f_wg):
     """Growth rate."""
     return f_wg * A / dw_ef
-
+@check
 def f_wg( Y_pot, Y_sum):
     """Sink stregth, without kmj."""
     return Y_pot / Y_sum  ### No units

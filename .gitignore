@@ -14,6 +14,15 @@ __pycache__
 simulation_results
 greenhouse/__pycache__/
 control_function.py
-SALIDA
+SALIDA*
 parameters/credentials.py
 test_mail.py
+errors/
+extra_graphic.py
+errors/*
+*.pdf
+graficas_tesis
+*.out
+extra_grafic.py
+diccionario.txt
+simulations_results.py

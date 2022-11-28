@@ -28,7 +28,9 @@ mt = symbols('mt') #Minutos
 OTHER_CONSTANTS = {     
     ################## other constants ################## 
     'etagas':      Struct(typ='Cnts', varid='etagas', prn=r'$\eta_{gas}$',
-                    desc="Energy efficiency of natural gas", units=1, val=35.26, ok='checar unidades'),  
+                    desc="Energy efficiency of natural gas", units=1, val=3.526e7, ok='checar unidades'),  
+    'qh2o':      Struct(typ='Cnts', varid='qh2o', prn=r'$\q_{H_{2}O}$',
+                    desc="Costo del agua", units= mxn *m**-3, val=3.5, ok='5.9 en espanna'), 
     'qgas':    Struct(typ='Cnts', varid='qgas', prn=r'$q_{gas}$',
                     desc="Cost of natural gas", units=1, val=2.45, ok='checar unidades'),      
     'q_co2_ext': Struct(typ='Cnts', varid='q_co2_ext', prn=r'$\q_{CO_2}_{ext}$',
@@ -40,8 +42,17 @@ OTHER_CONSTANTS = {
     'sigma':     Struct(typ='Cnts', varid='sigma', prn=r'$\sigma$',
                     desc="Stefan-Boltzmann constant", units=W * m**-2 * K**-4, val=5.670e-8, ok=ok), # Constante de Stefan-Boltzmann (W m−2)
     'etadrain':  Struct(typ='Cnts', varid='etadrain', prn=r'$\eta_{drain}$',
-                    desc="Missing", units=1, val=30, ok='falta descripción y unidades')
-    
+                    desc="Missing", units=1, val=30, ok='falta descripción y unidades'),
+    'HEAT_PIPE' :Struct(typ='Cnts', varid='HEAT_PIPE', prn=r'$HEAT_PIPE$',
+                    desc="Temperatura del tubo de calentamiento", units=1, val=95, ok=ok),
+    'n_pipes':Struct(typ='Cnts', varid='n_pipes', prn=r'$N_{pipes}$',
+                    desc="Numero de tuberias de calentamiento", units=1, val=1, ok='Multiplica h_4 y r_6'),
+    'RH':Struct( typ='State', varid='RH', prn=r'$RH$',\
+           desc="Relative humidity percentage in the greenhouse air", \
+           units=1,rec=nrec, val=50),
+    'VPD':Struct( typ='State', varid='VPD', prn=r'$VPD$',\
+           desc="Presion de vapor de saturacion", \
+           units=1,rec=nrec, val=70) 
 
 }
 
@@ -57,7 +68,7 @@ ALPHA ={
     'alpha4': Struct(typ='Cnts', varid='alpha4', prn=r'$\alpha_4$',
                     desc="Convection heat exchange coefficient of canopy leaf to greenhouse air", units=W * m**-2 * K**-1, val=5, ok=ok), # Coeficiente de intercambio de calor por conveccio ́n de la hoja del dosel al aire del invernadero
     'alpha5': Struct(typ='Cnts', varid='alpha5', prn=r'$\alpha_5$',
-                    desc="Specific heat capacity of greenhouse air", units=J * K**-1 * kg**-1, val=1e3, ok=ok), # Capacidadcalor ́ıficaespecificadelaire del invernadero
+                    desc="Specific heat capacity of greenhouse air", units=J * K**-1 * kg**-1, val=1e3, ok=ok), # Capacidad calorıfica especifica delaire del invernadero
     'alpha6': Struct(typ='Cnts', varid='alpha6', prn=r'$\alpha_6$',
                     desc="Greenhouse floor surface area", units=m**2, val=1e4, ok=ok), # Área de la superficie del piso del invernadero
     'alpha7': Struct(typ='Cnts', varid='alpha7', prn=r'$\alpha_7$',

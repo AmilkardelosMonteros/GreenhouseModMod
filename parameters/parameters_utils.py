@@ -1,14 +1,21 @@
-from .parameters_env import PARAMS_ENV
+from .parameters_env import PARAMS_ENV,PARAMS_TRAIN
 from .parameters_ddpg import CONTROLS
 
+def num_actions_(controls):
+    s = 0
+    for _,v in controls.items():
+        if v == True:s+=1
+    return s
 
-PARAMS_UTILS = {'mu':0.0, 
+PARAMS_UTILS = {'mu':0., 
                 'theta': 0.00, 
-                'max_sigma':0.005, 
-                'min_sigma': 0.0, 
-                'decay_period':PARAMS_ENV['n'],
+                'max_sigma':0.9, 
+                'min_sigma':0.009,
+                'decay_period':PARAMS_ENV['n'], #Decaimiento a lo largo de los pasos
+                'episodes': PARAMS_TRAIN['EPISODES'],
+                'decay_eps':False, #Decaimiento lineal a lo largo de los episodios
                 'low':-1,
                 'high':1,
-                'dim':len(CONTROLS.values())
+                'dim':num_actions_(CONTROLS)
                 }
 
