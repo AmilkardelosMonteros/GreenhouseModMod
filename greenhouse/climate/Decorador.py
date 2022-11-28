@@ -3,7 +3,13 @@ import numpy as np
 def check(funtion):
     def check_nan(**kwargs):
         result = funtion(*list(kwargs.values()))
-        if np.isnan(result):
+        flag = False
+        if isinstance(result, list) | isinstance(result, np.ndarray):
+            flag = np.isnan(result).any() or np.isinf(result).any()
+        else:
+            flag = np.isnan(result) or np.isinf(result)
+        
+        if flag:
             print('La funcion {} tiene algo mal'.format(funtion))
             print('Parametros:')
             print(print(kwargs))
