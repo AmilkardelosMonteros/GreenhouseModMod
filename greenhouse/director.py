@@ -11,8 +11,9 @@ from ModMod import Director
 from .climate. functions import Aclima
 from sympy import symbols
 from numpy import arange
-#import chime
+import chime
 from .crop.functions import V_sa,VPD
+from .borrame import create_images_per_module
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
 
 s, mol_CO2, mol_air, mol_phot, m, d, C, g, mol_O2, pa, ppm = symbols('s mol_CO2 mol_air mol_phot m d C g mol_O2 pa ppm')
@@ -289,13 +290,16 @@ class Greenhouse(Director):
         VPD1  = VPD( V_sa=V_sa1, RH = self.V('RH'))
         self.V_Set('VPD',VPD1)
         state = self.get_state()
-        if np.isnan(state).any():
+        if np.isnan(state).any() or abs(self.V('T1')) > 200:
             self.sound += 1
             # self.check_controls()
             if self.sound == 1:
                 print('Algo se fue a Nan')
                 self.check_controls()
-                chime.error()  
+                chime.error() 
+                create_images_per_module(self, 'Climate', PATH='errores') 
+                breakpoint()
+                exit()
                 # raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
         controls,action = self.get_controls(state) #Forward
         #controls = self.expert_control()
@@ -372,7 +376,8 @@ class Greenhouse(Director):
                 data = pd.DataFrame.from_dict(data)
                 data.to_csv('errors/variables.csv')
 
-                
+                pathlib.Path('errors/').mkdir(parents=True, exist_ok=True)
+                pd.DataFrame(data).to_csv('errors/variables.csv')
         
     def Reset(self):
         super().Reset()
