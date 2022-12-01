@@ -11,7 +11,10 @@ from ModMod import Director
 from .climate. functions import Aclima
 from sympy import symbols
 from numpy import arange
-import chime
+try:
+    import chime
+except:
+    print('Si no estas en el servidor instala chime')
 from .crop.functions import V_sa,VPD
 from .borrame import create_images_per_module
 n_f, n_p, MJ, g = symbols('n_f n_p MJ g') # number of fruits, number of plants
