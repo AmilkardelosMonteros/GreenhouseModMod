@@ -40,6 +40,9 @@ class Greenhouse(Director):
 
     def get_controls_net(self, state):
         #No hace nada si noise.on = False
+        if np.isnan(state).any() or np.isinf(state).any():
+            print('La red esta recibiendo mal el estado:')
+            print(state)
         action   = self.agent.get_action(state)
         action   = self.noise.get_action(action)
         j        = 0
@@ -298,7 +301,6 @@ class Greenhouse(Director):
                 self.check_controls()
                 chime.error() 
                 create_images_per_module(self, 'Climate', PATH='errores') 
-                breakpoint()
                 exit()
                 # raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
         controls,action = self.get_controls(state) #Forward
