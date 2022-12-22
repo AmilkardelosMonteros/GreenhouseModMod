@@ -234,7 +234,7 @@ NU ={
     'nu2': Struct(typ='Cnts', varid='nu2', prn=r'$\nu_2$',
                     desc="Global wind pressure coefficient without shadow", units=1, val=0.1,ok=ok),
     'nu3': Struct(typ='Cnts', varid='nu3', prn=r'$\nu_3$',
-                    desc="Side surface of the greenhouse", units=m**2, val=900,ok  = 'En ejemplos del artículo usan valor cero'), 
+                    desc="Side surface of the greenhouse", units=m**2, val=3,ok  = 'En ejemplos del artículo usan valor cero,estaba en 900'), 
     'nu4': Struct(typ='Cnts', varid='nu4', prn=r'$\nu_4$',
                     desc="Leakage coefficien", units=1, val=1e-4,ok=ok), 
     'nu5': Struct(typ='Cnts', varid='nu5', prn=r'$\nu_5$',
