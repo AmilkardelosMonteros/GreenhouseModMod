@@ -39,7 +39,6 @@ class U7_rhs(StateRHS):
         U7     = self.V('U7') 
         if U7 > 1 or U7 < 0:
             print('No sabes resolver EDOs')
-            breakpoint()
         U7c     = self.V('U7_c')
         lambda_ = self.V('lambda')
         result  = [U7,U7c] 
