@@ -45,4 +45,6 @@ class U7_rhs(StateRHS):
         result  = [U7,U7c] 
         insert_data(result,self.i)
         self.i +=1
+        if self.i > 1000000:
+            self.i = 0 
         return lambda_*max([U7,0.05])*(U7c - U7)
