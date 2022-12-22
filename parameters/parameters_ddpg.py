@@ -9,7 +9,7 @@ CONTROLS = {'U1':  True, # Pantalla térmica
             'U4':  False, # Calentador de aire  
             'U5':  False, # Sombreado externo (No hace nada por los parametros)
             'U6':  True, # Respiraderos laterales
-            'U7':  True, # Ventilación forzada
+            'U7':  False, # Ventilación forzada
             'U8':  0.1, # Respiraderos del techo 
             'U9':  True, # Control sistema de niebla
             'U10': True, # Fuente externa de C02
