@@ -1,6 +1,6 @@
 from numpy import sqrt, exp, pi
 from .Decorador import check
-
+from numpy import clip
 @check
 def f1(U2, phi7, alpha6):
     return U2*phi7/alpha6
@@ -237,6 +237,7 @@ def f2(U1, eta6, eta7, eta8, f5, f6):
 
 @check
 def f3(U7, phi8, alpha6):
+    U7 = clip(U7,0,1)
     return U7*phi8/alpha6
 
 @check
