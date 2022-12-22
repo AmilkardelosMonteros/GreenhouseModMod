@@ -55,10 +55,10 @@ OTHER_CONSTANTS = {
            units=1,rec=nrec, val=70),
     'lambda':Struct(typ='Cnts', varid='lambda', prn=r'$\lambda$',\
            desc="Constante de la ecuacion para U7 ", \
-           units=1,rec=nrec, val=0.08),
+           units=1,rec=nrec, val=0.0001),
     'U7_c':Struct(typ='State', varid='U7_c', prn=r'$U_{7c}',\
            desc="Punto final para el control U7 ", \
-           units=1,rec=nrec, val=0),
+           units=1,rec=nrec, val=0.5),
 
 
 }
@@ -359,7 +359,7 @@ CONTROLS = {
     'U4': Struct(typ='State', varid='U4', prn=r'$U_4$', desc="Air heater control", units=1, val=0, rec=nrec ,ok=ok),
     'U5': Struct(typ='State', varid='U5', prn=r'$U_5$', desc="External shading control", units=1, val=0,rec=nrec ,ok=ok),
     'U6': Struct(typ='State', varid='U6', prn=r'$U_6$', desc="Side vents Control", units=1, val=0,rec=nrec, ok=ok),
-    'U7': Struct(typ='State', varid='U7', prn=r'$U_7$', desc="Forced ventilation control", units=1, val=0, rec=nrec,ok=ok),
+    'U7': Struct(typ='State', varid='U7', prn=r'$U_7$', desc="Forced ventilation control", units=1, val=1, rec=nrec,ok=ok),
     'U8': Struct(typ='State', varid='U8', prn=r'$U_8$', desc="Roof vents control", units=1, val=0,rec=nrec,ok=ok),
     'U9': Struct(typ='State', varid='U9', prn=r'$U_9$', desc="Fog system control", units=1, val=0,rec=nrec,ok=ok),
     'U10': Struct(typ='State', varid='U10', prn=r'$U_{10}$', desc="Control of external CO2 source", units=1, val=0, rec=nrec,ok=ok),
