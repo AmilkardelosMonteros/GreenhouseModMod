@@ -6,4 +6,4 @@ from greenhouse.climate.qgas_rhs import Qgas_rhs
 from greenhouse.climate.qh2o_rhs import Qh2o_rhs
 from greenhouse.climate.qco2_rhs import Qco2_rhs
 from greenhouse.climate.qelec_rhs import Qelec_rhs
-
+from greenhouse.climate.U7_rhs import U7_rhs

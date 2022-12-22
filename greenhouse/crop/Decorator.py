@@ -13,6 +13,7 @@ def check(funtion):
             print('La funcion {} tiene algo mal'.format(funtion))
             print('Parametros:')
             print(print(kwargs))
+            exit()
             return result
         else:
             return result
