@@ -58,10 +58,10 @@ OTHER_CONSTANTS = {
            units=1,rec=nrec, val=0.0001),
     'U7_c':Struct(typ='State', varid='U7_c', prn=r'$U_{7c}',\
            desc="Punto final para el control U7 ", \
-           units=1,rec=nrec, val=0.5),
+           units=1,rec=nrec, val=0.1),
     'U6_c':Struct(typ='State', varid='U6_c', prn=r'$U_{6c}',\
            desc="Punto final para el control U6 ", \
-           units=1,rec=nrec, val=0.5),
+           units=1,rec=nrec, val=0.1),
 
 
 }

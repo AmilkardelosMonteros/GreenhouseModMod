@@ -12,7 +12,7 @@ from .functions import h1
 
 
 state_names = ['T1', 'V1', 'T2', 'C1','RH','VPD']
-control_names = ['U1', 'U11','U12']
+control_names = ['U1', 'U11','U12','U7_c','U6_c']
 input_names = ['I1', 'I2', 'I3', 'I4','I9']
 #function_names = ['a1', 'r6', 'p1', 'q1', 'q2', 'q3', 'q4', 'q5', 'q7', 'q8', 'q9', 'q10', 'g1']
 function_names = ['r1','r5','r6','h1','l1','r7', 'I2T']
