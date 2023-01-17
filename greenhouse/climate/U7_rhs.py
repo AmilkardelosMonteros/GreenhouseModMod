@@ -14,11 +14,11 @@ mt = symbols('mt')
 
 def insert_data(result,i):
     if i == 0:
-        with open('Validacion/u7.csv', 'w') as f: 
+        with open('Validacion/u7_1.csv', 'w') as f: 
             writer = csv.writer(f)
             writer.writerow(['U7','U7c'])
     try:
-        with open(r'Validacion/u7.csv', 'a') as f:
+        with open(r'Validacion/u7_1.csv', 'a') as f:
             writer = csv.writer(f)
             writer.writerow(result)
     except:
@@ -42,9 +42,9 @@ class U7_rhs(StateRHS):
             print('No sabes resolver EDOs')
         U7c     = self.V('U7_c')
         lambda_ = self.V('lambda')
-        result  = [U7,U7c] 
-        insert_data(result,self.i)
-        self.i +=1
-        if self.i > 1000000:
-            self.i = 0 
+        #result  = [U7,U7c] 
+        #insert_data(result,self.i)
+        #self.i +=1
+        #if self.i > 1000000:
+        #    self.i = 0 
         return lambda_*max([U7,0.05])*(U7c - U7)
