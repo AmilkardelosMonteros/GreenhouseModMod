@@ -35,9 +35,9 @@ PARAMS_ENV = {'n': n}
 #Para benchmark y tournament es recomendable que sea 'RANDOM', pero no absolutamente necesario.
 
 #El min de STEP  no es 1/24, pero el min de FRECUENCY SÍ es 60
-PARAMS_TRAIN = {'EPISODES': 2, 
+PARAMS_TRAIN = {'EPISODES': 1, 
                 'SPECIALIZATION_PERIOD': 0, 
-                'N_TEST': 30, #debe ser mayor o igual a 52  
+                'N_TEST': 1, #debe ser mayor o igual a 52  
                 'TYPE':'net', #puede ser net, bwn, unif
                 'STEPS':PARAMS_ENV['n'], \
                 'SHOW': False, \
@@ -45,7 +45,7 @@ PARAMS_TRAIN = {'EPISODES': 2,
                 'INDICE': 0, # Se usa en la simulacion al terminar el entrenamiento
                 'SAVE_FREQ': 1,
                 'SEND_MAIL':True,
-                'PATH_NET':'', #Must be None or a path(str)
+                'PATH_NET':'simulation_results/NuevoU7', #Must be None or a path(str)
                 'NET':'899' 
                 } 
 
