@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sympy import Q
 import json
+from parameters.parameters_ddpg import CONTROLS
 def set_axis_style(ax, labels):
     ax.get_xaxis().set_tick_params(direction='out')
     ax.xaxis.set_ticks_position('bottom')
@@ -29,7 +30,7 @@ class keeper:
     def add_actions(self,dir):
         #try:
         dir_actions = {}
-        for key in ['U' + str(i) for i in range(1,13)]:
+        for key in CONTROLS.keys():
             sample = dir.Modules['Climate'].Vars[key].GetRecord()
             sample = sample[-dir.n:] #Para evitar sesgar hacia el cero
             max_ = max(sample)
