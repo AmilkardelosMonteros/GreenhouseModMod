@@ -4,7 +4,7 @@ CROP_VARIABLES  = ['h']
 VARS_OF_DIR     = STATE_VARIABLES + INPUTS + CROP_VARIABLES
 
 CONTROLS = {'U1':  True, # Pantalla térmica
-            'U2':  False, # Ventilador almoadilla
+            'U2':  True, # Ventilador almoadilla
             'U3':  False, # Enfriamiento mecanico
             'U4':  False, # Calentador de aire  
             'U5':  False, # Sombreado externo (No hace nada por los parametros)
