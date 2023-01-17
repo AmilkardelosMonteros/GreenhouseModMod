@@ -42,9 +42,9 @@ class U6_rhs(StateRHS):
             print('No sabes resolver EDOs')
         U6c     = self.V('U6_c')
         lambda_ = self.V('lambda')
-        result  = [U6,U6c] 
-        insert_data(result,self.i)
-        self.i +=1
-        if self.i > 1000000:
-            self.i = 0 
+        #result  = [U6,U6c] 
+        #insert_data(result,self.i)
+        #self.i +=1
+        #if self.i > 1000000:
+        #    self.i = 0 
         return lambda_*max([U6,0.05])*(U6c - U6)
