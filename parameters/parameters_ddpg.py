@@ -8,7 +8,7 @@ CONTROLS = {'U1':  True, # Pantalla térmica
             'U3':  False, # Enfriamiento mecanico
             'U4':  False, # Calentador de aire  
             'U5':  False, # Sombreado externo (No hace nada por los parametros)
-            'U6_c':  True, # Respiraderos laterales
+            'U6_c':  False, # Respiraderos laterales
             'U7_c':  True, # Ventilación forzada #Cambiamos U7 por U7_c para que U7 pudiera ser la solucion de un EDO
             'U8':  0.1, # Respiraderos del techo 
             'U9':  True, # Control sistema de niebla
@@ -17,7 +17,7 @@ CONTROLS = {'U1':  True, # Pantalla térmica
             'U12': True  # Lamparas 
             }
 
-PARAMS_DDPG = {'hidden_sizes': [64,64], 
+PARAMS_DDPG = {'hidden_sizes': [64,64,64], 
                 'actor_learning_rate': 1e-6, 
                 'critic_learning_rate': 1e-6, 
                 'gamma':0.8,
