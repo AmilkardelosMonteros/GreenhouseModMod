@@ -30,14 +30,23 @@ def get_indexes():
 
     #Test 
     TEST         = data.copy() 
-    TEST         = TEST[(TEST.Month == 8) & (TEST.Day.isin(range(15))) & (TEST.Year.isin([2000,2001,2002,2003,2004] ))]
+    TEST         = TEST[(TEST.Month == 8) & (TEST.Day.isin(range(15))) & (TEST.Year.isin([2000,2001,2002,2003,2004]))]
     TEST_indexes = list(TEST.index)
     TEST_indexes = list(filter(lambda x: x < limit, TEST_indexes))
     random.seed(1999)
     random.shuffle(TEST_indexes) #Inplace
+
+    #REAL 
+    REAL = data.copy()
+    REAL = REAL[REAL.Year == 2017] 
+    REAL = REAL[REAL.Month == 8]
+    REAL = REAL[REAL.Day == 14]
+    REAL = REAL[REAL.Hour == 10]
+    REAL_indexes = list(REAL.index)
+
     t = 1000 * time.time()#Current time in milliseconds
     random.seed(int(t) % 2**32)
-    return {'1':SEASON1_indexes,'2':SEASON2_indexes, '3':SEASON3_indexes, 'TEST':TEST_indexes,'limit':limit}
+    return {'1':SEASON1_indexes,'2':SEASON2_indexes, '3':SEASON3_indexes, 'TEST':TEST_indexes,'limit':limit,'REAL':REAL_indexes}
 
 def get_index(year,month,day,hour = 12):
     data_copy = data.copy()
