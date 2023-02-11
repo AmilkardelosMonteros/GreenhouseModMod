@@ -254,7 +254,8 @@ class Greenhouse(Director):
         #    G      = self.G(h_[-1]) # self.G(deltaH) #Ganancia
         #    if h_[-1] > 0:
         #        breakpoint()
-        reward_ =  G - (deltaQco2 + deltaQgas + deltaQh2o + deltaQelec)
+        ####Estan desactivados los costos!!!!!!
+        reward_ =  G  #- (deltaQco2 + deltaQgas + deltaQh2o + deltaQelec)
         self.V_Set('reward',reward_) 
         #if abs(var - self.D.master_dir.Vars['reward'].GetRecord().sum()) > 1e-1:
         #    print(abs(var - self.D.master_dir.Vars['reward'].GetRecord().sum()))
