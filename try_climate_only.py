@@ -242,9 +242,11 @@ Keeper_for_test = keeper()
 set_simulation(director)
 FLAG = 'test'
 import random
-random.seed(1999)
+#random.seed(1999)
+random.seed(3000)
 for _ in range(PARAMS_TRAIN['N_TEST']):
-    index1 = np.random.choice(INDEXES,size=1)[0]
+    index1 = INDEXES_FOR_TEST[_]
+    #index1 = np.random.choice(INDEXES,size=1)[0] 255033
     print('Indice = ', index1)
     director.Reset()
     director.t = 0
@@ -260,14 +262,14 @@ Keeper_for_test.plot_rewards(FLAG,PATH=PATH)
 Keeper_for_test.plot_gains(FLAG,PATH=PATH)
 Keeper_for_test.plot_actions(ACTIVE_CONTROLS,FLAG,PATH=PATH)
 
-
 info = director.OutVar('H')
 date = create_date(index1)
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
 dates = compute_indexes(date,n,frec)
 data = pd.DataFrame(np.array([dates,info]).T,columns = ['date','H'])
 data.to_csv(PATH+'/output/' + 'VariablesProduccion.csv')
-#create_pdf_images('final_report', PATH, 'output')
+
+create_pdf_images('final_report', PATH, 'output')
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)

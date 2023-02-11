@@ -33,5 +33,7 @@ Módulos_Juntos/
 output.txt
 errores/
 Validacion/
+Salida*
 weather_data/Read_Pdn.xls
 plot_real_production.py
+.vscode/

@@ -36,6 +36,7 @@ def get_indexes():
     random.seed(1999)
     random.shuffle(TEST_indexes) #Inplace
 
+
     #REAL 
     REAL = data.copy()
     REAL = REAL[REAL.Year == 2017] 
@@ -46,7 +47,32 @@ def get_indexes():
 
     t = 1000 * time.time()#Current time in milliseconds
     random.seed(int(t) % 2**32)
-    return {'1':SEASON1_indexes,'2':SEASON2_indexes, '3':SEASON3_indexes, 'TEST':TEST_indexes,'limit':limit,'REAL':REAL_indexes}
+    
+
+    #Test2
+    TEST2         = data.copy() 
+    TEST2         = TEST2[(TEST2.Month == 8) & (TEST2.Day.isin(range(15))) & (TEST2.Year.isin([1995,1996,1997,1998,1999] ))]
+    TEST_indexes2 = list(TEST2.index)
+    TEST_indexes2 = list(filter(lambda x: x < limit, TEST_indexes2))
+    random.shuffle(TEST_indexes2) #Inplace
+
+    #Test3
+    TEST3         = data.copy() 
+    TEST3         = TEST3[(TEST3.Month == 8) & (TEST3.Day.isin(range(15))) & (TEST3.Year.isin([1990,1991,1992,1993,1994] ))]
+    TEST_indexes3 = list(TEST.index)
+    TEST_indexes3 = list(filter(lambda x: x < limit, TEST_indexes3))
+    random.shuffle(TEST_indexes3) #Inplace
+
+    #Test 
+    TEST4         = data.copy() 
+    TEST4         = TEST4[(TEST4.Month == 8) & (TEST4.Day.isin(range(15))) & (TEST4.Year.isin([1984,1985,1986,1987,1989] ))]
+    TEST_indexes4 = list(TEST4.index)
+    TEST_indexes4 = list(filter(lambda x: x < limit, TEST_indexes4))
+    random.shuffle(TEST_indexes4) #Inplace
+
+    t = 1000 * time.time()#Current time in milliseconds
+    random.seed(int(t) % 2**32)
+    return {'1':SEASON1_indexes,'2':SEASON2_indexes, '3':SEASON3_indexes, 'TEST':TEST_indexes, 'TEST2':TEST_indexes2, 'TEST3':TEST_indexes3, 'TEST4':TEST_indexes4,'limit':limit}
 
 def get_index(year,month,day,hour = 12):
     data_copy = data.copy()
