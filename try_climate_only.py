@@ -228,12 +228,13 @@ if episodes + specialization > 0:
     Keeper.plot_actions(ACTIVE_CONTROLS,PATH=PATH)
     Keeper.plot_rewards(PATH=PATH)
 
-date = create_date(index1)
-frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
-dates = compute_indexes(date,n,frec)
-vars_to_plot  = ['T1','T2','V1','C1','H','NF']
-vars_to_plot += ['U' + str(i) for i in range(1,13)]
-create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
+if episodes + specialization > 0:
+    date = create_date(index1)
+    frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
+    dates = compute_indexes(date,n,frec)
+    vars_to_plot  = ['T1','T2','V1','C1','H','NF']
+    vars_to_plot += ['U' + str(i) for i in range(1,13)]
+    create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
 
 
 ###TEST
@@ -241,8 +242,12 @@ create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
 Keeper_for_test = keeper()
 set_simulation(director)
 FLAG = 'test'
+import random
+#random.seed(1999)
+random.seed(3000)
 for _ in range(PARAMS_TRAIN['N_TEST']):
-    index1 = INDEXES_FOR_TEST[_]
+    #index1 = INDEXES_FOR_TEST[_]
+    index1 = 255033 #np.random.choice(INDEXES,size=1)[0] 
     print('Indice = ', index1)
     director.Reset()
     director.t = 0
@@ -257,6 +262,13 @@ Keeper_for_test.plot_cost(FLAG,PATH=PATH)
 Keeper_for_test.plot_rewards(FLAG,PATH=PATH)
 Keeper_for_test.plot_gains(FLAG,PATH=PATH)
 Keeper_for_test.plot_actions(ACTIVE_CONTROLS,FLAG,PATH=PATH)
+
+info = director.OutVar('H')
+date = create_date(index1)
+frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
+dates = compute_indexes(date,n,frec)
+data = pd.DataFrame(np.array([dates,info]).T,columns = ['date','H'])
+data.to_csv(PATH+'/output/' + 'VariablesProduccion.csv')
 
 create_pdf_images('final_report', PATH, 'output')
 
