@@ -214,7 +214,7 @@ LAMB = {
     'lamb8': Struct(typ='Cnts', varid='lamb8', prn=r'$\lambda_8$',
                     desc="Variable of heat exchange by convection between the roof and the outside air", units=1, val=1, ok='ok,usé el valor de Texas'),
     'lamb9':Struct(typ='Cnts',varid='lamb9',prn=r'$\lambda_9$', 
-                    desc='eficiencia del intercambio de calor entre las capas de aire', units=1, val=1, ok=ok)
+                    desc='eficiencia del intercambio de calor entre las capas de aire', units=1, val=0.05, ok=ok)
 }
 
 

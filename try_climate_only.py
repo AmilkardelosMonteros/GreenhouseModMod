@@ -74,14 +74,14 @@ if CONTROLS['U6_c'] and not CONTROLS['U7_c']:
     print('primer condicion')
     RHS_list += [U6_rhs_ins]
     dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,T3=T3_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins,U6 = U6_rhs_ins))
+    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins, T3=T3_rhs_ins, Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins,U6 = U6_rhs_ins))
     #El key de arriba tiene que coincidir con el nombre de la variable
 
 if not CONTROLS['U6_c'] and CONTROLS['U7_c']:
     print('segundo condicion')
     RHS_list += [U7_rhs_ins]
     dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,T3=T3_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins, U7 = U7_rhs_ins))
+    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins, T3=T3_rhs_ins, Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins, U7 = U7_rhs_ins))
     #El key de arriba tiene que coincidir con el nombre de la variable
 
 if CONTROLS['U6_c'] and CONTROLS['U7_c']:
@@ -247,8 +247,8 @@ import random
 #random.seed(1999)
 random.seed(3000)
 for _ in range(PARAMS_TRAIN['N_TEST']):
-    index1 = 0 #INDEXES_FOR_TEST[_]
-    #index1 = np.random.choice(INDEXES,size=1)[0] 255033
+    index1 = INDEXES_FOR_TEST[_]
+    index1 = 0 #220391
     print('Indice = ', index1)
     director.Reset()
     director.t = 0
@@ -264,20 +264,29 @@ Keeper_for_test.plot_rewards(FLAG,PATH=PATH)
 Keeper_for_test.plot_gains(FLAG,PATH=PATH)
 Keeper_for_test.plot_actions(ACTIVE_CONTROLS,FLAG,PATH=PATH)
 
-info = director.OutVar('H')
-
+variables = ['T1','T2','V1','C1','VPD','RH','I5','I8','I2','I11','U1','U2','U3','U4','U5','U6_c','U7_c','U8','U9','U10','U11','U12','H','NF','reward']
+info = [director.OutVar(var) for var in variables]
 date = create_date(index1)
 
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
 dates = compute_indexes(date,n,frec)
-data = pd.DataFrame(np.array([dates,info]).T,columns = ['date','H'])
+data = pd.DataFrame(columns = variables)
+#data['date'] = dates
+#data.to_csv(PATH+'/output/' + 'VariablesProduccion.csv')
+data = pd.DataFrame(np.array(info).T,columns = variables)
 data.to_csv(PATH+'/output/' + 'VariablesProduccion.csv')
 create_images_per_module(director, 'Climate' ,PATH=PATH)
 create_pdf_images('final_report', PATH, 'output')
 
+date = create_date(index1)
+frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
+dates = compute_indexes(date,n,frec)
+vars_to_plot  = ['T1','T2','T3','V1','C1','H','NF']
+vars_to_plot += ['U6','U9','U10','U11','U12']
+create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
-#create_images_per_module(director, 'Plant0' ,PATH=PATH)
+#create_images_per_module(director, 'Climate' ,PATH=PATH)
 #create_images_per_module(director, 'Plant1' ,PATH=PATH)
 
 

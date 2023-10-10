@@ -18,7 +18,7 @@ input_names = ['I1', 'I2', 'I3', 'I4', 'I5', 'I6', 'I7', 'I8']
 function_names = ['h1','h2','h3','h4','h5','h6','r8','h7','h10','h12','l2','r10','h11', 'I2T']
 constant_names = ['tau3', 'phi7', 'alpha6', 'eta6', 'eta7', 'eta8', 'phi8', 'nu4', 'nu5', 
                     'omega1', 'nu6', 'beta3', 'gamma1', 'phi1', 'tau1','tau2', 'lamb5', 'lamb7', 
-                    'lamb8', ,'lamb9','alpha5', 'nu1', 'eta10', 'nu3', 'nu2', 'eta11', 'alpha8', 
+                    'lamb8','lamb9','alpha5', 'nu1', 'eta10', 'nu3', 'nu2', 'eta11', 'alpha8', 
                     'alpha9', 'eta2', 'eta3', 'sigma', 'epsil3', 'epsil4', 'epsil5', 'epsil6', 
                     'phi2', 'alpha4', 'gamma2', 'eta5', 'phi5', 'phi6', 'lamb1', 'lamb2', 
                     'lamb3', 'lamb4', 'alpha2', 'alpha7', 'eta1', 'phi9', 'nu7', 'nu8', 'lamb6', 
@@ -86,7 +86,7 @@ class T3_rhs(StateRHS):
         h_6 = h6(U4=self.V('U4'), lamb4=self.V('lamb4'), alpha6=self.V('alpha6')) #H blow air 
         r_8 = r8(I2=self.V('I2T'), alpha2=self.V('alpha2'), alpha7=self.V('alpha7'), eta1=self.V('eta1'), eta2=self.V('eta2'), eta3=self.V('eta3'), tau1=self.V('tau1'), r9=r_9)
         h_7 = h7(T2=self.Vk('T3'), I5=self.V('I5'), alpha5=self.V('alpha5'), rho3=self.V('rho3'), f2=f_2, f3=f_3, h8=h_8, h9=h_9)
-        h_10 = h10(T2=self.Vk('T2'), alpha5=self.V('alpha5'), rho3=self.V('rho3'), f1=f_1)
+        h_10 = h10(T2=self.Vk('T3'), alpha5=self.V('alpha5'), rho3=self.V('rho3'), f1=f_1)
         l_2 = l2(U9=self.V('U9'), alpha6=self.V('alpha6'),gamma2=self.V('gamma2'), phi9=self.V('phi9'))
         r_10 = r10(r11=r_11, r12=r_12, r13=r_13)
         h_11 = h11(T2=self.Vk('T2'), I7=self.V('I7'), nu7=self.V('nu7'), nu8=self.V('nu8'), phi2=self.V('phi2'))

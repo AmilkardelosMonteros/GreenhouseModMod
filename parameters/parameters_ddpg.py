@@ -6,7 +6,7 @@ VARS_OF_DIR     = STATE_VARIABLES + INPUTS + CROP_VARIABLES
 CONTROLS = {'U1':  False, # Pantalla térmica
             'U2':  False, # Ventilador almoadilla
             'U3':  False, # Enfriamiento mecanico
-            'U4':  False, # Calentador de aire  
+            'U4':  True, # Calentador de aire  
             'U5':  False, # Sombreado externo (No hace nada por los parametros)
             'U6_c':  True, # Respiraderos laterales
             'U7_c':  False, # Ventilación forzada #Cambiamos U7 por U7_c para que U7 pudiera ser la solucion de un EDO
