@@ -10,10 +10,10 @@ def create_images_per_module(model, module, list_var=None,PATH=None):
     if list_var == None: list_var = list(model.Modules[module].Vars.keys())
     if isinstance(PATH, str):
         pathlib.Path(PATH + '/images/'+module).mkdir(parents=True, exist_ok=True)
-    fig = plt.figure()
     for j,name in enumerate(list_var):
         if model.Modules[module].Vars[name].typ == 'State':
             try:
+                fig = plt.figure()
                 x = model.Modules[module].Vars[name].GetRecord()
                 t = range(len(x))
                 print('Graficando',name)

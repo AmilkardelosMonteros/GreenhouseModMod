@@ -7,6 +7,7 @@ from .t1_rhs import T1_rhs
 from .t2_rhs import T2_rhs
 from .v1_rhs import V1_rhs
 from .c1_rhs import C1_rhs
+from .t3_rhs import T3_rhs
 from .module_climate import Module1
 ### Notice 95 T1
 
@@ -34,6 +35,7 @@ class Climate_model(Director):
     def reset(self):
         self.V_Set('T1', 20) #!!!!!! Tiene que venir de los datos
         self.V_Set('T2', 20) 
+        self.V_Set('T3',20)
         self.V_Set('V1', 1200) 
         self.V_Set('C1', 600) 
 

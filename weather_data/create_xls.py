@@ -10,11 +10,12 @@ time_var = ['Time_Stamp']
 
 
 def presion_de_vapor_exterior(i5,rh):
+    '''La constante es 611 para que sea en pascales, en la pagina esta en hPa'''
     def q2(T1):
         if (T1 > 0):
-            return 6.1121*exp((18.678 - (T1/234.5)) * (T1/(257.14+T1)))
+            return 611.21*exp((18.678 - (T1/234.5)) * (T1/(257.14+T1)))
         else:
-            return 6.1121*exp((23.036 - (T1/333.7)) * (T1/(279.82+T1)))
+            return 611.21*exp((23.036 - (T1/333.7)) * (T1/(279.82+T1)))
 
     return q2(i5)*(rh/100.0) 
 

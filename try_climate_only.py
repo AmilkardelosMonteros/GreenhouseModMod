@@ -55,6 +55,7 @@ C1_rhs_ins = C1_rhs(MODELO_FOTOSINTESIS,constant_climate)
 V1_rhs_ins = V1_rhs(constant_climate)
 T1_rhs_ins = T1_rhs(constant_climate)
 T2_rhs_ins = T2_rhs(constant_climate)
+T3_rhs_ins = T3_rhs(constant_climate)
 
 #Cost
 Qh2o_rhs_ins  = Qh2o_rhs(constant_climate)
@@ -66,41 +67,42 @@ Qelec_rhs_ins = Qelec_rhs(constant_climate)
 U7_rhs_ins = U7_rhs(constant_climate)
 U6_rhs_ins = U6_rhs(constant_climate)
 
-RHS_list  = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins]
+RHS_list  = [C1_rhs_ins, V1_rhs_ins, T1_rhs_ins, T2_rhs_ins,T3_rhs_ins]
 RHS_list += [Qgas_rhs_ins, Qh2o_rhs_ins, Qco2_rhs_ins, Qelec_rhs_ins]
 
 if CONTROLS['U6_c'] and not CONTROLS['U7_c']:
     print('primer condicion')
     RHS_list += [U6_rhs_ins]
     dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins,U6 = U6_rhs_ins))
+    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,T3=T3_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins,U6 = U6_rhs_ins))
     #El key de arriba tiene que coincidir con el nombre de la variable
 
 if not CONTROLS['U6_c'] and CONTROLS['U7_c']:
     print('segundo condicion')
     RHS_list += [U7_rhs_ins]
     dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins, U7 = U7_rhs_ins))
+    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,T3=T3_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins, U7 = U7_rhs_ins))
     #El key de arriba tiene que coincidir con el nombre de la variable
 
 if CONTROLS['U6_c'] and CONTROLS['U7_c']:
     print('tercer condicion')
     RHS_list += [U7_rhs_ins,U6_rhs_ins]
     dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins, U7 = U7_rhs_ins,U6 = U6_rhs_ins))
+    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,T3=T3_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins, U7 = U7_rhs_ins,U6 = U6_rhs_ins))
     #El key de arriba tiene que coincidir con el nombre de la variable
 
 if not CONTROLS['U6_c'] and not CONTROLS['U7_c']:
     print('Ultimo condicional')
     dir_climate.MergeVarsFromRHSs(RHS_list, call=__name__)
-    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins))
+    dir_climate.AddModule('ModuleClimate', Module1(Dt=60, C1=C1_rhs_ins, V1=V1_rhs_ins, T1=T1_rhs_ins, T2=T2_rhs_ins,T3=T3_rhs_ins,Qgas=Qgas_rhs_ins, Qh2o=Qh2o_rhs_ins, Qco2=Qco2_rhs_ins,Qelec = Qelec_rhs_ins))
     #el key de arriba tiene que coincidir con el nombre de la variable
 
 mensaje = "Leyendo datos"
-loader = Loader(mensaje).start()
-meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0)
+#loader = Loader(mensaje).start()
+#meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) #Este es el codigo correcto!!!
+meteo = ReadModule('weather_data/excel_holanda.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) 
 dir_climate.AddModule('ModuleMeteo', meteo)
-loader.stop()
+#loader.stop()
 #dir_climate.AddModule('Control', Random(constant_control))
 
 
@@ -245,7 +247,7 @@ import random
 #random.seed(1999)
 random.seed(3000)
 for _ in range(PARAMS_TRAIN['N_TEST']):
-    index1 = INDEXES_FOR_TEST[_]
+    index1 = 0 #INDEXES_FOR_TEST[_]
     #index1 = np.random.choice(INDEXES,size=1)[0] 255033
     print('Indice = ', index1)
     director.Reset()
@@ -263,12 +265,14 @@ Keeper_for_test.plot_gains(FLAG,PATH=PATH)
 Keeper_for_test.plot_actions(ACTIVE_CONTROLS,FLAG,PATH=PATH)
 
 info = director.OutVar('H')
+
 date = create_date(index1)
+
 frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si debe estar en minutos
 dates = compute_indexes(date,n,frec)
 data = pd.DataFrame(np.array([dates,info]).T,columns = ['date','H'])
 data.to_csv(PATH+'/output/' + 'VariablesProduccion.csv')
-
+create_images_per_module(director, 'Climate' ,PATH=PATH)
 create_pdf_images('final_report', PATH, 'output')
 
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)

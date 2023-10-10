@@ -37,3 +37,7 @@ Salida*
 weather_data/Read_Pdn.xls
 plot_real_production.py
 .vscode/
+mas_graficas.py
+create_vars_to_text.py
+graficas_de_comparacion,.py
+constantes.txt

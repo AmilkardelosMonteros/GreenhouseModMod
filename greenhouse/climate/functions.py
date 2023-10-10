@@ -374,6 +374,10 @@ def h11(T2, I7, nu7, nu8, phi2):
 def h12(U12, eta15, eta16, alpha12):
     return (eta15+eta16)*alpha12*U12
 
+@check
+def h13(T2,T3,lamb9,rho3,alpha5,g4):
+    return lamb9*rho3*alpha5*g4*(T3-T2)
+
 # funcion para sumar la radiación PAR solar a la radiación PAR de las lamparas
 #  
 @check

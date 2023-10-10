@@ -308,6 +308,7 @@ class Greenhouse(Director):
                 exit()
                 # raise SystemExit('Revisa tus flujos algo fue Nan, Adios')
         controls,action = self.get_controls(state) #Forward
+        
         #controls = self.expert_control()
         #controls es un diccionario que se necesita internamente (director), accion es lo que necesita la red 
         self.update_controls(controls)
