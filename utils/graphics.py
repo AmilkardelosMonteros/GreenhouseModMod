@@ -28,10 +28,12 @@ def create_images_per_module(model, module, list_var=None,PATH=None):
                 fig.tight_layout(rect = [0,0.03,1,0.95])
                 if SHOW:
                     plt.show()
-                    plt.close(fig)
+                    plt.close()
                 else:
                     plt.savefig(PATH + '/images/'+module+'/'+name+'_'+str(j)+'_.png')
-                    plt.close(fig)
+                    plt.close()
+                    plt.cla()
+                    plt.clf()
             except:
                 print('La variable ', name,'tiene algo raro')
 

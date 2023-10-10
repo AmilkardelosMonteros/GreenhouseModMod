@@ -212,7 +212,9 @@ LAMB = {
     'lamb7': Struct(typ='Cnts', varid='lamb7', prn=r'$\lambda_7$',
                     desc="Variable of heat exchange by convection between the roof and the outside air", units=J * m**-3 * K**-1, val=1.2, ok='ok, usé el valor de Texas'), # Variable de intercambio de calor por convecci ́on entre la cubierta y el aire exterior # ok ---> usé el valor de Texas
     'lamb8': Struct(typ='Cnts', varid='lamb8', prn=r'$\lambda_8$',
-                    desc="Variable of heat exchange by convection between the roof and the outside air", units=1, val=1, ok='ok,usé el valor de Texas')
+                    desc="Variable of heat exchange by convection between the roof and the outside air", units=1, val=1, ok='ok,usé el valor de Texas'),
+    'lamb9':Struct(typ='Cnts',varid='lamb9',prn=r'$\lambda_9$', 
+                    desc='eficiencia del intercambio de calor entre las capas de aire', units=1, val=0.05, ok=ok)
 }
 
 
@@ -336,7 +338,8 @@ STATE_VARS = {
     'T1' : Struct(typ='State', varid='T1', prn=r'$T_1$',
                     desc="Canopy temperature", units=C, val=20, rec=nrec, ok='falta valor inicial'),
     'T2' : Struct(typ='State', varid='T2', prn=r'$T_2$',
-                    desc="Greenhouse air temperature", units=C, val=20, rec=nrec, ok='falta valor inicial')
+                    desc="Greenhouse air temperature", units=C, val=20, rec=nrec, ok='falta valor inicial'),
+    'T3' : Struct(typ ='State',varid='T3',prn=r'$T_3$',units=C,val = 20,rec=nrec, ok = ok)
 }
 
 
