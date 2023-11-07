@@ -116,7 +116,7 @@ class DDPGagent:
         
         # update networks
         #Actor 
-        x = torch.ones(1,9)
+        x = torch.ones(1,self.num_states)
         y = self.actor.forward(x)
         self.actor_optimizer.zero_grad()
         policy_loss.backward()
