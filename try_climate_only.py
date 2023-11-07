@@ -99,8 +99,8 @@ if not CONTROLS['U6_c'] and not CONTROLS['U7_c']:
 
 mensaje = "Leyendo datos"
 #loader = Loader(mensaje).start()
-#meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) #Este es el codigo correcto!!!
-meteo = ReadModule('weather_data/excel_holanda.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) 
+meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) #Este es el codigo correcto!!!
+#meteo = ReadModule('weather_data/excel_holanda.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) 
 dir_climate.AddModule('ModuleMeteo', meteo)
 #loader.stop()
 #dir_climate.AddModule('Control', Random(constant_control))
