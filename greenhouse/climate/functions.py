@@ -354,6 +354,14 @@ def h7(T2, I5, alpha5, rho3, f2, f3, h8, h9):
     return rho3*alpha5*(f2 + f3)*(T2 - I5) + h8 + h9
 
 @check
+def h7b(T2, I5, alpha5, rho3, f2, f3):
+    return rho3*alpha5*(f2 + f3)*(T2 - I5)
+
+@check
+def h7t(h8, h9):
+    return h8 + h9
+
+@check
 def h10(T2, alpha5, rho3, f1):
     return f1*rho3*alpha5*T2
 
