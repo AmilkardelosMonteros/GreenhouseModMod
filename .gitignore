@@ -1,3 +1,4 @@
+graficas_borrar.py
 simulation_results
 greenhouse/climate/__pycache__/
 __pycache__/
@@ -41,3 +42,4 @@ mas_graficas.py
 create_vars_to_text.py
 graficas_de_comparacion,.py
 constantes.txt
+temp/
