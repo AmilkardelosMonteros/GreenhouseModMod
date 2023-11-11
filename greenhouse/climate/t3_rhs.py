@@ -8,7 +8,7 @@ from .functions import kappa2
 from .functions import n1, n2, n3
 from .functions import r8, r9, r10, r11, r12, r13
 from .functions import f1, f2, f3, f4, f5, f6, f7
-from .functions import h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12,h13
+from .functions import h1, h2, h3, h4, h5, h6, h7t, h8, h9, h10, h11, h12,h13
 from .functions import I2T
 
 state_names = ['T1', 'V1', 'T2','T3']
@@ -64,12 +64,12 @@ class T3_rhs(StateRHS):
         f_6 = f6(I8=self.V('I8'), nu4=self.V('nu4'))
         f_2 = f2(U1=self.V('U1'), eta6=self.V('eta6'), eta7=self.V('eta7'), eta8=self.V('eta8'), f5=f_5, f6=f_6)
         f_3 = f3(U7=self.V('U7'), phi8=self.V('phi8'), alpha6=self.V('alpha6'))
-        f_7 = f7(T2=self.Vk('T2'), U8=self.V('U8'), I5=self.V('I5'), I8=self.V('I8'), nu5=self.V('nu5'), alpha6=self.V('alpha6'), omega1=self.V('omega1'), nu6=self.V('nu6'), n1=n_1, n3=n_3)
+        f_7 = f7(T2=self.Vk('T3'), U8=self.V('U8'), I5=self.V('I5'), I8=self.V('I8'), nu5=self.V('nu5'), alpha6=self.V('alpha6'), omega1=self.V('omega1'), nu6=self.V('nu6'), n1=n_1, n3=n_3)
         f_4 = f4(U1=self.V('U1'), eta6=self.V('eta6'), eta7=self.V('eta7'), eta8=self.V('eta8'), f6=f_6, f7=f_7)
         g_3 = g3(I1=self.V('I1'), beta3=self.V('beta3'), gamma1=self.V('gamma1'), phi1=self.V('phi1'), tau1=self.V('tau1'), b1=b_1)
         g_4 = g4(U1=self.V('U1'), tau2=self.V('tau2'))
-        h_8 = h8(T2=self.Vk('T2'), I5=self.V('I5'), I8=self.V('I8'), alpha6=self.V('alpha6'), lamb5=self.V('lamb5'), lamb6=self.V('lamb6'), lamb7=self.V('lamb7'), lamb8=self.V('lamb8'))
-        h_9 = h9(T2=self.Vk('T2'), I5=self.V('I5'), alpha5=self.V('alpha5'), rho3=self.V('rho3'), f4=f_4)
+        h_8 = h8(T2=self.Vk('T3'), I5=self.V('I5'), I8=self.V('I8'), alpha6=self.V('alpha6'), lamb5=self.V('lamb5'), lamb6=self.V('lamb6'), lamb7=self.V('lamb7'), lamb8=self.V('lamb8'))
+        h_9 = h9(T2=self.Vk('T3'), I5=self.V('I5'), alpha5=self.V('alpha5'), rho3=self.V('rho3'), f4=f_4)
         q_6 = q6(I6=self.V('I6'))
         r_9 = r9(I2=self.V('I2T'), alpha8=self.V('alpha8'), alpha9=self.V('alpha9'), eta2=self.V('eta2'), eta3=self.V('eta3'))
         r_11 = r11(T2=self.Vk('T2'), I4=self.V('I4'), lamb=self.V('sigma'), epsil3=self.V('epsil3'), epsil4=self.V('epsil4'), g3=g_3)
@@ -85,7 +85,7 @@ class T3_rhs(StateRHS):
         h_5 = h5(T2=self.Vk('T2'), I7=self.V('I7'), lamb3=self.V('lamb3'))
         h_6 = h6(U4=self.V('U4'), lamb4=self.V('lamb4'), alpha6=self.V('alpha6')) #H blow air 
         r_8 = r8(I2=self.V('I2T'), alpha2=self.V('alpha2'), alpha7=self.V('alpha7'), eta1=self.V('eta1'), eta2=self.V('eta2'), eta3=self.V('eta3'), tau1=self.V('tau1'), r9=r_9)
-        h_7 = h7(T2=self.Vk('T3'), I5=self.V('I5'), alpha5=self.V('alpha5'), rho3=self.V('rho3'), f2=f_2, f3=f_3, h8=h_8, h9=h_9)
+        h7_t = h7t(h8=h_8, h9=h_9)
         h_10 = h10(T2=self.Vk('T3'), alpha5=self.V('alpha5'), rho3=self.V('rho3'), f1=f_1)
         l_2 = l2(U9=self.V('U9'), alpha6=self.V('alpha6'),gamma2=self.V('gamma2'), phi9=self.V('phi9'))
         r_10 = r10(r11=r_11, r12=r_12, r13=r_13)
@@ -95,4 +95,4 @@ class T3_rhs(StateRHS):
         ###Save 
         to_save = {'h1':h_1,'h2':h_2,'h3':h_3,'h4':h_4,'h5':h_5,'h6':h_6,'r8':r_8,'h7':h_7,'h10':h_10,'l2':l_2,'r10':r_10,'h11':h_11, 'h12': h_12}
         [self.mod.V_Set(k, v) for k,v in to_save.items()]
-        return (kappa_2**-1)*(h_2 + 0.5*r_8 - h_7 - h_10 - r_10 - h_13)
+        return (kappa_2**-1)*(h_2 + 0.5*r_8 - h7_t - h_10 - r_10 - h_13)
