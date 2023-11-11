@@ -32,9 +32,9 @@ OTHER_CONSTANTS = {
     'qh2o':      Struct(typ='Cnts', varid='qh2o', prn=r'$\q_{H_{2}O}$',
                     desc="Costo del agua", units= mxn *m**-3, val=3.5, ok='5.9 en espanna'), 
     'qgas':    Struct(typ='Cnts', varid='qgas', prn=r'$q_{gas}$',
-                    desc="Cost of natural gas", units=1, val=0.1225, ok='checar unidades'),      
+                    desc="Cost of natural gas", units=1, val=2.45, ok='checar unidades'),      
     'q_co2_ext': Struct(typ='Cnts', varid='q_co2_ext', prn=r'$\q_{CO_2}_{ext}$',
-                    desc="", units=mxn * kg**-1, val=3.5, ok=ok),     # Costo del gas de la fuente externa lo tomamos al precio de la tesis 
+                    desc="", units=mxn * kg**-1, val=0.175, ok=ok),     # Costo del gas de la fuente externa lo tomamos al precio de la tesis 
     'cost_elect': Struct(typ='Cnts', varid='cost_elect', prn=r'$\cost_{elect}$',
                     desc="Cost of the electricity", units=mxn * kW**-1 * hour**-1, val=0.68, ok='Dato pagina CFE consumo agricola'),                         
     'T_cal':     Struct(typ='Cnts', varid='T_cal', prn=r'$T_{cal}$',
