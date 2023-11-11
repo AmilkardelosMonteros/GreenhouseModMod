@@ -376,7 +376,7 @@ def h12(U12, eta15, eta16, alpha12):
 
 @check
 def h13(T2,T3,lamb9,rho3,alpha5,g4):
-    aux = lamb9*rho3*alpha5*(0.1 + 0.9*g4)*(T3-T2)
+    aux = lamb9*rho3*alpha5*(0.7 + 0.3*g4)*(T3-T2)
     #print(aux)
     return aux
 # funcion para sumar la radiación PAR solar a la radiación PAR de las lamparas

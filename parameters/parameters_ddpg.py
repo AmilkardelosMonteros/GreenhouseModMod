@@ -1,4 +1,4 @@
-STATE_VARIABLES = ['T1','T2','C1','V1']
+STATE_VARIABLES = ['T1','T2','T3','C1','V1']
 INPUTS          = ['I2','I5','I8','I11']
 CROP_VARIABLES  = ['h'] 
 VARS_OF_DIR     = STATE_VARIABLES + INPUTS + CROP_VARIABLES
@@ -14,7 +14,7 @@ CONTROLS = {'U1':  False, # Pantalla térmica
             'U9':  True, # Control sistema de niebla
             'U10': True, # Fuente externa de C02
             'U11': True, # Tuberia de calentamiento
-            'U12': True  # Lamparas 
+            'U12': False  # Lamparas 
             }
 
 PARAMS_DDPG = {'hidden_sizes': [64,64,64], 
