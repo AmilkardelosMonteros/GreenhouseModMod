@@ -8,7 +8,7 @@ from .functions import kappa2
 from .functions import n1, n2, n3
 from .functions import r8, r9, r10, r11, r12, r13
 from .functions import f1, f2, f3, f4, f5, f6, f7
-from .functions import h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12,h13
+from .functions import h1, h2, h3, h4, h5, h6, h7b, h8, h9, h10, h11, h12,h13
 from .functions import I2T
 
 state_names = ['T1', 'V1', 'T2','T3']
@@ -85,7 +85,7 @@ class T2_rhs(StateRHS):
         h_5 = h5(T2=self.Vk('T2'), I7=self.V('I7'), lamb3=self.V('lamb3'))
         h_6 = h6(U4=self.V('U4'), lamb4=self.V('lamb4'), alpha6=self.V('alpha6')) #H blow air 
         r_8 = r8(I2=self.V('I2T'), alpha2=self.V('alpha2'), alpha7=self.V('alpha7'), eta1=self.V('eta1'), eta2=self.V('eta2'), eta3=self.V('eta3'), tau1=self.V('tau1'), r9=r_9)
-        h_7 = h7(T2=self.Vk('T2'), I5=self.V('I5'), alpha5=self.V('alpha5'), rho3=self.V('rho3'), f2=f_2, f3=f_3, h8=h_8, h9=h_9)
+        h7_b = h7b(T2=self.Vk('T2'), I5=self.V('I5'), alpha5=self.V('alpha5'), rho3=self.V('rho3'), f2=f_2, f3=f_3)
         h_10 = h10(T2=self.Vk('T2'), alpha5=self.V('alpha5'), rho3=self.V('rho3'), f1=f_1)
         l_2 = l2(U9=self.V('U9'), alpha6=self.V('alpha6'),gamma2=self.V('gamma2'), phi9=self.V('phi9'))
         r_10 = r10(r11=r_11, r12=r_12, r13=r_13)
@@ -93,6 +93,6 @@ class T2_rhs(StateRHS):
         h_12 =  h12(U12=self.V('U12'),eta15 =self.V('eta15'),eta16 = self.V('eta16'),alpha12=self.V('alpha12'))
         h_13 = h13(T2 = self.Vk('T2'),T3 = self.Vk('T3'),lamb9 = self.V('lamb9'), rho3 = self.V('rho3'),alpha5=self.V('alpha5'),g4 = g_4)
         ###Save 
-        to_save = {'h1':h_1,'h2':h_2,'h3':h_3,'h4':h_4,'h5':h_5,'h6':h_6,'r8':r_8,'h7':h_7,'h10':h_10,'l2':l_2,'r10':r_10,'h11':h_11, 'h12': h_12}
+        to_save = {'h1':h_1,'h2':h_2,'h3':h_3,'h4':h_4,'h5':h_5,'h6':h_6,'r8':r_8,'h10':h_10,'l2':l_2,'r10':r_10,'h11':h_11, 'h12': h_12}
         [self.mod.V_Set(k, v) for k,v in to_save.items()]
-        return (kappa_2**-1)*(h_1 + h_3 + h_4 + h_5 + h_6 - h_11 + h_13 + 0.5*r_8 -l_2 )
+        return (kappa_2**-1)*(h_1 + h_3 + h_4 + h_5 + h_6 - h7_b - h_11 + h_13 + 0.5*r_8 - l_2 + h_12)
