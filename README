@@ -1,0 +1,114 @@
+Instalacion
+
+1.Instalar crear un ambiente virtual:
+
+$ python3 -m venv GreenDev
+Permite aislar los paquetes con las versiones necesarias el correcto
+funcionamiento del software.
+Documentacion de venv: https://docs.python.org/dev/library/venv.html
+
+2.Activar el ambiente virtual:
+
+$source GreenDev/bin/activate
+
+3.Instalar el software ModMod:
+
+$ pip3 install git+https://github.com/jdmolinam/ModMod_Programming_environment.git
+
+4. Descargar el codigo fuente del modelo de reinforcement learning
+
+$ git clone https://github.com/AmilkardelosMonteros/GreenhouseModMod/ --branch v02 --single-branch 
+
+5. Instalar los paquetes requeridos
+
+$ pip3 install -r GreenhouseModMod/requirements.txt 
+
+Uso
+Para entrenar o probar redes solo se necesita hacer
+
+$ cd GreenhouseModMod
+$ python3 try_climate_only.py
+
+Esto generara una carpeta con los resultados en el directorio simulation_results
+
+Parametros
+Se tienen diferentes tipos de parametros/constantes. Todos estan en la carpeta parameters
+
+parameters/parameters_ddpg.py 
+
+VARS_OF_DIR: Lista de variables que tomara la red como entrada
+CONTROLS: Diccionario de controles, True significa encendico, False, apagado.
+hidden_sizes: Lista de la topologia de la red. 
+max_memory_size : Tamaño de la memoria.
+batch_size: Tamaño del batch utilizado para entrenar la red. 
+
+parameters/parameters_dir.py
+minutes: tamaño del paso del Runge Kutta.
+days: Numero de dias por episodio
+season: cadena que indica la temporada donde se tomaran los datos para entrenar. Debe estar definida en read_dates.py
+
+parameters/parameters_env.py
+
+EPISODES: Numero de episodios a entrenar con ruido.
+SPECIALIZATION_PERIOD: Numero de episodios a entrenear sin ruido. 
+N_TEST: Numero de episodios para probar la red. 
+TYPE: Cadena que indica la forma de tomar acciones(puede ser net(red), bwn(normal), unif(uniforme))
+SAVE_FREQ: Frecuencia de guardado de las redes 
+SEND_MAIL: Indica si debe enviar correo con los resultados 
+PATH_NET: Cadena con la ruta de red preentrenada, None para entrenar una nueva red 
+NET: Numero de red a usar, si no se tiene ninguna, Si PATH_NET es None, este parametro no es tomado en cuenta.
+
+parameters/modelo_fotosintesis.py
+MODELO_FOTOSINTESIS: Controla el modelo que sera usado, detalles en greenhouse/crop/README.md
+                 
+Estructura y archivos relevantes
+
+ddpg
+ddpg/ddpg.py
+
+Contiene el agente de DDPG y sus metodos para entrenar, disparar, cargar las redes.
+
+ddpg/models.py
+
+Contiene los componente del agente, es decir actor/critic.
+
+ddpg/utils.py
+
+Contiene la definicion del ruido como un proceso Ornstein–Uhlenbeck.
+
+
+greenhouse
+
+greenhouse/climate
+
+greenhouse/climate/*_rhs.py
+Son los lados derechos de las ecuaciones de clima.
+
+greenhouse/climate/Decorador.py
+Contiene un decorador que permite revisar que los valores de las funciones no tengan valores Nan.
+
+greenhouse/climate/functions.py
+Contiene las funciones auxiliares del modulo de clima.
+
+greenhouse/climate/module_*.py
+Contienen los sub-modulos del modulo de clima.
+
+
+greenhouse/crop
+
+greenhouse/crop/*_rhs.py
+Son los lados derechos de las ecuaciones de crecimiento.
+
+greenhouse/crop/functions.py
+Contiene las funciones auxiliares del modulo de crecimiento.
+
+greenhouse/crop/module_*.py
+Contiene los modulos de fotosintesis y planta.
+
+
+greenhouse/director.py
+Contiene la interfaz ModMod-DDPG.
+
+
+
+
