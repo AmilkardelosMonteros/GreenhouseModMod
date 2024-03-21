@@ -22,4 +22,6 @@ def create_path(path):
     folders = ['/images','/output','/reports','/nets']
     for folder_name in folders:
         pathlib.Path(PATH + folder_name).mkdir(parents=True, exist_ok=True)
+    pathlib.Path(f'{PATH}/images/train').mkdir(parents=True, exist_ok=True)
+    pathlib.Path(f'{PATH}/images/test').mkdir(parents=True, exist_ok=True)
     return PATH
