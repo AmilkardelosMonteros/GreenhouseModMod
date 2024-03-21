@@ -27,7 +27,6 @@ def dic_to_list(data,reg):
 def Constants(dic_constants,PATH=''):
     CONSTANTS = dic_constants['CONSTANTS']
     INPUTS = dic_constants['INPUTS']
-    CONTROLS = dic_constants['CONTROLS']
     OTHER_CONSTANTS= dic_constants['OTHER_CONSTANTS']
     STATE_VARS = dic_constants['STATE_VARS']
     fileName = 'reports/Reporte_constantes.pdf'
@@ -49,14 +48,14 @@ def Constants(dic_constants,PATH=''):
     add_text(pdf,['Gamma'],x, 370)
     add_table(pdf,CONSTANTS,'gamma',x,200)
     pdf.showPage()
-    add_text(pdf,['Delta'],x, 770)
-    add_table(pdf,CONSTANTS,'delta',x,590)
-    add_text(pdf,['Epsilon'],x, 545)
-    add_table(pdf,CONSTANTS,'epsi',x,390)
-    add_text(pdf,['Eta'],x, 350)
-    add_table(pdf,CONSTANTS,'eta',x,40)
+    add_text(pdf,['Delta'],x, 800)
+    add_table(pdf,CONSTANTS,'delta',x,630)
+    add_text(pdf,['Epsilon'],x, 600)
+    add_table(pdf,CONSTANTS,'epsi',x,420)
+    add_text(pdf,['Eta'],x, 405)
+    add_table(pdf,CONSTANTS,'eta',x,15)
     pdf.showPage()
-    add_text(pdf,['Lambda'],x, 770)
+    add_text(pdf,['Lambda'],x, 800)
     add_table(pdf,CONSTANTS,'lamb',x,590)
     add_text(pdf,['Rho'],x, 545)
     add_table(pdf,CONSTANTS,'rho',x,420)
@@ -72,14 +71,13 @@ def Constants(dic_constants,PATH=''):
     add_text(pdf,['Omega'],x, 390)
     add_table(pdf,CONSTANTS,'omega',x,290)
     pdf.showPage()
-    add_text(pdf,['Inputs'],x, 780)
-    add_table(pdf,INPUTS,None,x,490)
-    add_text(pdf,['Controles'],x, 450)
-    add_table(pdf,CONTROLS,None,x,215)
-    add_text(pdf,['Otras'],x, 180)
-    add_table(pdf,OTHER_CONSTANTS,None,x,3)
+    add_text(pdf,['Inputs'],x, 800)
+    add_table(pdf,INPUTS,None,x,530)
+    add_text(pdf,['Controles'],x, 510)
+    add_table(pdf,CONSTANTS,'U',x,210)
     pdf.showPage()
     add_text(pdf,['Estados'],x, 780)
-    add_table(pdf,STATE_VARS,None,x,660)
-
+    add_table(pdf,STATE_VARS,None,x,650)
+    add_text(pdf,['Otras'],x, 600)
+    add_table(pdf,OTHER_CONSTANTS,None,x,290)
     pdf.save() 
