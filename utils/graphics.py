@@ -38,7 +38,7 @@ def create_images_per_module(model, module, list_var=None,PATH=None):
                 print('La variable ', name,'tiene algo raro')
 
 
-def create_images(model, module, indexes,list_var=None,PATH=None):
+def create_images(model, module, indexes,list_var=None,PATH=None,train =True):
     SHOW = False
     if PATH == None: SHOW = True
     if list_var == None: list_var = list(model.Vars.keys())
@@ -66,8 +66,12 @@ def create_images(model, module, indexes,list_var=None,PATH=None):
                     plt.clf()
                     plt.close(fig)
                 else:
-                    plt.savefig(PATH + '/images/'+name+'_'+str(j)+'_.png')
-                    plt.savefig(PATH + '/output/'+name+'_'+str(j)+'_.png')
+                    if train:
+                        complete_path = PATH + '/images/train/'+name+'_'+str(j)+'.png'
+                    else:
+                        complete_path = PATH + '/images/test/'+name+'_'+str(j)+'.png'
+                    plt.savefig(complete_path)
+                    #plt.savefig(PATH + '/output/'+name+'_'+str(j)+'_.png')
                     plt.cla()
                     plt.clf()
                     plt.close(fig)
