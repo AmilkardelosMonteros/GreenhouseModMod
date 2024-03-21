@@ -47,9 +47,6 @@ def drawMyRuler(pdf):
     pdf.drawString(10,800, 'y800')
 
 
-
-
-
 def dic_to_list(data):
     lista = [[v, str(k)] for v, k in list(data.items())]
     lista.insert(0, ['Parámetro', 'Valor'])
