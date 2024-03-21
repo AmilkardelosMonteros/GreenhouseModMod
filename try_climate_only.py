@@ -43,6 +43,10 @@ ACTIVE_CONTROLS = [k for k,v in CONTROLS.items() if v]
 beta_list = [0.99, 0.95] # Only 2 plants are simulated, assuming this is approximately one m**2
 theta_c = np.array([3000, 20, 2.3e5]) # theta nominal clima
 theta_p = np.array([0.7, 3.3, 0.25]) # theta nominal pdn
+dicc_all = {'CONSTANTS':constant_climate, 'INPUTS':INPUTS, 'OTHER_CONSTANTS':OTHER_CONSTANTS, 'STATE_VARS':STATE_VARS}
+PATH = create_path('simulation_results')
+from reports.report_constants import Constants
+Constants(dicc_all,PATH)
 
 
 """ Climate director"""
@@ -98,11 +102,11 @@ if not CONTROLS['U6_c'] and not CONTROLS['U7_c']:
     #el key de arriba tiene que coincidir con el nombre de la variable
 
 mensaje = "Leyendo datos"
-#loader = Loader(mensaje).start()
+loader = Loader(mensaje).start()
 meteo = ReadModule('weather_data/pandas_to_excel.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) #Este es el codigo correcto!!!
 #meteo = ReadModule('weather_data/excel_holanda.xlsx', t_conv_shift=0.0, t_conv=1)#, shift_time=0) 
 dir_climate.AddModule('ModuleMeteo', meteo)
-#loader.stop()
+loader.stop()
 #dir_climate.AddModule('Control', Random(constant_control))
 
 
@@ -194,11 +198,11 @@ if max(INDEXES) < limit:
 vars_to_plot  = ['T1','T2','V1','C1','I5','H','NF']
 vars_to_plot += ['U' + str(i) for i in range(1,13)]
 
-PATH = create_path('simulation_results')
+
 save(PATH) #Save all parameters of the enviroment
 ###############################################
 path_net = PARAMS_TRAIN['PATH_NET']
-name_net      = PARAMS_TRAIN['NET']
+name_net = PARAMS_TRAIN['NET']
 if path_net is not None:
     print('Cargando red '+ name_net + ' del folder '+ path_net)
     director.agent.load('simulation_results/'+path_net, name=name_net)
@@ -236,7 +240,7 @@ if episodes + specialization > 0:
     dates = compute_indexes(date,n,frec)
     vars_to_plot  = ['T1','T2','V1','C1','H','NF']
     vars_to_plot += ['U' + str(i) for i in range(1,13)]
-    create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
+    create_images(director,'Climate',dates,vars_to_plot, PATH = PATH,train=True)
 
 ###TEST
 
@@ -248,7 +252,6 @@ import random
 random.seed(3000)
 for _ in range(PARAMS_TRAIN['N_TEST']):
     index1 = INDEXES_FOR_TEST[_]
-    index1 = 0 #220391
     print('Indice = ', index1)
     director.Reset()
     director.t = 0
@@ -283,7 +286,7 @@ frec = Dt/director.Modules['Climate'].Modules['ModuleClimate'].Dt ###Si o si deb
 dates = compute_indexes(date,n,frec)
 vars_to_plot  = ['T1','T2','T3','V1','C1','H','NF']
 vars_to_plot += ['U6','U9','U10','U11','U12']
-create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
+create_images(director,'Climate',dates,vars_to_plot, PATH = PATH,train=False)
 #Data.to_csv(PATH+'/output/' + 'VariablesClimate.csv',index=0)
 #Data1.to_csv(PATH+'/output/' + 'VariablesDir.csv',index=0)
 #create_images_per_module(director, 'Climate' ,PATH=PATH)
@@ -292,5 +295,7 @@ create_images(director,'Climate',dates,vars_to_plot, PATH = PATH)
 
 print(PATH)
 
-if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
- 
+try:
+    if PARAMS_TRAIN['SEND_MAIL']: from correo import send_correo; send_correo(PATH + '/reports/final_report.pdf')
+except:
+    print('No tienes credenciales para enviar correos')
